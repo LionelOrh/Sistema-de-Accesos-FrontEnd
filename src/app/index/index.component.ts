@@ -19,7 +19,7 @@ export class IndexComponent implements OnInit {
   isLogged = false;
   nombreUsuario = "";
   opcRegistroEntradaSalida: Opcion[] = [];
-  opcRegistroExterno: Opcion[] = [];
+  opcRegistroVisita: Opcion[] = [];
   opcConsultaReporte: Opcion[] = [];
   opcAccesoProveedor: Opcion[] = [];
 
@@ -39,7 +39,7 @@ export class IndexComponent implements OnInit {
     console.log("MenuComponent >>> ngOnInit >>> ");
 
     this.opcRegistroEntradaSalida = this.tokenService.getOpciones().filter(x => x.tipo === 1);
-    this.opcRegistroExterno = this.tokenService.getOpciones().filter(x => x.tipo === 2);
+    this.opcRegistroVisita = this.tokenService.getOpciones().filter(x => x.tipo === 2);
     this.opcConsultaReporte= this.tokenService.getOpciones().filter(x => x.tipo === 3);
     this.opcAccesoProveedor = this.tokenService.getOpciones().filter(x => x.tipo === 4);
 

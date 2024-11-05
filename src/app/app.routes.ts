@@ -13,7 +13,7 @@ import { RegistrarEntradaSalidaComponent } from './components/registro-entrada-s
 
 export const routes: Routes = [
     {path:"verRegistroEntradaSalida", component:RegistrarEntradaSalidaComponent }, 
-    {path:"verRegistroExterno", component:RegistrarExternoComponent },
+    {path:"verRegistroVisitante", component:RegistrarExternoComponent },
     {path:"verConsultaReporte", component:ConsultaReporteComponent },
     {path:"verAccesoProveedor", component:AccesoProveedorComponent },
     
