@@ -14,8 +14,8 @@ import { RegistrarEntradaSalidaComponent } from './components/registro-entrada-s
 export const routes: Routes = [
     {path:"verRegistroEntradaSalida", component:RegistrarEntradaSalidaComponent }, 
     {path:"verRegistroVisitante", component:RegistrarExternoComponent },
-    {path:"verConsultaReporte", component:ConsultaReporteComponent },
-    {path:"verAccesoProveedor", component:AccesoProveedorComponent },
+    {path:"verConsultaReportes", component:ConsultaReporteComponent },
+    {path:"verRegistroProveedor", component:AccesoProveedorComponent },
     
     { path: '', component: IndexComponent },
     { path: 'login', component: LoginComponent },
