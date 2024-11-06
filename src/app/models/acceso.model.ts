@@ -1,3 +1,4 @@
+import { Time } from "@angular/common";
 import { Representante } from "./representante.model";
 import { TipoAcceso } from "./tipoAcceso.model";
 import { Usuario } from "./usuario.model";
@@ -8,5 +9,6 @@ export class Acceso {
     usuario?: Usuario;
     representante?: Representante;
     tipoAcceso?: TipoAcceso;
-    fecha?: Date;
+    fechaAcceso?: Date;
+    horaAcceso?: Time;
 }
