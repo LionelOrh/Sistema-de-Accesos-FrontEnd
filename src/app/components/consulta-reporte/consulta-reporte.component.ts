@@ -10,6 +10,7 @@ import { UtilService } from '../../services/util.service';
 import { TokenService } from '../../security/token.service';
 import { AccesoService } from '../../services/acceso.service';
 import { MatPaginator } from '@angular/material/paginator';
+import { TipoAcceso } from '../../models/tipoAcceso.model';
 
 @Component({
   standalone: true,
@@ -27,35 +28,43 @@ export class ConsultaReporteComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   //Cabecera
-  displayedColumns = ["codigo", "nombres", "apellidos", "fecha", "rol", "estado"];
+  displayedColumns = ["login", "nombres", "apellidos", "fecha", "hora", "tipoAcceso"];
 
   //Para el combobox
-  lstRol: Rol[] = [];
+  lstTipoAcceso: TipoAcceso[] = [];
 
-  varCodigo: number = 0;
-  varRol: number = -1;
-  varFecha: Date = new Date();
-  varEstado: boolean = false;
+  varLogin: string = " ";
+  varTipoAcceso: number = -1;
+  varFechaAccesoDesde: Date = new Date(1900, 0, 1);
+  varFechaAccesoHasta: Date = new Date();
 
   constructor(private utilService: UtilService, private accesoService: AccesoService) { }
 
   ngOnInit() {
-    this.utilService.listaRol().subscribe(
-      x => this.lstRol = x
+    this.utilService.listaTipoAcceso().subscribe(
+      x => this.lstTipoAcceso = x
     );
   }
 
   filtrar() {
-    this.accesoService.ConsultaReporte(
-      this.varCodigo,
-      this.varFecha,
-      this.varEstado ? 1 : 0,
-      this.varRol).subscribe(
-        x => {
-          this.dataSource = x;
-          this.dataSource.paginator = this.paginator;
-        }
-      );
+    console.log(">>> Filtrar [ini]");
+    console.log(">>> varLogin: " + this.varLogin);
+    console.log(">>> varFechaDesde: " + this.varFechaAccesoDesde);
+    console.log(">>> varFechaHasta: " + this.varFechaAccesoHasta);
+    console.log(">>> varTipoAcceso: " + this.varTipoAcceso);
+  
+    this.accesoService.consultaReporteAccesos(
+      this.varLogin,
+      this.varFechaAccesoDesde.toISOString(),
+      this.varFechaAccesoHasta.toISOString(),
+      this.varTipoAcceso
+    ).subscribe(
+      x => {
+        console.log("Data recibida: ", x); // Para asegurarte de que recibes datos
+        this.dataSource = x; // Asignar el dataSource a la tabla
+        this.dataSource.paginator = this.paginator;
+      }
+    );
     
   }
 
