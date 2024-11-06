@@ -3,7 +3,7 @@ import { AppSettings } from '../app.settings';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-const baseUrlAcceso = AppSettings.API_ENDPOINT + '/acceso';
+const baseUrlAcceso = AppSettings.API_ENDPOINT + '/verConsultaReporte';
 
 @Injectable({
   providedIn: 'root'
@@ -11,18 +11,18 @@ const baseUrlAcceso = AppSettings.API_ENDPOINT + '/acceso';
 export class AccesoService {
   constructor(private http: HttpClient) { }
 
-  ConsultaReporte(codigo: number, fecha: Date, estado: number, rol: number): Observable<any> {
-    // Formatear la fecha a ISO 8601
-    const formattedDate = fecha.toISOString();
-
-    // Crear los parámetros de la solicitud
+  consultaReporteAccesos(
+    login: string,
+    fechaAccesoDesde: string,
+    fechaAccesoHasta: string,
+    idTipoAcceso: number
+  ): Observable<any> {
     const params = new HttpParams()
-      .set("codigo", codigo.toString()) // Convertir a string
-      .set("fecha", formattedDate) // Usar fecha formateada
-      .set("estado", estado.toString()) // Convertir a string
-      .set("idRol", rol.toString()); // Convertir a string
+      .set("login", login)
+      .set("fechaAccesoDesde", fechaAccesoDesde)
+      .set("fechaAccesoHasta", fechaAccesoHasta)
+      .set("idTipoAcceso", idTipoAcceso)
 
-    // Realizar la solicitud GET a la API
     return this.http.get(baseUrlAcceso + "/consultaReporteAccesos", { params });
   }
 }

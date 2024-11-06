@@ -1,9 +1,12 @@
-import { Rol } from "./rol.model";
+import { Representante } from "./representante.model";
+import { TipoAcceso } from "./tipoAcceso.model";
+import { Usuario } from "./usuario.model";
 
 export class Acceso {
-    idAccesos?: number;
-    codigo?: number;
-    fechaAcceso?: string;
-    estado?: number;
-    rol?: Rol;
+    idRegistro?: number;
+    usuarioRegAcceso?: Usuario;
+    usuario?: Usuario;
+    representante?: Representante;
+    tipoAcceso?: TipoAcceso;
+    fecha?: Date;
 }

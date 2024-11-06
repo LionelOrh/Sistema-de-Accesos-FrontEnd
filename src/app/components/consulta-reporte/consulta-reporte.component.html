@@ -7,26 +7,45 @@
   <br>
 
   <div class="row" style="margin-top: 3%">
-    <mat-form-field class="col-md-4">
-      <mat-label>Código</mat-label>
-      <input matInput [(ngModel)]="varCodigo">
-    </mat-form-field>
+    <div class="col-md-3">
+      <mat-form-field class="full-width">
+        <mat-label>Código</mat-label>
+        <input matInput [(ngModel)]="varLogin">
+      </mat-form-field>
+    </div>
 
-    <mat-form-field class="col-md-4">
-      <mat-label>Seleccionar Rol</mat-label>
-      <mat-select [(ngModel)]="varRol">
-        <mat-option *ngFor="let rol of lstRol.slice(2)" [value]="rol.idRol">{{ rol.nombre }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    
+    <div class="col-md-3">
+      <mat-form-field class="full-width">
+        <mat-label>Tipo Acceso</mat-label>
+        <mat-select [(ngModel)]="varTipoAcceso">
+          <mat-option value="-1"> [Todos] </mat-option>
+          <mat-option *ngFor="let tipoAcceso of lstTipoAcceso" [value]="tipoAcceso.idTipoAcceso">
+            {{ tipoAcceso.descripcion }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
-    <mat-form-field class="col-md-4">
-      <mat-label>Fecha</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="fecha" placeholder="Seleccione una fecha">
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+    <div class="col-md-3">
+      <mat-form-field class="full-width">
+        <mat-label>Fecha (Desde)</mat-label>
+        <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde">
+        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+
+    <div class="col-md-3">
+      <mat-form-field class="full-width">
+        <mat-label>Fecha (Hasta)</mat-label>
+        <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta">
+        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+    </div>
   </div>
+
 
   
   <div class="text-center">
@@ -39,7 +58,7 @@
       <mat-table #table class="mat-cell">
         <ng-container matColumnDef="codigo">
           <mat-header-cell *matHeaderCellDef>Código</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.codigo }}</mat-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.login }}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="nombres">
@@ -57,14 +76,14 @@
           <mat-cell *matCellDef="let aux">{{ aux.fecha }}</mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="rol">
-          <mat-header-cell *matHeaderCellDef>Tipo Usuario</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.rol.nombre }}</mat-cell>
+        <ng-container matColumnDef="hora">
+          <mat-header-cell *matHeaderCellDef>Hora</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.hora }}</mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="estado">
-          <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.estado == 1 ? "Ingresó" : "No Ingresó" }}</mat-cell>
+        <ng-container matColumnDef="tipoAcceso">
+          <mat-header-cell *matHeaderCellDef>Tipo Acceso</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.tipoAcceso }}</mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -72,10 +91,8 @@
   </mat-table>
   <mat-paginator [pageSizeOptions]="[6,8,10]" showFirstLastButtons></mat-paginator>
 
-  <div class="action-buttons mt-4">
-    <button class="btn btn-pdf">PDF</button>
-    &nbsp; <!-- Espacio entre los botones -->
-    <button class="btn btn-excel">EXCEL</button>
+  <div class="action-buttons mt-4 text-center"> 
+    <button class="btn btn-excel" >EXCEL</button>
   </div>
 
     <p class="footer-text">Supervisor</p>
