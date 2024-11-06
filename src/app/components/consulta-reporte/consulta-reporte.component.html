@@ -35,7 +35,6 @@
       </mat-form-field>
     </div>
 
-
     <div class="col-md-3">
       <mat-form-field class="full-width">
         <mat-label>Fecha (Hasta)</mat-label>
@@ -46,54 +45,52 @@
     </div>
   </div>
 
-
-  
   <div class="text-center">
-    <button type="submit" class="btn btn-success" style="width: 200px;" (click)="filtrar()" >Filtrar</button>
+    <button type="submit" class="btn btn-success" style="width: 200px;" (click)="filtrar()">Filtrar</button>
   </div>
- 
 
   <div class="row" style="margin-top: 3%">
-    <div class="row" style="margin-top: 3%; ">
-      <mat-table #table class="mat-cell">
-        <ng-container matColumnDef="codigo">
-          <mat-header-cell *matHeaderCellDef>Código</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.login }}</mat-cell>
-        </ng-container>
+    <mat-table #table [dataSource]="dataSource" class="mat-cell">
 
-        <ng-container matColumnDef="nombres">
-          <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.nombres }}</mat-cell>
-        </ng-container>
+      <ng-container matColumnDef="login">
+        <mat-header-cell *matHeaderCellDef>Código</mat-header-cell>
+        <mat-cell *matCellDef="let aux">{{ aux.usuario.login }}</mat-cell>
+      </ng-container>
 
-        <ng-container matColumnDef="apellidos">
-          <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.apellidos }}</mat-cell>
-        </ng-container>
+      <ng-container matColumnDef="nombres">
+        <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
+        <mat-cell *matCellDef="let aux">{{ aux.usuario.nombres }}</mat-cell>
+      </ng-container>
 
-        <ng-container matColumnDef="fecha">
-          <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.fecha }}</mat-cell>
-        </ng-container>
+      <ng-container matColumnDef="apellidos">
+        <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
+        <mat-cell *matCellDef="let aux">{{ aux.usuario.apellidos }}</mat-cell>
+      </ng-container>
 
-        <ng-container matColumnDef="hora">
-          <mat-header-cell *matHeaderCellDef>Hora</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.hora }}</mat-cell>
-        </ng-container>
+      <ng-container matColumnDef="fecha">
+        <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
+        <mat-cell *matCellDef="let aux">{{ aux.fechaAcceso | date }}</mat-cell>
+      </ng-container>
 
-        <ng-container matColumnDef="tipoAcceso">
-          <mat-header-cell *matHeaderCellDef>Tipo Acceso</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.tipoAcceso }}</mat-cell>
-        </ng-container>
+      <ng-container matColumnDef="hora">
+        <mat-header-cell *matHeaderCellDef>Hora</mat-header-cell>
+        <mat-cell *matCellDef="let aux">{{ aux.horaAcceso }}</mat-cell>
+      </ng-container>
 
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let aux; columns: displayedColumns"></mat-row>
-  </mat-table>
-  <mat-paginator [pageSizeOptions]="[6,8,10]" showFirstLastButtons></mat-paginator>
+      <ng-container matColumnDef="tipoAcceso">
+        <mat-header-cell *matHeaderCellDef>Tipo Acceso</mat-header-cell>
+        <mat-cell *matCellDef="let aux">{{ aux.tipoAcceso }}</mat-cell>
+      </ng-container>
 
-  <div class="action-buttons mt-4 text-center"> 
-    <button class="btn btn-excel" >EXCEL</button>
-  </div>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let aux; columns: displayedColumns"></mat-row>
+    </mat-table>
+
+    <mat-paginator [pageSizeOptions]="[6,8,10]" showFirstLastButtons></mat-paginator>
+
+    <div class="action-buttons mt-4 text-center"> 
+      <button class="btn btn-excel">EXCEL</button>
+    </div>
 
     <p class="footer-text">Supervisor</p>
   </div>

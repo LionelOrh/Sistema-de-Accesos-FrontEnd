@@ -7,10 +7,10 @@ const baseUrlAcceso = AppSettings.API_ENDPOINT + '/verConsultaReporte';
 
 @Injectable({
   providedIn: 'root'
-})
+}) 
 export class AccesoService {
   constructor(private http: HttpClient) { }
-
+ 
   consultaReporteAccesos(
     login: string,
     fechaAccesoDesde: string,
@@ -21,7 +21,7 @@ export class AccesoService {
       .set("login", login)
       .set("fechaAccesoDesde", fechaAccesoDesde)
       .set("fechaAccesoHasta", fechaAccesoHasta)
-      .set("idTipoAcceso", idTipoAcceso)
+      .set("idTipoAcceso", idTipoAcceso.toString()); 
 
     return this.http.get(baseUrlAcceso + "/consultaReporteAccesos", { params });
   }
