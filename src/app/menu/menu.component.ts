@@ -18,7 +18,7 @@ export class MenuComponent implements OnInit {
 
   isLogged = false;
   opcRegistroEntradaSalida: Opcion[] = [];
-  opcRegistroExterno: Opcion[] = [];
+  opcRegistroInvitado: Opcion[] = [];
   opcConsultaReporte: Opcion[] = [];
   opcAccesoProveedor: Opcion[] = [];
 
@@ -30,7 +30,7 @@ export class MenuComponent implements OnInit {
     console.log("MenuComponent >>> ngOnInit >>> ");
 
     this.opcRegistroEntradaSalida = this.tokenService.getOpciones().filter(x => x.tipo === 1);
-    this.opcRegistroExterno = this.tokenService.getOpciones().filter(x => x.tipo === 2);
+    this.opcRegistroInvitado = this.tokenService.getOpciones().filter(x => x.tipo === 2);
     this.opcConsultaReporte= this.tokenService.getOpciones().filter(x => x.tipo === 3);
     this.opcAccesoProveedor = this.tokenService.getOpciones().filter(x => x.tipo === 4);
 

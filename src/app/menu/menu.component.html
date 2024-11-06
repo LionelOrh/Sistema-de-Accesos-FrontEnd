@@ -27,9 +27,9 @@
         </a>
       </li>
 
-      <li class="nav-item" *ngIf="isLogged && opcRegistroExterno.length > 0">
-        <a class="nav-link" routerLink="/{{ opcRegistroExterno[0].ruta }}">
-          Registrar Visitante
+      <li class="nav-item" *ngIf="isLogged && opcRegistroInvitado.length > 0">
+        <a class="nav-link" routerLink="/{{ opcRegistroInvitado[0].ruta }}">
+          Registrar Invitado
         </a>
       </li>
 

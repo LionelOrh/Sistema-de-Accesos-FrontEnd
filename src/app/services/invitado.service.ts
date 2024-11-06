@@ -3,19 +3,22 @@ import { AppSettings } from '../app.settings';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Externo } from '../models/externo.model';
 import { Observable } from 'rxjs';
+import { Usuario } from '../models/usuario.model';
+import { Invitacion } from '../models/invitacion.model';
 
-const baseUrlExterno = AppSettings.API_ENDPOINT + '/personaExterna';
+const baseUrlExterno = AppSettings.API_ENDPOINT + '/invitacion';
 
 @Injectable({
     providedIn: 'root'
   })
 
-  export class ExternoService {
+  export class InvitadoService {
     constructor(private http:HttpClient) { 
     }
 
-    registrar(data: Externo): Observable<any> {
-      return this.http.post(baseUrlExterno + "/registraPersonaExterna", data);
+    
+    registrar(payload: any) {
+      return this.http.post<any>(baseUrlExterno + "/registraUsuarioInvitado", payload);
     }
   }
 
