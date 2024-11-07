@@ -3,16 +3,13 @@ import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModu
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../menu/menu.component';
 import { AppMaterialModule } from '../../app.material.module';
-import { Rol } from '../../models/rol.model';
-import { Acceso } from '../../models/acceso.model';
-import { Usuario } from '../../models/usuario.model';
 import { UtilService } from '../../services/util.service';
-import { TokenService } from '../../security/token.service';
 import { AccesoService } from '../../services/acceso.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { TipoAcceso } from '../../models/tipoAcceso.model';
 
 import { MatTableDataSource } from '@angular/material/table';
+import Swal from 'sweetalert2';
 
 @Component({
   standalone: true,
@@ -30,12 +27,13 @@ export class ConsultaReporteComponent implements OnInit {
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
 
   //Cabecera
-  displayedColumns = ["login", "nombres", "apellidos", "fecha", "hora", "tipoAcceso"];
+  displayedColumns = ["login", "nombres", "apellidos", "numDoc", "fecha", "hora", "tipoAcceso"];
 
   //Para el combobox
   lstTipoAcceso: TipoAcceso[] = [];
  
-  varLogin: string = " ";
+  varLogin: string = "";
+  varNumDoc: string = "";
   varTipoAcceso: number = -1;
   varFechaAccesoDesde: Date = new Date(2024, 0, 1);
   varFechaAccesoHasta: Date = new Date();
@@ -53,26 +51,78 @@ export class ConsultaReporteComponent implements OnInit {
     return date.toISOString().split('T')[0]; // Separa solo la parte de la fecha
   }
 
-  filtrar() {
+  async filtrar() {
+    Swal.fire({
+      title: 'Procesando',
+      text: 'Por favor espere...',
+      icon: 'info',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+  
     console.log(">>> Filtrar [ini]");
     console.log(">>> varLogin: " + this.varLogin);
-     console.log(">>> varFechaDesde: " + this.formatDate(this.varFechaAccesoDesde));
+    console.log(">>> varFechaDesde: " + this.formatDate(this.varFechaAccesoDesde));
     console.log(">>> varFechaHasta: " + this.formatDate(this.varFechaAccesoHasta));
     console.log(">>> varTipoAcceso: " + this.varTipoAcceso);
+    console.log(">>> varNumDoc: " + this.varNumDoc);
   
     this.accesoService.consultaReporteAccesos(
       this.varLogin,
-      this.varFechaAccesoDesde.toISOString().split('T')[0],
-      this.varFechaAccesoHasta.toISOString().split('T')[0],
-      this.varTipoAcceso
+      this.formatDate(this.varFechaAccesoDesde),
+      this.formatDate(this.varFechaAccesoHasta),
+      this.varTipoAcceso,
+      this.varNumDoc
     ).subscribe(
-      x => {
-        console.log("Data recibida: ", x); // Para asegurarte de que recibes datos
-        this.dataSource = new MatTableDataSource(x.data || x);
-        this.dataSource.paginator = this.paginator;
+      response => {
+        console.log("Data recibida: ", response);
+        this.dataSource = new MatTableDataSource(response.data || response);
+        this.dataSource.paginator = this.paginator;  // Esto es importante para vincular el paginador con el dataSource
+        Swal.close();
+      },
+      error => {
+        console.error("Error al consultar los accesos:", error);
+        Swal.fire({
+          title: 'Error',
+          text: 'Ocurrió un error al procesar su solicitud.',
+          icon: 'error'
+        });
       }
     );
-    
   }
+  
+
+  exportarExcel() {
+    console.log(">>> Filtrar [ini]");
+    console.log(">>> varLogin: " + this.varLogin);
+    console.log(">>> varFechaDesde: " + this.formatDate(this.varFechaAccesoDesde));
+    console.log(">>> varFechaHasta: " + this.formatDate(this.varFechaAccesoHasta));
+    console.log(">>> varTipoAcceso: " + this.varTipoAcceso);
+    console.log(">>> varNumDoc: " + this.varNumDoc);
+    
+    this.accesoService.generateDocumentExcel( 
+      this.varLogin,
+      this.formatDate(this.varFechaAccesoDesde),
+      this.formatDate(this.varFechaAccesoHasta),
+      this.varTipoAcceso,
+      this.varNumDoc
+    ).subscribe(
+      response => {
+        console.log(response);
+        var url = window.URL.createObjectURL(response.data);
+        var a = document.createElement('a');
+        document.body.appendChild(a);
+        a.setAttribute('style', 'display: none');
+        a.setAttribute('target', 'blank');
+        a.href = url;
+        a.download = response.filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+    }); 
+}
 
 }
