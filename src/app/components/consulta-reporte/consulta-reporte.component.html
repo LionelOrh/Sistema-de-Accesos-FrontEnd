@@ -4,94 +4,104 @@
   <mat-toolbar class="toolbar-entrada-salida">
     <span>Consulta y Reporte del Control de Accesos</span>
   </mat-toolbar>
-  <br>
 
-  <div class="row" style="margin-top: 3%">
-    <div class="col-md-3">
-      <mat-form-field class="full-width">
-        <mat-label>Código</mat-label>
-        <input matInput [(ngModel)]="varLogin">
-      </mat-form-field>
-    </div>
+  <h1 class="page-title">Internos y Externos</h1>
 
-    <div class="col-md-3">
-      <mat-form-field class="full-width">
-        <mat-label>Tipo Acceso</mat-label>
-        <mat-select [(ngModel)]="varTipoAcceso">
-          <mat-option value="-1"> [Todos] </mat-option>
-          <mat-option *ngFor="let tipoAcceso of lstTipoAcceso" [value]="tipoAcceso.idTipoAcceso">
-            {{ tipoAcceso.descripcion }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+  <!-- Filtros de búsqueda -->
+<div class="row">
+  <mat-form-field class="col-md-3">
+          <mat-label>Código</mat-label>
+          <input matInput [(ngModel)]="varLogin">
+        </mat-form-field>
 
-    <div class="col-md-3">
-      <mat-form-field class="full-width">
-        <mat-label>Fecha (Desde)</mat-label>
-        <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde">
-        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
-        <mat-datepicker #picker1></mat-datepicker>
-      </mat-form-field>
-    </div>
+        <mat-form-field class="col-md-3">
+          <mat-label>Nro Documento</mat-label>
+          <input matInput [(ngModel)]="varNumDoc">
+        </mat-form-field>
 
-    <div class="col-md-3">
-      <mat-form-field class="full-width">
-        <mat-label>Fecha (Hasta)</mat-label>
-        <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta">
-        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-        <mat-datepicker #picker2></mat-datepicker>
-      </mat-form-field>
-    </div>
-  </div>
+        <mat-form-field class="col-md-2">
+          <mat-label>Tipo Acceso</mat-label>
+          <mat-select [(ngModel)]="varTipoAcceso">
+            <mat-option value="-1">[Todos]</mat-option>
+            <mat-option *ngFor="let tipoAcceso of lstTipoAcceso" [value]="tipoAcceso.idTipoAcceso">
+              {{ tipoAcceso.descripcion }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
 
+    <mat-form-field class="col-md-2">
+          <mat-label>Fecha (Desde)</mat-label>
+          <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde">
+          <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
+
+
+      <mat-form-field class="col-md-2">
+          <mat-label>Fecha (Hasta)</mat-label>
+          <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta">
+          <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </div>
+  <!-- Botón Filtrar -->
   <div class="text-center">
-    <button type="submit" class="btn btn-success" style="width: 200px;" (click)="filtrar()">Filtrar</button>
+    <button type="submit" class="btn btn-success" style="width: 200px; margin-top: 20px;" (click)="filtrar()">Filtrar</button>
+  </div>
+   <!-- Botón Exportar -->
+   <div class="action-buttons mt-6 text-center" > 
+    <button class="btn btn-excel" (click)="exportarExcel()">EXCEL</button>
   </div>
 
+  <!-- Tabla de resultados -->
   <div class="row" style="margin-top: 3%">
-    <mat-table #table [dataSource]="dataSource" class="mat-cell">
+    <mat-table [dataSource]="dataSource" #table class="mat-elevation-z8">
 
       <ng-container matColumnDef="login">
         <mat-header-cell *matHeaderCellDef>Código</mat-header-cell>
-        <mat-cell *matCellDef="let aux">{{ aux.usuario.login }}</mat-cell>
+        <mat-cell *matCellDef="let aux">{{ aux.usuario?.login || 'Código no registrado' }}</mat-cell>
       </ng-container>
-
+    
       <ng-container matColumnDef="nombres">
         <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
-        <mat-cell *matCellDef="let aux">{{ aux.usuario.nombres }}</mat-cell>
+        <mat-cell *matCellDef="let aux">{{ aux.usuario?.nombres || 'Nombre no registrado' }}</mat-cell>
       </ng-container>
-
+    
       <ng-container matColumnDef="apellidos">
         <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
-        <mat-cell *matCellDef="let aux">{{ aux.usuario.apellidos }}</mat-cell>
+        <mat-cell *matCellDef="let aux">{{ aux.usuario?.apellidos || 'Apellido no registrado' }}</mat-cell>
       </ng-container>
 
+      <ng-container matColumnDef="numDoc">
+        <mat-header-cell *matHeaderCellDef>Nro Documento</mat-header-cell>
+        <mat-cell *matCellDef="let aux">{{ aux.usuario?.numDoc || 'Nro Documento no registrado' }}</mat-cell>
+      </ng-container>
+    
       <ng-container matColumnDef="fecha">
         <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
-        <mat-cell *matCellDef="let aux">{{ aux.fechaAcceso | date }}</mat-cell>
+        <mat-cell *matCellDef="let aux">{{ aux.fechaAcceso ? (aux.fechaAcceso | date) : 'Fecha no registrada' }}</mat-cell>
       </ng-container>
-
+    
       <ng-container matColumnDef="hora">
         <mat-header-cell *matHeaderCellDef>Hora</mat-header-cell>
-        <mat-cell *matCellDef="let aux">{{ aux.horaAcceso }}</mat-cell>
+        <mat-cell *matCellDef="let aux">{{ aux.horaAcceso || 'Hora no registrada' }}</mat-cell>
       </ng-container>
-
+    
       <ng-container matColumnDef="tipoAcceso">
         <mat-header-cell *matHeaderCellDef>Tipo Acceso</mat-header-cell>
-        <mat-cell *matCellDef="let aux">{{ aux.tipoAcceso }}</mat-cell>
+        <mat-cell *matCellDef="let aux">{{ aux.tipoAcceso || 'Tipo de acceso no registrado' }}</mat-cell>
       </ng-container>
-
+    
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let aux; columns: displayedColumns"></mat-row>
     </mat-table>
-
-    <mat-paginator [pageSizeOptions]="[6,8,10]" showFirstLastButtons></mat-paginator>
-
-    <div class="action-buttons mt-4 text-center"> 
-      <button class="btn btn-excel">EXCEL</button>
+    
+    <!-- Paginación -->
+    <div class="paginator-container" style="margin-top: 20px;">
+      <mat-paginator [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
     </div>
-
-    <p class="footer-text">Supervisor</p>
   </div>
+
+  <h1 class="page-title">Consulta y Reporte de Representantes</h1>
+  <p class="footer-text">Supervisor</p>
 </div>
