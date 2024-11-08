@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../menu/menu.component';
 import { TipoDocumento } from '../../models/tipoDocumento.model';
 import { Proveedor } from '../../models/proveedor.model';
+import { Representante } from '../../models/representante.model';
 import { Usuario } from '../../models/usuario.model';
 import { UtilService } from '../../services/util.service';
 import { TokenService } from '../../security/token.service';
@@ -20,18 +21,8 @@ import Swal from 'sweetalert2';
 })
 export class AccesoProveedorComponent {
   lstTipoDoc: TipoDocumento[] = [];
-  proveedor: Proveedor = {
-    razonSocial: "",
-    ruc: "",
-    desProd: "",
-    nombres: "",
-    apellidos: "",
-    cargoRes: "",
-    nroDoc: "",
-    tipoDocumento: { idTipoDoc: -1 }
-  };
-  objUsuario: Usuario = {};
   formRegistra: FormGroup;
+  codigoBarrasGenerado: boolean = false;
 
   constructor(
     private utilService: UtilService,
@@ -39,23 +30,25 @@ export class AccesoProveedorComponent {
     private proveedorService: ProveedorService,
     private formBuilder: FormBuilder
   ) {
-    this.utilService.listaTipoDocumento().subscribe(x => this.lstTipoDoc = x);
-    this.objUsuario.idUsuario = this.tokenService.getUserId();
+    // Cargar la lista de tipos de documento
+    this.utilService.listaTipoDocumento().subscribe(
+      tipos => this.lstTipoDoc = tipos
+    );
 
-    // Definimos los validadores para cada campo
+    // Configurar el formulario
     this.formRegistra = this.formBuilder.group({
       validaRazonSocial: ['', [Validators.required]],
-      validaRuc: ['', [Validators.required, Validators.pattern(/^[0-9]{11}$/)]], // RUC de 11 dígitos
+      validaRuc: ['', [Validators.required, Validators.pattern(/^[0-9]{11}$/)]],
       validaDesProd: ['', [Validators.required]],
       validaNombres: ['', [Validators.required]],
       validaApellidos: ['', [Validators.required]],
       validaCargoRes: ['', [Validators.required]],
-      validaTipoDocumento: [-1, [Validators.required, this.tipoDocumentoValidator()]], // Validador personalizado
       validaNroDoc: ['', [Validators.required, Validators.maxLength(45)]],
+      validaTipoDocumento: [-1, [Validators.required, this.tipoDocumentoValidator()]], // El valor por defecto es -1, es decir, no seleccionado
     });
   }
 
-  // Validador personalizado para tipo de documento
+  // Validador personalizado para el tipo de documento
   tipoDocumentoValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
@@ -63,8 +56,8 @@ export class AccesoProveedorComponent {
     };
   }
 
-  // Método para registrar el Proveedor
   registrar() {
+    // Validar el formulario
     if (this.formRegistra.invalid) {
       const errores = this.getErrorMessages();
       Swal.fire({
@@ -76,25 +69,31 @@ export class AccesoProveedorComponent {
       return;
     }
 
-    // Si es válido, asignamos los valores del formulario al objeto proveedor
-    this.proveedor.usuarioActualiza = this.objUsuario;
-    this.proveedor.usuarioRegistro = this.objUsuario;
-    this.proveedor.razonSocial = this.formRegistra.value.validaRazonSocial;
-    this.proveedor.ruc = this.formRegistra.value.validaRuc;
-    this.proveedor.desProd = this.formRegistra.value.validaDesProd;
-    this.proveedor.nombres = this.formRegistra.value.validaNombres;
-    this.proveedor.apellidos = this.formRegistra.value.validaApellidos;
-    this.proveedor.cargoRes = this.formRegistra.value.validaCargoRes;
-    this.proveedor.nroDoc = this.formRegistra.value.validaNroDoc;
-    this.proveedor.tipoDocumento = { idTipoDoc: this.formRegistra.value.validaTipoDocumento };
+    // Construir el payload para el registro
+    const payload = {
+      razonSocial: this.formRegistra.value.validaRazonSocial,
+      ruc: this.formRegistra.value.validaRuc,
+      descripcion: this.formRegistra.value.validaDesProd,
+      nombres: this.formRegistra.value.validaNombres,
+      apellidos: this.formRegistra.value.validaApellidos,
+      cargo: this.formRegistra.value.validaCargoRes,
+      numDoc: this.formRegistra.value.validaNroDoc,
+      tipoDocumento: this.formRegistra.value.validaTipoDocumento // Aquí se pasa directamente el ID del tipo de documento
+    };
 
-    this.proveedorService.registrar(this.proveedor).subscribe(
-      x => Swal.fire({
-        icon: 'success',
-        title: 'Registro exitoso',
-        text: x.mensaje,
-        confirmButtonText: 'Cerrar'
-      }),
+    // Imprimir el payload en consola para depurar
+    console.log("Payload a enviar:", payload);
+
+    // Llamar al servicio para registrar
+    this.proveedorService.registrar(payload).subscribe(
+      response => {
+        Swal.fire({
+          icon: 'success',
+          title: 'Registro exitoso',
+          text: response.mensaje,
+          confirmButtonText: 'Cerrar'
+        });
+      },
       error => {
         Swal.fire({
           icon: 'error',
@@ -106,7 +105,7 @@ export class AccesoProveedorComponent {
     );
   }
 
-  // Método para generar mensajes de error
+  // Generar mensajes de error para los campos del formulario
   getErrorMessages(): string {
     const errores = [];
     const controls = this.formRegistra.controls;
