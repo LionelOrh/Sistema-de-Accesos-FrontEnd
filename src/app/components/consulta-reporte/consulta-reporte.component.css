@@ -116,16 +116,16 @@
 
 
 .mat-column-login {
-  flex: 0 0 15%;
+  flex: 0 0 10%;
 }
 .mat-column-nombres {
-  flex: 0 0 20%;
+  flex: 0 0 15%;
 }
 .mat-column-apellidos {
-  flex: 0 0 20%;
+  flex: 0 0 15%;
 }
 .mat-column-numDoc {
-  flex: 0 0 15%;
+  flex: 0 0 10%;
 }
 .mat-column-fecha {
   flex: 0 0 10%;
@@ -134,5 +134,22 @@
   flex: 0 0 10%;
 }
 .mat-column-tipoAcceso {
-  flex: 0 0 10%;
+  flex: 0 0 11%;
+}
+
+/*representante*/
+.mat-column-nombres {
+  flex: 0 0 20%;
+}
+.mat-column-apellidos {
+  flex: 0 0 20%;
+}
+.mat-column-numDoc {
+  flex: 0 0 20%;
+}
+.mat-column-cargo {
+  flex: 0 0 20%;
+}
+.mat-column-proveedor {
+  flex: 0 0 20%;
 }
