@@ -27,7 +27,7 @@ export class ConsultaReporteComponent implements OnInit {
 
   //Clase para la paginacion
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
-  @ViewChild(MatPaginator, { static: true }) paginatorRepresentante!: MatPaginator;
+  @ViewChild('paginator2', { static: true }) paginatorRepresentante!: MatPaginator;
 
   //Cabecera
   displayedColumns = ["login", "nombres", "apellidos", "numDoc", "fecha", "hora", "tipoAcceso"];
@@ -39,6 +39,7 @@ export class ConsultaReporteComponent implements OnInit {
   //interno y externo
   varLogin: string = "";
   varNumDoc: string = "";
+  varNumDocRe: string = "";
   varTipoAcceso: number = -1;
   varFechaAccesoDesde: Date = new Date(2024, 0, 1);
   varFechaAccesoHasta: Date = new Date();
@@ -114,17 +115,17 @@ export class ConsultaReporteComponent implements OnInit {
     });
   
     console.log(">>> Filtrar [ini]");
-    console.log(">>> varNumDoc: " + this.varNumDoc);
+    console.log(">>> varNumDocRe: " + this.varNumDocRe);
 
   
     this.accesoService.consultaReporteRepresentante(
-      this.varNumDoc,
+      this.varNumDocRe,
       
     ).subscribe(
       response => {
         console.log("Data recibida: ", response);
         this.dataSourceRepresentante = new MatTableDataSource(response.data || response);
-        this.dataSourceRepresentante.paginator = this.paginatorRepresentante;  // Esto es importante para vincular el paginador con el dataSource
+        this.dataSourceRepresentante.paginator = this.paginatorRepresentante; 
         Swal.close();
 
       },
@@ -172,10 +173,10 @@ export class ConsultaReporteComponent implements OnInit {
 
 exportarExcelRepresentante() {
   console.log(">>> Filtrar [ini]");
-  console.log(">>> varNumDoc: " + this.varNumDoc);
+  console.log(">>> varNumDocRe: " + this.varNumDocRe);
   
   this.accesoService.generateDocumentExcelRepresentante( 
-    this.varNumDoc
+    this.varNumDocRe
   ).subscribe(
     response => {
       console.log(response);
