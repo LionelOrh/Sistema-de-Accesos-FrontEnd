@@ -5,103 +5,167 @@
     <span>Consulta y Reporte del Control de Accesos</span>
   </mat-toolbar>
 
-  <h1 class="page-title">Internos y Externos</h1>
+  <!-- Sección Internos y Externos -->
+  <div class="internos-externos">
+    <h1 class="page-title">Internos y Externos</h1>
 
-  <!-- Filtros de búsqueda -->
-<div class="row">
-  <mat-form-field class="col-md-3">
-          <mat-label>Código</mat-label>
-          <input matInput [(ngModel)]="varLogin">
-        </mat-form-field>
+    <!-- Filtros de búsqueda -->
+    <div class="row">
+      <mat-form-field class="col-md-3">
+        <mat-label>Código</mat-label>
+        <input matInput [(ngModel)]="varLogin">
+      </mat-form-field>
 
-        <mat-form-field class="col-md-3">
-          <mat-label>Nro Documento</mat-label>
-          <input matInput [(ngModel)]="varNumDoc">
-        </mat-form-field>
-
-        <mat-form-field class="col-md-2">
-          <mat-label>Tipo Acceso</mat-label>
-          <mat-select [(ngModel)]="varTipoAcceso">
-            <mat-option value="-1">[Todos]</mat-option>
-            <mat-option *ngFor="let tipoAcceso of lstTipoAcceso" [value]="tipoAcceso.idTipoAcceso">
-              {{ tipoAcceso.descripcion }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-    <mat-form-field class="col-md-2">
-          <mat-label>Fecha (Desde)</mat-label>
-          <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde">
-          <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
-          <mat-datepicker #picker1></mat-datepicker>
-        </mat-form-field>
-
+      <mat-form-field class="col-md-3">
+        <mat-label>Nro Documento</mat-label>
+        <input matInput [(ngModel)]="varNumDoc">
+      </mat-form-field>
 
       <mat-form-field class="col-md-2">
-          <mat-label>Fecha (Hasta)</mat-label>
-          <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta">
-          <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-          <mat-datepicker #picker2></mat-datepicker>
-        </mat-form-field>
+        <mat-label>Tipo Acceso</mat-label>
+        <mat-select [(ngModel)]="varTipoAcceso">
+          <mat-option value="-1">[Todos]</mat-option>
+          <mat-option *ngFor="let tipoAcceso of lstTipoAcceso" [value]="tipoAcceso.idTipoAcceso">
+            {{ tipoAcceso.descripcion }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="col-md-2">
+        <mat-label>Fecha (Desde)</mat-label>
+        <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde">
+        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="col-md-2">
+        <mat-label>Fecha (Hasta)</mat-label>
+        <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta">
+        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+    <!-- Botón Filtrar -->
+    <div class="text-center">
+      <button type="submit" class="btn btn-success" style="width: 200px; margin-top: 20px;" (click)="filtrar()">Filtrar</button>
+    </div>
+
+    <!-- Botón Exportar -->
+    <div class="action-buttons mt-6 text-center">
+      <button class="btn btn-excel" (click)="exportarExcel()">EXCEL</button>
+    </div>
+
+    <!-- Tabla de resultados -->
+    <div class="row" style="margin-top: 3%">
+      <mat-table [dataSource]="dataSource" #table class="mat-elevation-z8">
+
+        <ng-container matColumnDef="login">
+          <mat-header-cell *matHeaderCellDef>Código</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.usuario?.login || 'Código no registrado' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="nombres">
+          <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.usuario?.nombres || 'Nombre no registrado' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="apellidos">
+          <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.usuario?.apellidos || 'Apellido no registrado' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="numDoc">
+          <mat-header-cell *matHeaderCellDef>Nro Documento</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.usuario?.numDoc || 'Nro Documento no registrado' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="fecha">
+          <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.fechaAcceso ? (aux.fechaAcceso | date) : 'Fecha no registrada' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="hora">
+          <mat-header-cell *matHeaderCellDef>Hora</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.horaAcceso || 'Hora no registrada' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="tipoAcceso">
+          <mat-header-cell *matHeaderCellDef>Tipo Acceso</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.tipoAcceso || 'Tipo de acceso no registrado' }}</mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let aux; columns: displayedColumns"></mat-row>
+      </mat-table>
+
+      <!-- Paginación -->
+      <div class="paginator-container" style="margin-top: 20px;">
+        <mat-paginator [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
       </div>
-  <!-- Botón Filtrar -->
-  <div class="text-center">
-    <button type="submit" class="btn btn-success" style="width: 200px; margin-top: 20px;" (click)="filtrar()">Filtrar</button>
-  </div>
-   <!-- Botón Exportar -->
-   <div class="action-buttons mt-6 text-center" > 
-    <button class="btn btn-excel" (click)="exportarExcel()">EXCEL</button>
-  </div>
-
-  <!-- Tabla de resultados -->
-  <div class="row" style="margin-top: 3%">
-    <mat-table [dataSource]="dataSource" #table class="mat-elevation-z8">
-
-      <ng-container matColumnDef="login">
-        <mat-header-cell *matHeaderCellDef>Código</mat-header-cell>
-        <mat-cell *matCellDef="let aux">{{ aux.usuario?.login || 'Código no registrado' }}</mat-cell>
-      </ng-container>
-    
-      <ng-container matColumnDef="nombres">
-        <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
-        <mat-cell *matCellDef="let aux">{{ aux.usuario?.nombres || 'Nombre no registrado' }}</mat-cell>
-      </ng-container>
-    
-      <ng-container matColumnDef="apellidos">
-        <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
-        <mat-cell *matCellDef="let aux">{{ aux.usuario?.apellidos || 'Apellido no registrado' }}</mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="numDoc">
-        <mat-header-cell *matHeaderCellDef>Nro Documento</mat-header-cell>
-        <mat-cell *matCellDef="let aux">{{ aux.usuario?.numDoc || 'Nro Documento no registrado' }}</mat-cell>
-      </ng-container>
-    
-      <ng-container matColumnDef="fecha">
-        <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
-        <mat-cell *matCellDef="let aux">{{ aux.fechaAcceso ? (aux.fechaAcceso | date) : 'Fecha no registrada' }}</mat-cell>
-      </ng-container>
-    
-      <ng-container matColumnDef="hora">
-        <mat-header-cell *matHeaderCellDef>Hora</mat-header-cell>
-        <mat-cell *matCellDef="let aux">{{ aux.horaAcceso || 'Hora no registrada' }}</mat-cell>
-      </ng-container>
-    
-      <ng-container matColumnDef="tipoAcceso">
-        <mat-header-cell *matHeaderCellDef>Tipo Acceso</mat-header-cell>
-        <mat-cell *matCellDef="let aux">{{ aux.tipoAcceso || 'Tipo de acceso no registrado' }}</mat-cell>
-      </ng-container>
-    
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let aux; columns: displayedColumns"></mat-row>
-    </mat-table>
-    
-    <!-- Paginación -->
-    <div class="paginator-container" style="margin-top: 20px;">
-      <mat-paginator [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
     </div>
   </div>
 
-  <h1 class="page-title">Consulta y Reporte de Representantes</h1>
+  <!-- Sección Representantes -->
+  <div class="representantes">
+    <h1 class="page-title">Representantes</h1>
+
+    <div class="row justify-content-center">
+      <mat-form-field class="col-md-6 mx-auto">
+        <mat-label>Nro Documento</mat-label>
+        <input matInput [(ngModel)]="varNumDoc">
+      </mat-form-field>
+    </div>
+
+    <!-- Botón Filtrar -->
+    <div class="text-center">
+      <button type="submit" class="btn btn-success" style="width: 200px; margin-top: 20px;" (click)="filtrarRepresentante()">Filtrar</button>
+    </div>
+
+    <!-- Botón Exportar -->
+    <div class="action-buttons mt-6 text-center">
+      <button class="btn btn-excel" (click)="exportarExcelRepresentante()">EXCEL</button>
+    </div>
+
+    <!-- Tabla de resultados -->
+    <div class="row" style="margin-top: 3%">
+      <mat-table [dataSource]="dataSourceRepresentante" #tableRepresentante class="mat-elevation-z8">
+
+        <ng-container matColumnDef="nombres">
+          <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.nombres || 'Nombre no registrado' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="apellidos">
+          <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.apellidos || 'Apellido no registrado' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="cargo">
+          <mat-header-cell *matHeaderCellDef>Cargo</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.cargo || 'Cargo no registrado' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="numDoc">
+          <mat-header-cell *matHeaderCellDef>Nro Documento</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.numDoc || 'Nro Documento no registrado' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="proveedor">
+          <mat-header-cell *matHeaderCellDef>Proveedor</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.proveedor?.razonSocial || 'Proveedor no registrado' }}</mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumnsRepresentante"></mat-header-row>
+        <mat-row *matRowDef="let aux; columns: displayedColumnsRepresentante"></mat-row>
+      </mat-table>
+
+      <!-- Paginación -->
+      <div class="paginator-container" style="margin-top: 20px;">
+        <mat-paginator [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
+      </div>
+    </div>
+  </div>
+
   <p class="footer-text">Supervisor</p>
 </div>
