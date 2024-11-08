@@ -1,16 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { AppMaterialModule } from '../../app.material.module';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../menu/menu.component';
 import { TipoDocumento } from '../../models/tipoDocumento.model';
-import { Proveedor } from '../../models/proveedor.model';
-import { Representante } from '../../models/representante.model';
-import { Usuario } from '../../models/usuario.model';
-import { UtilService } from '../../services/util.service';
-import { TokenService } from '../../security/token.service';
 import { ProveedorService } from '../../services/proveedor.service';
+import { UtilService } from '../../services/util.service';
 import Swal from 'sweetalert2';
+import JsBarcode from 'jsbarcode';
 
 @Component({
   standalone: true,
@@ -24,9 +21,11 @@ export class AccesoProveedorComponent {
   formRegistra: FormGroup;
   codigoBarrasGenerado: boolean = false;
 
+  // Referencia al elemento HTML donde se mostrará el código de barras
+  @ViewChild('barcode', { static: false }) barcodeElement!: ElementRef;
+
   constructor(
     private utilService: UtilService,
-    private tokenService: TokenService,
     private proveedorService: ProveedorService,
     private formBuilder: FormBuilder
   ) {
@@ -44,7 +43,7 @@ export class AccesoProveedorComponent {
       validaApellidos: ['', [Validators.required]],
       validaCargoRes: ['', [Validators.required]],
       validaNroDoc: ['', [Validators.required, Validators.maxLength(45)]],
-      validaTipoDocumento: [-1, [Validators.required, this.tipoDocumentoValidator()]], // El valor por defecto es -1, es decir, no seleccionado
+      validaTipoDocumento: [-1, [Validators.required, this.tipoDocumentoValidator()]],
     });
   }
 
@@ -78,15 +77,22 @@ export class AccesoProveedorComponent {
       apellidos: this.formRegistra.value.validaApellidos,
       cargo: this.formRegistra.value.validaCargoRes,
       numDoc: this.formRegistra.value.validaNroDoc,
-      tipoDocumento: this.formRegistra.value.validaTipoDocumento // Aquí se pasa directamente el ID del tipo de documento
+      tipoDocumento: this.formRegistra.value.validaTipoDocumento
     };
-
-    // Imprimir el payload en consola para depurar
-    console.log("Payload a enviar:", payload);
 
     // Llamar al servicio para registrar
     this.proveedorService.registrar(payload).subscribe(
       response => {
+
+        const idProveedor = response.id;      
+        const nroDocProveedor = response.nroDoc; 
+        const idDniCombo = `${idProveedor}${nroDocProveedor}`;
+        const cifrado = btoa(idDniCombo);  
+    
+     
+        this.generarCodigoBarras(cifrado); 
+        this.codigoBarrasGenerado = true; 
+
         Swal.fire({
           icon: 'success',
           title: 'Registro exitoso',
@@ -104,6 +110,25 @@ export class AccesoProveedorComponent {
       }
     );
   }
+
+  generarCodigoBarras(cifrado: string) {
+    setTimeout(() => {
+      const barcodeElement = document.getElementById('barcode');
+      if (barcodeElement) {
+        JsBarcode(barcodeElement, cifrado, { 
+          format: 'CODE128',
+          lineColor: '#0aa',
+          width: 2,
+          height: 40,
+          displayValue: true
+        });
+      } else {
+        console.error("No se encontró el elemento de código de barras");
+      }
+    }, 100);
+    }
+    
+   
 
   // Generar mensajes de error para los campos del formulario
   getErrorMessages(): string {

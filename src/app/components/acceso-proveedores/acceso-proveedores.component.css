@@ -93,3 +93,9 @@ hr.my-4 {
     font-weight: bold;
     margin-top: 20px;
 }
+
+
+svg {
+    border: 1px solid red; /* Para verificar si se está mostrando */
+  }
+  
