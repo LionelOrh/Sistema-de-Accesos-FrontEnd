@@ -7,7 +7,7 @@
     <br>
     <h6>Datos de la Empresa</h6>
 
-    <!-- RUC -->
+
     <div class="form-group row">
       <div class="col-sm-6">
         <label for="ruc">RUC</label>
@@ -17,7 +17,7 @@
         </div>
       </div>
 
-      <!-- Razón Social -->
+     
       <div class="col-sm-6">
         <label for="razon-social">Razón Social</label>
         <input type="text" class="form-control" id="razon-social" placeholder="Razón Social" formControlName="validaRazonSocial">
@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <!-- Descripción del Producto -->
+
     <div class="form-group row">
       <div class="col-sm-12">
         <label for="producto">Descripción del Producto</label>
@@ -42,7 +42,7 @@
 
     <h6>Datos del Representante</h6>
     <div class="form-group row">
-      <!-- Nombres -->
+    
       <div class="col-sm-4">
         <label for="nombres">Nombres</label>
         <input type="text" class="form-control" id="nombres" placeholder="Nombres" formControlName="validaNombres">
@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <!-- Apellidos -->
+    
       <div class="col-sm-4">
         <label for="apellidos">Apellidos</label>
         <input type="text" class="form-control" id="apellidos" placeholder="Apellidos" formControlName="validaApellidos">
@@ -60,7 +60,7 @@
         </div>
       </div>
 
-      <!-- Cargo Responsable -->
+
       <div class="col-sm-4">
         <label for="cargo-responsable">Cargo Responsable</label>
         <input type="text" class="form-control" id="cargo-responsable" placeholder="Cargo Responsable" formControlName="validaCargoRes">
@@ -70,7 +70,7 @@
       </div>
     </div>
 
-    <!-- Tipo de Documento y Número de Documento -->
+    
     <div class="row">
       <div class="col-md-4">
         <div class="form-group">
@@ -97,13 +97,15 @@
 
       <div class="col-sm-4">
         <div class="action-buttons">
-          <button class="btn btn-qr" type="button">Generar QR</button>
-        </div>
+          <button class="btn btn-primary" type="button" (click)="registrar()">Registrar</button>       
+         </div>
       </div>
     </div>
-
-    <!-- Botón de Registrar -->
-    <button class="btn btn-primary" type="submit">Registrar</button>
+    <div *ngIf="codigoBarrasGenerado">
+      <h6>Código de Barras Generado</h6>
+      <svg id="barcode"></svg> 
+    </div>
+    
   </form>
   
   <p class="footer-text">Supervisor</p>
