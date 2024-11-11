@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../menu/menu.component';
@@ -54,7 +54,7 @@ export class ConsultaReporteComponent implements OnInit {
   varFechaAccesoDesde: Date = new Date(2024, 0, 1);
   varFechaAccesoHasta: Date = new Date();
 
-  constructor(private utilService: UtilService, private accesoService: AccesoService) { }
+  constructor(private utilService: UtilService, private accesoService: AccesoService,  private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
 
@@ -76,14 +76,7 @@ export class ConsultaReporteComponent implements OnInit {
         Swal.showLoading();
       }
     });
-
-    console.log(">>> Filtrar [ini]");
-    console.log(">>> varLogin: " + this.varLogin);
-    console.log(">>> varFechaDesde: " + this.formatDate(this.varFechaAccesoDesde));
-    console.log(">>> varFechaHasta: " + this.formatDate(this.varFechaAccesoHasta));
-    console.log(">>> varEstado: " + this.varEstado);
-    console.log(">>> varNumDoc: " + this.varNumDoc);
-
+  
     this.accesoService.consultaReporteAccesos(
       this.varLogin,
       this.formatDate(this.varFechaAccesoDesde),
@@ -92,27 +85,45 @@ export class ConsultaReporteComponent implements OnInit {
       this.varNumDoc
     ).subscribe(
       response => {
-        console.log("Data recibida: ", response);
-        // Convertir estado numérico a texto para mostrar en la tabla
-        const transformedResponse = response.map((item: any) => ({
-          ...item,
-          estado: item.estado === 0 ? 'Ingreso' : 'Salida'
-        }));
-        this.dataSource = new MatTableDataSource(transformedResponse);
-        this.dataSource.paginator = this.paginator;
         Swal.close();
+  
+        if (response.length === 0) {
+          // Muestra alerta de "No hay datos"
+          Swal.fire({
+            title: 'Sin resultados',
+            text: 'No hay datos disponibles con los filtros aplicados.',
+            icon: 'warning',
+            confirmButtonText: 'Aceptar'
+          });
+  
+          // Asigna un array vacío y forzar la detección de cambios
+          this.dataSource = new MatTableDataSource([]);
+          this.cdr.detectChanges(); // Forzamos la detección de cambios para que Angular lo note
+        } else {
+          // Transformar y asignar datos recibidos
+          const transformedResponse = response.map((item: any) => ({
+            ...item,
+            estado: item.estado === 0 ? 'Ingreso' : 'Salida'
+          }));
+          this.dataSource = new MatTableDataSource(transformedResponse);
+          this.dataSource.paginator = this.paginator;
+          this.cdr.detectChanges(); // Forzamos detección de cambios
+        }
       },
       error => {
+        Swal.close();
         console.error("Error al consultar los accesos:", error);
         Swal.fire({
           title: 'Error',
           text: 'Ocurrió un error al procesar su solicitud.',
-          icon: 'error'
+          icon: 'error',
+          showConfirmButton: true
         });
       }
     );
   }
-
+  
+  
   async filtrarRepresentante() {
     Swal.fire({
       title: 'Procesando',
@@ -124,27 +135,45 @@ export class ConsultaReporteComponent implements OnInit {
         Swal.showLoading();
       }
     });
-
-    console.log(">>> Filtrar [ini]");
+  
+    console.log(">>> Filtrar Representante [ini]");
     console.log(">>> varNumDocRe: " + this.varNumDocRe);
-
+  
     this.accesoService.consultaReporteRepresentante(this.varNumDocRe).subscribe(
       response => {
-        console.log("Data recibida: ", response);
-        this.dataSourceRepresentante = new MatTableDataSource(response.data || response);
-        this.dataSourceRepresentante.paginator = this.paginatorRepresentante;
         Swal.close();
+  
+        if (response.length === 0) {
+          Swal.fire({
+            title: 'Sin resultados',
+            text: 'No se encontraron representantes con el número de documento ingresado.',
+            icon: 'warning',
+            showConfirmButton: true
+          });
+  
+          // Asignamos un array vacío a dataSourceRepresentante y forzamos la detección de cambios
+          this.dataSourceRepresentante = new MatTableDataSource([]);
+          this.cdr.detectChanges();  // Forzamos la detección de cambios
+        } else {
+          console.log("Data recibida: ", response);
+          this.dataSourceRepresentante = new MatTableDataSource(response.data || response);
+          this.dataSourceRepresentante.paginator = this.paginatorRepresentante;
+          this.cdr.detectChanges();  // Forzamos la detección de cambios
+        }
       },
       error => {
-        console.error("Error al consultar los accesos:", error);
+        Swal.close();
+        console.error("Error al consultar los representantes:", error);
         Swal.fire({
           title: 'Error',
           text: 'Ocurrió un error al procesar su solicitud.',
-          icon: 'error'
+          icon: 'error',
+          showConfirmButton: true
         });
       }
     );
-  }
+    }
+   
 
   exportarExcel() {
     console.log(">>> Exportar Excel");
