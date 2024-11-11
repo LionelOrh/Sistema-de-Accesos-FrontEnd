@@ -18,6 +18,22 @@ import Swal from 'sweetalert2';
 })
 
 export class ConsultaReporteComponent implements OnInit {
+  
+  mostrarInternos = true;  // Inicia mostrando la sección "Internos y Externos"
+  mostrarRepresentante = false; // Inicia ocultando la sección "Representantes"
+  
+  // Función para mostrar "Internos y Externos"
+  mostrarInternosExternos() {
+    this.mostrarInternos = true;  // Muestra la sección "Internos y Externos"
+    this.mostrarRepresentante = false;  // Oculta la sección "Representantes"
+  }
+
+  // Función para mostrar "Representantes"
+  mostrarRepresentantes() {
+    this.mostrarInternos = false;  // Oculta la sección "Internos y Externos"
+    this.mostrarRepresentante = true;  // Muestra la sección "Representantes"
+  }
+
   // Grilla
   dataSource: any;
   dataSourceRepresentante: any;
@@ -41,7 +57,7 @@ export class ConsultaReporteComponent implements OnInit {
   constructor(private utilService: UtilService, private accesoService: AccesoService) { }
 
   ngOnInit() {
-    // No necesitamos cargar `TipoAcceso` ya que fue eliminado
+
   }
 
   // Función para formatear las fechas a 'YYYY-MM-DD'
