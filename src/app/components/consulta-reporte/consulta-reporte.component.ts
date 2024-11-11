@@ -19,19 +19,19 @@ import Swal from 'sweetalert2';
 
 export class ConsultaReporteComponent implements OnInit {
   
-  mostrarInternos = true;  // Inicia mostrando la sección "Internos y Externos"
-  mostrarRepresentante = false; // Inicia ocultando la sección "Representantes"
+  mostrarInternos = true; 
+  mostrarRepresentante = false;
   
   // Función para mostrar "Internos y Externos"
   mostrarInternosExternos() {
-    this.mostrarInternos = true;  // Muestra la sección "Internos y Externos"
-    this.mostrarRepresentante = false;  // Oculta la sección "Representantes"
+    this.mostrarInternos = true;  
+    this.mostrarRepresentante = false; 
   }
 
   // Función para mostrar "Representantes"
   mostrarRepresentantes() {
-    this.mostrarInternos = false;  // Oculta la sección "Internos y Externos"
-    this.mostrarRepresentante = true;  // Muestra la sección "Representantes"
+    this.mostrarInternos = false; 
+    this.mostrarRepresentante = true; 
   }
 
   // Grilla
@@ -39,8 +39,8 @@ export class ConsultaReporteComponent implements OnInit {
   dataSourceRepresentante: any;
 
   // Clase para la paginación
-  @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
-  @ViewChild('paginator2', { static: true }) paginatorRepresentante!: MatPaginator;
+  @ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
+  @ViewChild('paginator2', { static: false }) paginatorRepresentante!: MatPaginator;
 
   // Cabecera
   displayedColumns = ["login", "nombres", "apellidos", "numDoc", "fecha", "hora", "estado"];
