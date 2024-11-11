@@ -12,6 +12,6 @@ export class Usuario {
     tipodocumento?:TipoDocumento ;
     numDoc?:String;
     foto?:string;
-
+    estado?:number;
    
 }

@@ -1,61 +1,52 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms'
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../menu/menu.component';
 import { AppMaterialModule } from '../../app.material.module';
 import { UtilService } from '../../services/util.service';
 import { AccesoService } from '../../services/acceso.service';
 import { MatPaginator } from '@angular/material/paginator';
-import { TipoAcceso } from '../../models/tipoAcceso.model';
-
 import { MatTableDataSource } from '@angular/material/table';
 import Swal from 'sweetalert2';
 
 @Component({
   standalone: true,
   imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule],
-
   selector: 'app-consulta-reporte',
   templateUrl: './consulta-reporte.component.html',
   styleUrls: ['./consulta-reporte.component.css']
 })
 
 export class ConsultaReporteComponent implements OnInit {
-  //grilla
+  // Grilla
   dataSource: any;
   dataSourceRepresentante: any;
 
-  //Clase para la paginacion
+  // Clase para la paginación
   @ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
   @ViewChild('paginator2', { static: true }) paginatorRepresentante!: MatPaginator;
 
-  //Cabecera
-  displayedColumns = ["login", "nombres", "apellidos", "numDoc", "fecha", "hora", "tipoAcceso"];
-  displayedColumnsRepresentante = ["nombres", "apellidos", "cargo", "numDoc","proveedor"];
+  // Cabecera
+  displayedColumns = ["login", "nombres", "apellidos", "numDoc", "fecha", "hora", "estado"];
+  displayedColumnsRepresentante = ["nombres", "apellidos", "cargo", "numDoc", "proveedor"];
 
-  //Para el combobox
-  lstTipoAcceso: TipoAcceso[] = [];
- 
-  //interno y externo
+  // Interno y externo
   varLogin: string = "";
   varNumDoc: string = "";
   varNumDocRe: string = "";
-  varTipoAcceso: number = -1;
+  varEstado: number = -1; // -1 para no filtrar, 0 para ingreso, 1 para salida
   varFechaAccesoDesde: Date = new Date(2024, 0, 1);
   varFechaAccesoHasta: Date = new Date();
-
 
   constructor(private utilService: UtilService, private accesoService: AccesoService) { }
 
   ngOnInit() {
-    this.utilService.listaTipoAcceso().subscribe(
-      x => this.lstTipoAcceso = x
-    );
+    // No necesitamos cargar `TipoAcceso` ya que fue eliminado
   }
 
-   // Función para formatear las fechas a 'YYYY-MM-DD'
-   formatDate(date: Date): string {
-    return date.toISOString().split('T')[0]; // Separa solo la parte de la fecha
+  // Función para formatear las fechas a 'YYYY-MM-DD'
+  formatDate(date: Date): string {
+    return date.toISOString().split('T')[0];
   }
 
   async filtrar() {
@@ -69,25 +60,30 @@ export class ConsultaReporteComponent implements OnInit {
         Swal.showLoading();
       }
     });
-  
+
     console.log(">>> Filtrar [ini]");
     console.log(">>> varLogin: " + this.varLogin);
     console.log(">>> varFechaDesde: " + this.formatDate(this.varFechaAccesoDesde));
     console.log(">>> varFechaHasta: " + this.formatDate(this.varFechaAccesoHasta));
-    console.log(">>> varTipoAcceso: " + this.varTipoAcceso);
+    console.log(">>> varEstado: " + this.varEstado);
     console.log(">>> varNumDoc: " + this.varNumDoc);
-  
+
     this.accesoService.consultaReporteAccesos(
       this.varLogin,
       this.formatDate(this.varFechaAccesoDesde),
       this.formatDate(this.varFechaAccesoHasta),
-      this.varTipoAcceso,
+      this.varEstado,
       this.varNumDoc
     ).subscribe(
       response => {
         console.log("Data recibida: ", response);
-        this.dataSource = new MatTableDataSource(response.data || response);
-        this.dataSource.paginator = this.paginator;  // Esto es importante para vincular el paginador con el dataSource
+        // Convertir estado numérico a texto para mostrar en la tabla
+        const transformedResponse = response.map((item: any) => ({
+          ...item,
+          estado: item.estado === 0 ? 'Ingreso' : 'Salida'
+        }));
+        this.dataSource = new MatTableDataSource(transformedResponse);
+        this.dataSource.paginator = this.paginator;
         Swal.close();
       },
       error => {
@@ -100,8 +96,7 @@ export class ConsultaReporteComponent implements OnInit {
       }
     );
   }
-  
-  //representante
+
   async filtrarRepresentante() {
     Swal.fire({
       title: 'Procesando',
@@ -113,21 +108,16 @@ export class ConsultaReporteComponent implements OnInit {
         Swal.showLoading();
       }
     });
-  
+
     console.log(">>> Filtrar [ini]");
     console.log(">>> varNumDocRe: " + this.varNumDocRe);
 
-  
-    this.accesoService.consultaReporteRepresentante(
-      this.varNumDocRe,
-      
-    ).subscribe(
+    this.accesoService.consultaReporteRepresentante(this.varNumDocRe).subscribe(
       response => {
         console.log("Data recibida: ", response);
         this.dataSourceRepresentante = new MatTableDataSource(response.data || response);
-        this.dataSourceRepresentante.paginator = this.paginatorRepresentante; 
+        this.dataSourceRepresentante.paginator = this.paginatorRepresentante;
         Swal.close();
-
       },
       error => {
         console.error("Error al consultar los accesos:", error);
@@ -139,21 +129,20 @@ export class ConsultaReporteComponent implements OnInit {
       }
     );
   }
-  
 
   exportarExcel() {
-    console.log(">>> Filtrar [ini]");
+    console.log(">>> Exportar Excel");
     console.log(">>> varLogin: " + this.varLogin);
     console.log(">>> varFechaDesde: " + this.formatDate(this.varFechaAccesoDesde));
     console.log(">>> varFechaHasta: " + this.formatDate(this.varFechaAccesoHasta));
-    console.log(">>> varTipoAcceso: " + this.varTipoAcceso);
+    console.log(">>> varEstado: " + this.varEstado);
     console.log(">>> varNumDoc: " + this.varNumDoc);
-    
-    this.accesoService.generateDocumentExcel( 
+
+    this.accesoService.generateDocumentExcel(
       this.varLogin,
       this.formatDate(this.varFechaAccesoDesde),
       this.formatDate(this.varFechaAccesoHasta),
-      this.varTipoAcceso,
+      this.varEstado,
       this.varNumDoc
     ).subscribe(
       response => {
@@ -161,36 +150,33 @@ export class ConsultaReporteComponent implements OnInit {
         var url = window.URL.createObjectURL(response.data);
         var a = document.createElement('a');
         document.body.appendChild(a);
-        a.setAttribute('style', 'display: none');
-        a.setAttribute('target', 'blank');
+        a.style.display = 'none';
         a.href = url;
         a.download = response.filename;
         a.click();
         window.URL.revokeObjectURL(url);
         a.remove();
-    }); 
-}
+      }
+    );
+  }
 
-exportarExcelRepresentante() {
-  console.log(">>> Filtrar [ini]");
-  console.log(">>> varNumDocRe: " + this.varNumDocRe);
-  
-  this.accesoService.generateDocumentExcelRepresentante( 
-    this.varNumDocRe
-  ).subscribe(
-    response => {
-      console.log(response);
-      var url = window.URL.createObjectURL(response.data);
-      var a = document.createElement('a');
-      document.body.appendChild(a);
-      a.setAttribute('style', 'display: none');
-      a.setAttribute('target', 'blank');
-      a.href = url;
-      a.download = response.filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
-      a.remove();
-  }); 
-}
+  exportarExcelRepresentante() {
+    console.log(">>> Exportar Excel Representante");
+    console.log(">>> varNumDocRe: " + this.varNumDocRe);
 
+    this.accesoService.generateDocumentExcelRepresentante(this.varNumDocRe).subscribe(
+      response => {
+        console.log(response);
+        var url = window.URL.createObjectURL(response.data);
+        var a = document.createElement('a');
+        document.body.appendChild(a);
+        a.style.display = 'none';
+        a.href = url;
+        a.download = response.filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+      }
+    );
+  }
 }
