@@ -90,6 +90,13 @@
           <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
           <mat-cell *matCellDef="let aux">{{ aux.usuario?.estado === 0 ? 'Salida' : 'Ingreso' }}</mat-cell>
         </ng-container>
+        
+         <!-- Fila para cuando no hay datos -->
+       <tr *ngIf="dataSource && dataSource.data.length === 0" class="mat-row">
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length" style="text-align: center;">
+           No hay datos disponibles con los filtros aplicados.
+        </td>
+        </tr>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let aux; columns: displayedColumns"></mat-row>
@@ -152,6 +159,13 @@
           <mat-header-cell *matHeaderCellDef>Proveedor</mat-header-cell>
           <mat-cell *matCellDef="let aux">{{ aux.representante.proveedor?.razonSocial || 'Proveedor no registrado' }}</mat-cell>
         </ng-container>
+
+         <!-- Fila de mensaje cuando no hay datos -->
+  <tr *ngIf="dataSourceRepresentante && dataSourceRepresentante.data.length === 0" class="mat-row">
+    <td class="mat-cell" [attr.colspan]="displayedColumnsRepresentante.length" style="text-align: center;">
+      No se encontraron representantes con el número de documento ingresado.
+    </td>
+  </tr>
 
         <mat-header-row *matHeaderRowDef="displayedColumnsRepresentante"></mat-header-row>
         <mat-row *matRowDef="let aux; columns: displayedColumnsRepresentante"></mat-row>
