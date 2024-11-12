@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { AppSettings } from '../app.settings';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
+import { preRegistroConsultaDTO } from '../models/PreRegistroConsultaDTO.model';
 
-const baseUrlAcceso = AppSettings.API_ENDPOINT + '/verConsultaReporte';
+const baseUrlAcceso = AppSettings.API_ENDPOINT + '/registroAcceso';
 
 @Injectable({
   providedIn: 'root'
@@ -103,5 +104,11 @@ export class AccesoService {
         };
       })
     );
+  }
+
+  // Nuevo método para consultar el preregistro
+  consultaPreRegistro(codigo: string): Observable<preRegistroConsultaDTO> {
+    const params = new HttpParams().set('codigo', codigo);
+    return this.http.get<preRegistroConsultaDTO>(`${baseUrlAcceso}/consultaPreRegistro`, { params });
   }
 }

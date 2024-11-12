@@ -1,41 +1,95 @@
 <app-menu></app-menu>
-  <div class="container">
-      <mat-toolbar class="toolbar-entrada-salida">
-        <span>Registro de Entrada y Salida</span>
-      </mat-toolbar>
-      <div class="custom-toolbar">
-        <button class="btn btn-left">CONSULTAR</button>
-        <input type="text" class="search-input" placeholder="Buscar...">
-        <button class="btn btn-right">ESCANEAR</button>
+<div class="container">
+  <mat-toolbar class="toolbar-entrada-salida">
+    <span>Registro de Entrada y Salida</span>
+  </mat-toolbar>
+
+  <!-- Campo de Búsqueda -->
+  <div class="custom-toolbar">
+    <input
+      type="text"
+      [(ngModel)]="codigoBusqueda"
+      class="search-input"
+      placeholder="Ingrese el código para buscar..."
+    />
+    <button (click)="buscarPorCodigo()" class="btn btn-left">CONSULTAR</button>
+    <button class="btn btn-right">ESCANEAR</button>
+  </div>
+
+  <!-- Mostrar Datos Obtenidos -->
+  <div class="data-entry">
+    <div class="form-row">
+      <div class="form-labels">
+        <label for="codigo">CÓDIGO:</label>
+        <label for="identificacion">IDENTIFICACIÓN:</label>
+        <label for="nombres">NOMBRES:</label>
+        <label for="apellidos">APELLIDOS:</label>
+        <label for="estado">ESTADO:</label>
       </div>
-      <div class="data-entry">
-        <div class="form-row">
-          <div class="form-labels">
-            <label for="codigo">CÓDIGO:</label>
-            <label for="identificacion">IDENTIFICACIÓN:</label>
-            <label for="nombres">NOMBRES:</label>
-            <label for="apellidos">APELLIDOS:</label>
-            <label for="estado">ESTADO:</label>
-          </div>
-          <div class="form-fields">
-            <input type="text" id="codigo" class="form-control" placeholder="CÓDIGO">
-            <input type="text" id="identificacion" class="form-control" placeholder="IDENTIFICACIÓN">
-            <input type="text" id="nombres" class="form-control" placeholder="NOMBRES">
-            <input type="text" id="apellidos" class="form-control" placeholder="APELLIDOS">
-            <input type="text" id="estado" class="form-control" placeholder="ESTADO">
-          </div>
-          <div class="photo-container">
-            <div class="photo-box">
-              <div class="qr-placeholder"></div>
-              <img src="#" alt="Foto" class="qr-image" />
-            </div>
+      <div class="form-fields">
+        <input
+          type="text"
+          id="codigo"
+          class="form-control"
+          [value]="resultado?.codigo || ''"
+          placeholder="CÓDIGO"
+          disabled
+        />
+        <input
+          type="text"
+          id="identificacion"
+          class="form-control"
+          [value]="resultado?.identificacion || ''"
+          placeholder="IDENTIFICACIÓN"
+          disabled
+        />
+        <input
+          type="text"
+          id="nombres"
+          class="form-control"
+          [value]="resultado?.nombres || ''"
+          placeholder="NOMBRES"
+          disabled
+        />
+        <input
+          type="text"
+          id="apellidos"
+          class="form-control"
+          [value]="resultado?.apellidos || ''"
+          placeholder="APELLIDOS"
+          disabled
+        />
+        <input
+          type="text"
+          id="estado"
+          class="form-control"
+          [value]="resultado?.estado || ''"
+          placeholder="ESTADO"
+          disabled
+        />
+      </div>
+      <!-- Foto -->
+      <div class="photo-container">
+        <div class="photo-box">
+          <img
+            *ngIf="resultado?.foto"
+            [src]="resultado?.foto"  
+            alt="Foto"
+            class="qr-image"
+          />
+          <div *ngIf="!resultado?.foto" class="qr-placeholder">
+            Sin Foto
           </div>
         </div>
       </div>
-      <div class="action-buttons">
-        <button class="btn btn-permit">PERMITIR</button>
-        <button class="btn btn-deny">DENEGAR</button>
-        <button class="btn btn-register">REGISTRAR EXTERNO</button>
-      </div>
-      <p class="footer-text">Personal de Seguridad</p>
     </div>
+  </div>
+
+  <!-- Botones Adicionales -->
+  <div class="action-buttons">
+    <button class="btn-permit">PERMITIR</button>
+    <button class="btn-deny">DENEGAR</button>
+    <button class="btn-register">REGISTRAR INVITADO</button>
+  </div>
+
+</div>
