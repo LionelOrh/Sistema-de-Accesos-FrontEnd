@@ -9,17 +9,22 @@ import { Invitacion } from '../models/invitacion.model';
 const baseUrlExterno = AppSettings.API_ENDPOINT + '/invitacion';
 
 @Injectable({
-    providedIn: 'root'
-  })
+  providedIn: 'root'
+})
 
-  export class InvitadoService {
-    constructor(private http:HttpClient) { 
-    }
-
-    
-    registrar(payload: any) {
-      return this.http.post<any>(baseUrlExterno + "/registraUsuarioInvitado", payload);
-    }
+export class InvitadoService {
+  constructor(private http: HttpClient) {
   }
 
-  
+
+  registrar(payload: any) {
+    return this.http.post<any>(baseUrlExterno + "/registraUsuarioInvitado", payload);
+  }
+  // Método para validar si un número de documento existe
+  validarNumeroDocumento(numDoc: string): Observable<{ existe: boolean }> {
+    return this.http.get<{ existe: boolean }>(`${baseUrlExterno}/validar-numDoc`, {
+      params: { numDoc },
+    });
+  }
+}
+
