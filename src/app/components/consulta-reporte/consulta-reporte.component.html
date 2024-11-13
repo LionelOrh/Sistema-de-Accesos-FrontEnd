@@ -115,9 +115,22 @@
     <h1 class="page-title">Representantes</h1>
 
     <div class="row justify-content-center">
-      <mat-form-field class="col-md-6 mx-auto">
+      <mat-form-field class="col-md-4">
         <mat-label>Nro Documento</mat-label>
         <input matInput [(ngModel)]="varNumDocRe">
+      </mat-form-field>
+      <mat-form-field class="col-md-4">
+        <mat-label>Fecha (Desde)</mat-label>
+        <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde">
+        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field class="col-md-4">
+        <mat-label>Fecha (Hasta)</mat-label>
+        <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta">
+        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
       </mat-form-field>
     </div>
 

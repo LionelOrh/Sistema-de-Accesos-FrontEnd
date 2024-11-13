@@ -52,6 +52,8 @@ export class ConsultaReporteComponent implements OnInit {
   varNumDocRe: string = "";
   varFechaAccesoDesde: Date = new Date(2024, 0, 1);
   varFechaAccesoHasta: Date = new Date();
+  varFechaAccesoDesdeR: Date = new Date(2024, 0, 1);
+  varFechaAccesoHastaR: Date = new Date();
 
   constructor(private utilService: UtilService, private accesoService: AccesoService,  private cdr: ChangeDetectorRef) { }
 
@@ -117,6 +119,7 @@ export class ConsultaReporteComponent implements OnInit {
   }
   
   
+  
   async filtrarRepresentante() {
     Swal.fire({
       title: 'Procesando',
@@ -132,7 +135,11 @@ export class ConsultaReporteComponent implements OnInit {
     console.log(">>> Filtrar Representante [ini]");
     console.log(">>> varNumDocRe: " + this.varNumDocRe);
   
-    this.accesoService.consultaReporteRepresentante(this.varNumDocRe).subscribe(
+    this.accesoService.consultaReporteRepresentante(
+      this.varNumDocRe,
+      this.formatDate(this.varFechaAccesoDesdeR),
+      this.formatDate(this.varFechaAccesoHastaR)
+    ).subscribe(
       response => {
         Swal.close();
   
@@ -200,7 +207,8 @@ export class ConsultaReporteComponent implements OnInit {
     console.log(">>> Exportar Excel Representante");
     console.log(">>> varNumDocRe: " + this.varNumDocRe);
 
-    this.accesoService.generateDocumentExcelRepresentante(this.varNumDocRe).subscribe(
+    this.accesoService.generateDocumentExcelRepresentante(this.varNumDocRe, this.formatDate(this.varFechaAccesoDesdeR), this.formatDate(this.varFechaAccesoHastaR))
+    .subscribe(
       response => {
         console.log(response);
         var url = window.URL.createObjectURL(response.data);
