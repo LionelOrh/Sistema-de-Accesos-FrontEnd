@@ -1,8 +1,9 @@
 export class Acceso {
-    idRegistro?: number; // Autogenerado por el backend
+  idRegistro?: number; // Autogenerado por el backend
   fechaAcceso?: string; // Fecha actual (opcional, puede llenarse en el backend)
   horaAcceso?: string; // Hora actual (opcional, puede llenarse en el backend)
   idUsuario?: number; // ID del usuario (opcional)
   idRepresentante?: number; // ID del representante (opcional)
   idUsuarioRegAcceso!: number; // ID del usuario logueado
+  tipoAcceso?: string; // Tipo de acceso, puede ser "Ingreso" o "Salida"
 }

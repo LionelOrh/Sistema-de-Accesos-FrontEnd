@@ -88,12 +88,12 @@
 
         <ng-container matColumnDef="estado">
           <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.usuario?.estado === 0 ? 'Salida' : 'Ingreso' }}</mat-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.tipoAcceso || 'Estado no registrado'}}</mat-cell>
         </ng-container>
         
          <!-- Fila para cuando no hay datos -->
        <tr *ngIf="dataSource && dataSource.data.length === 0" class="mat-row">
-        <td class="mat-cell" [attr.colspan]="displayedColumns.length" style="text-align: center;">
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length" style="text-align: center; color: black;">
            No hay datos disponibles con los filtros aplicados.
         </td>
         </tr>
@@ -135,12 +135,12 @@
     <div class="row" style="margin-top: 3%">
       <mat-table [dataSource]="dataSourceRepresentante" #tableRepresentante class="mat-elevation-z8">
 
-        <ng-container matColumnDef="nombres">
+        <ng-container matColumnDef="nombre">
           <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
           <mat-cell *matCellDef="let aux">{{ aux.representante?.nombres || 'Nombre no registrado' }}</mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="apellidos">
+        <ng-container matColumnDef="apellido">
           <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
           <mat-cell *matCellDef="let aux">{{ aux.representante?.apellidos || 'Apellido no registrado' }}</mat-cell>
         </ng-container>
@@ -150,7 +150,7 @@
           <mat-cell *matCellDef="let aux">{{ aux.representante?.cargo || 'Cargo no registrado' }}</mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="numDoc">
+        <ng-container matColumnDef="numDocs">
           <mat-header-cell *matHeaderCellDef>Nro Documento</mat-header-cell>
           <mat-cell *matCellDef="let aux">{{ aux.representante?.numDoc || 'Nro Documento no registrado' }}</mat-cell>
         </ng-container>
@@ -158,6 +158,21 @@
         <ng-container matColumnDef="proveedor">
           <mat-header-cell *matHeaderCellDef>Proveedor</mat-header-cell>
           <mat-cell *matCellDef="let aux">{{ aux.representante.proveedor?.razonSocial || 'Proveedor no registrado' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="fechas">
+          <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.fechaAcceso ? (aux.fechaAcceso | date) : 'Fecha no registrada' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="horas">
+          <mat-header-cell *matHeaderCellDef>Hora</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.horaAcceso || 'Hora no registrada' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="estados">
+          <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+          <mat-cell *matCellDef="let aux">{{ aux.tipoAcceso || 'Estado no registrado'}}</mat-cell>
         </ng-container>
 
          <!-- Fila de mensaje cuando no hay datos -->

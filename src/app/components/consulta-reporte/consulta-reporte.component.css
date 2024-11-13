@@ -146,7 +146,7 @@
 }
 
 .mat-column-login {
-  flex: 0 0 10%;
+  flex: 0 0 15%;
 }
 .mat-column-nombres {
   flex: 0 0 15%;
@@ -155,31 +155,40 @@
   flex: 0 0 15%;
 }
 .mat-column-numDoc {
-  flex: 0 0 10%;
+  flex: 0 0 15%;
 }
 .mat-column-fecha {
-  flex: 0 0 10%;
+  flex: 0 0 15%;
 }
 .mat-column-hora {
   flex: 0 0 10%;
 }
-.mat-column-tipoAcceso {
-  flex: 0 0 11%;
+.mat-column-estado {
+  flex: 0 0 15%;
 }
 
 /*representante*/
-.mat-column-nombres {
-  flex: 0 0 20%;
+.mat-column-nombre {
+  flex: 0 0 15%;
 }
-.mat-column-apellidos {
-  flex: 0 0 20%;
+.mat-column-apellido {
+  flex: 0 0 15%;
 }
-.mat-column-numDoc {
-  flex: 0 0 20%;
+.mat-column-numDocs {
+  flex: 0 0 15%;
 }
 .mat-column-cargo {
-  flex: 0 0 20%;
+  flex: 0 0 10%;
 }
 .mat-column-proveedor {
-  flex: 0 0 20%;
+  flex: 0 0 15%;
+}
+.mat-column-fechas {
+  flex: 0 0 10%;
+}
+.mat-column-horas {
+  flex: 0 0 10%;
+}
+.mat-column-estados {
+  flex: 0 0 10%;
 }
