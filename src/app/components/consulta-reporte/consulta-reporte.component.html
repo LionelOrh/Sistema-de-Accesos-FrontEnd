@@ -17,24 +17,19 @@
 
     <!-- Filtros de búsqueda -->
     <div class="row">
-      <mat-form-field class="col-md-3">
-        <mat-label>Código</mat-label>
-        <input matInput [(ngModel)]="varLogin">
+      <mat-form-field class="col-md-4">
+        <mat-label>Código o Nro Documento</mat-label>
+        <input matInput [(ngModel)]="varLoginOrNumDoc">
       </mat-form-field>
 
-      <mat-form-field class="col-md-3">
-        <mat-label>Nro Documento</mat-label>
-        <input matInput [(ngModel)]="varNumDoc">
-      </mat-form-field>
-
-      <mat-form-field class="col-md-3">
+      <mat-form-field class="col-md-4">
         <mat-label>Fecha (Desde)</mat-label>
         <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde">
         <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
         <mat-datepicker #picker1></mat-datepicker>
       </mat-form-field>
 
-      <mat-form-field class="col-md-3">
+      <mat-form-field class="col-md-4">
         <mat-label>Fecha (Hasta)</mat-label>
         <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta">
         <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>

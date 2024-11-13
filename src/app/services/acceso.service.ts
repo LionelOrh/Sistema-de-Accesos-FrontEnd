@@ -24,16 +24,14 @@ export class AccesoService {
 
   // Consulta de reporte de accesos
   consultaReporteAccesos(
-    login: string,
+    loginOrNumDoc: string,
     fechaAccesoDesde: string,
-    fechaAccesoHasta: string,
-    numDoc: string
+    fechaAccesoHasta: string
   ): Observable<any> {
     const params = new HttpParams()
-      .set("login", login)
+      .set("login", loginOrNumDoc)
       .set("fechaAccesoDesde", fechaAccesoDesde)
       .set("fechaAccesoHasta", fechaAccesoHasta)
-      .set("numDoc", numDoc);
 
     return this.http.get(this.baseUrlAcceso + "/consultaReporteAccesos", { params });
   }
@@ -52,16 +50,14 @@ export class AccesoService {
 
   // Exportación a Excel para accesos
   generateDocumentExcel(
-    login: string,
+    loginOrNumDoc: string,
     fechaAccesoDesde: string,
-    fechaAccesoHasta: string,
-    numDoc: string
+    fechaAccesoHasta: string
   ): Observable<any> {
     const params = new HttpParams()
-      .set("login", login)
+      .set("login", loginOrNumDoc)
       .set("fechaAccesoDesde", fechaAccesoDesde)
-      .set("fechaAccesoHasta", fechaAccesoHasta)
-      .set("numDoc", numDoc);
+      .set("fechaAccesoHasta", fechaAccesoHasta);
 
     const headers = new HttpHeaders({
       'Accept': 'application/vnd.ms-excel'
@@ -71,14 +67,12 @@ export class AccesoService {
 
     return this.http.post(
       this.baseUrlAcceso +
-        "/reporteAccesos?login=" +
-        login +
+        "/reporteAccesos?loginOrNumDoc=" +
+        loginOrNumDoc +
         "&fechaAccesoDesde=" +
         fechaAccesoDesde +
         "&fechaAccesoHasta=" +
-        fechaAccesoHasta +
-        "&numDoc=" +
-        numDoc, // Cambiado
+        fechaAccesoHasta, // Cambiado
       '',
       requestOptions
     ).pipe(
