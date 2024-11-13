@@ -47,8 +47,7 @@ export class ConsultaReporteComponent implements OnInit {
   displayedColumnsRepresentante = ["nombre", "apellido", "cargo", "numDocs", "proveedor",  "fechas", "horas", "estados"];
 
   // Interno y externo
-  varLogin: string = "";
-  varNumDoc: string = "";
+  varLoginOrNumDoc: string = "";
   varNumDocRe: string = "";
   varFechaAccesoDesde: Date = new Date(2024, 0, 1);
   varFechaAccesoHasta: Date = new Date();
@@ -79,10 +78,9 @@ export class ConsultaReporteComponent implements OnInit {
     });
 
     this.accesoService.consultaReporteAccesos(
-      this.varLogin,
+      this.varLoginOrNumDoc,
       this.formatDate(this.varFechaAccesoDesde),
-      this.formatDate(this.varFechaAccesoHasta),
-      this.varNumDoc
+      this.formatDate(this.varFechaAccesoHasta)
     ).subscribe(
       response => {
         Swal.close();
@@ -177,16 +175,14 @@ export class ConsultaReporteComponent implements OnInit {
 
   exportarExcel() {
     console.log(">>> Exportar Excel");
-    console.log(">>> varLogin: " + this.varLogin);
+    console.log(">>> varLogin: " + this.varLoginOrNumDoc);
     console.log(">>> varFechaDesde: " + this.formatDate(this.varFechaAccesoDesde));
     console.log(">>> varFechaHasta: " + this.formatDate(this.varFechaAccesoHasta));
-    console.log(">>> varNumDoc: " + this.varNumDoc);
 
     this.accesoService.generateDocumentExcel(
-      this.varLogin,
+      this.varLoginOrNumDoc,
       this.formatDate(this.varFechaAccesoDesde),
-      this.formatDate(this.varFechaAccesoHasta),
-      this.varNumDoc
+      this.formatDate(this.varFechaAccesoHasta)
     ).subscribe(
       response => {
         console.log(response);
