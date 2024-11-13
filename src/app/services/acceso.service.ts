@@ -39,8 +39,13 @@ export class AccesoService {
   }
 
   // Consulta de reporte de representantes
-  consultaReporteRepresentante(numDoc: string): Observable<any> {
-    const params = new HttpParams().set("numDoc", numDoc);
+  consultaReporteRepresentante(numDoc: string,
+    fechaAccesoDesdeR: string,
+    fechaAccesoHastaR: string,
+  ): Observable<any> {
+    const params = new HttpParams().set("numDoc", numDoc)
+    .set("fechaAccesoDesde", fechaAccesoDesdeR)
+    .set("fechaAccesoHasta", fechaAccesoHastaR);
 
     return this.http.get(this.baseUrlAcceso + "/consultaReporteRepresentante", { params });
   }
@@ -87,8 +92,17 @@ export class AccesoService {
   }
 
   // Exportación a Excel para representantes
-  generateDocumentExcelRepresentante(numDoc: string): Observable<any> {
-    const params = new HttpParams().set("numDoc", numDoc);
+  generateDocumentExcelRepresentante(
+    numDoc: string, 
+    fechaAccesoDesdeR: string,
+    fechaAccesoHastaR: string,
+  ): Observable<any> {
+    const params = new HttpParams()
+      .set("numDoc", numDoc)
+      .set("fechaAccesoDesdeR", fechaAccesoDesdeR)
+      .set("fechaAccesoHastaR", fechaAccesoHastaR)
+    ;
+    
 
     const headers = new HttpHeaders({
       'Accept': 'application/vnd.ms-excel'
@@ -97,7 +111,13 @@ export class AccesoService {
     const requestOptions: any = { headers: headers, responseType: 'blob' };
 
     return this.http.post(
-      this.baseUrlAcceso + "/reporteRepresentante?numDoc=" + numDoc,
+      this.baseUrlAcceso + 
+      "/reporteRepresentante?numDoc=" +
+       numDoc +
+      "&fechaAccesoDesdeR=" +
+        fechaAccesoDesdeR +
+      "&fechaAccesoHastaR=" +
+        fechaAccesoHastaR ,
       '',
       requestOptions
     ).pipe(
