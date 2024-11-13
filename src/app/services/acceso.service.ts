@@ -27,14 +27,12 @@ export class AccesoService {
     login: string,
     fechaAccesoDesde: string,
     fechaAccesoHasta: string,
-    estado: number, // Cambiado de idTipoAcceso a estado
     numDoc: string
   ): Observable<any> {
     const params = new HttpParams()
       .set("login", login)
       .set("fechaAccesoDesde", fechaAccesoDesde)
       .set("fechaAccesoHasta", fechaAccesoHasta)
-      .set("estado", estado.toString()) // Cambiado
       .set("numDoc", numDoc);
 
     return this.http.get(this.baseUrlAcceso + "/consultaReporteAccesos", { params });
@@ -52,14 +50,12 @@ export class AccesoService {
     login: string,
     fechaAccesoDesde: string,
     fechaAccesoHasta: string,
-    estado: number, // Cambiado de idTipoAcceso a estado
     numDoc: string
   ): Observable<any> {
     const params = new HttpParams()
       .set("login", login)
       .set("fechaAccesoDesde", fechaAccesoDesde)
       .set("fechaAccesoHasta", fechaAccesoHasta)
-      .set("estado", estado.toString()) // Cambiado
       .set("numDoc", numDoc);
 
     const headers = new HttpHeaders({
@@ -77,9 +73,7 @@ export class AccesoService {
         "&fechaAccesoHasta=" +
         fechaAccesoHasta +
         "&numDoc=" +
-        numDoc +
-        "&estado=" +
-        estado, // Cambiado
+        numDoc, // Cambiado
       '',
       requestOptions
     ).pipe(

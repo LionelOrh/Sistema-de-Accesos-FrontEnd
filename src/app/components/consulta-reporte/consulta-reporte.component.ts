@@ -44,13 +44,12 @@ export class ConsultaReporteComponent implements OnInit {
 
   // Cabecera
   displayedColumns = ["login", "nombres", "apellidos", "numDoc", "fecha", "hora", "estado"];
-  displayedColumnsRepresentante = ["nombres", "apellidos", "cargo", "numDoc", "proveedor"];
+  displayedColumnsRepresentante = ["nombre", "apellido", "cargo", "numDocs", "proveedor",  "fechas", "horas", "estados"];
 
   // Interno y externo
   varLogin: string = "";
   varNumDoc: string = "";
   varNumDocRe: string = "";
-  varEstado: number = -1; // -1 para no filtrar, 0 para ingreso, 1 para salida
   varFechaAccesoDesde: Date = new Date(2024, 0, 1);
   varFechaAccesoHasta: Date = new Date();
 
@@ -76,38 +75,32 @@ export class ConsultaReporteComponent implements OnInit {
         Swal.showLoading();
       }
     });
-  
+
     this.accesoService.consultaReporteAccesos(
       this.varLogin,
       this.formatDate(this.varFechaAccesoDesde),
       this.formatDate(this.varFechaAccesoHasta),
-      this.varEstado,
       this.varNumDoc
     ).subscribe(
       response => {
         Swal.close();
   
         if (response.length === 0) {
-          // Muestra alerta de "No hay datos"
           Swal.fire({
             title: 'Sin resultados',
-            text: 'No hay datos disponibles con los filtros aplicados.',
+            text: 'No se encontraron representantes con el número de documento ingresado.',
             icon: 'warning',
-            confirmButtonText: 'Aceptar'
+            showConfirmButton: true
           });
   
-          // Asigna un array vacío y forzar la detección de cambios
+          // Asignamos un array vacío a dataSourceRepresentante y forzamos la detección de cambios
           this.dataSource = new MatTableDataSource([]);
-          this.cdr.detectChanges(); // Forzamos la detección de cambios para que Angular lo note
+          this.cdr.detectChanges();  // Forzamos la detección de cambios
         } else {
-          // Transformar y asignar datos recibidos
-          const transformedResponse = response.map((item: any) => ({
-            ...item,
-            estado: item.estado === 0 ? 'Ingreso' : 'Salida'
-          }));
-          this.dataSource = new MatTableDataSource(transformedResponse);
+          console.log("Data recibida: ", response);
+          this.dataSource = new MatTableDataSource(response.data || response);
           this.dataSource.paginator = this.paginator;
-          this.cdr.detectChanges(); // Forzamos detección de cambios
+          this.cdr.detectChanges();  // Forzamos la detección de cambios
         }
       },
       error => {
@@ -180,14 +173,12 @@ export class ConsultaReporteComponent implements OnInit {
     console.log(">>> varLogin: " + this.varLogin);
     console.log(">>> varFechaDesde: " + this.formatDate(this.varFechaAccesoDesde));
     console.log(">>> varFechaHasta: " + this.formatDate(this.varFechaAccesoHasta));
-    console.log(">>> varEstado: " + this.varEstado);
     console.log(">>> varNumDoc: " + this.varNumDoc);
 
     this.accesoService.generateDocumentExcel(
       this.varLogin,
       this.formatDate(this.varFechaAccesoDesde),
       this.formatDate(this.varFechaAccesoHasta),
-      this.varEstado,
       this.varNumDoc
     ).subscribe(
       response => {
