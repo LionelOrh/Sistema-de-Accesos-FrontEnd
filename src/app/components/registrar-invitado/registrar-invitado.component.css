@@ -62,4 +62,11 @@
     width: 100%;
   }
 
+  small {
+    color: red;
+    font-size: 0.9em;
+  }
+  .form-control.ng-invalid.ng-touched {
+    border-color: red;
+  }
   
