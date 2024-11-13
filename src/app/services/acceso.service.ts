@@ -2,15 +2,25 @@ import { Injectable } from '@angular/core';
 import { AppSettings } from '../app.settings';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { preRegistroConsultaDTO } from '../models/PreRegistroConsultaDTO.model';
+import { preRegistroConsultaDTO } from '../models/preRegistroConsultaDTO.model';
+import { Acceso } from '../models/acceso.model';
 
-const baseUrlAcceso = AppSettings.API_ENDPOINT + '/registroAcceso';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccesoService {
+  private baseUrlAcceso = AppSettings.API_ENDPOINT + '/registroAcceso';
   constructor(private http: HttpClient) {}
+
+
+
+  registrarAcceso(data: Acceso): Observable<any> {
+    return this.http.post(`${this.baseUrlAcceso}/registrar`, data, { responseType: 'text' }); // Cambiar a 'text'
+  }
+  
+
 
   // Consulta de reporte de accesos
   consultaReporteAccesos(
@@ -27,14 +37,14 @@ export class AccesoService {
       .set("estado", estado.toString()) // Cambiado
       .set("numDoc", numDoc);
 
-    return this.http.get(baseUrlAcceso + "/consultaReporteAccesos", { params });
+    return this.http.get(this.baseUrlAcceso + "/consultaReporteAccesos", { params });
   }
 
   // Consulta de reporte de representantes
   consultaReporteRepresentante(numDoc: string): Observable<any> {
     const params = new HttpParams().set("numDoc", numDoc);
 
-    return this.http.get(baseUrlAcceso + "/consultaReporteRepresentante", { params });
+    return this.http.get(this.baseUrlAcceso + "/consultaReporteRepresentante", { params });
   }
 
   // Exportación a Excel para accesos
@@ -59,7 +69,7 @@ export class AccesoService {
     const requestOptions: any = { headers: headers, responseType: 'blob' };
 
     return this.http.post(
-      baseUrlAcceso +
+      this.baseUrlAcceso +
         "/reporteAccesos?login=" +
         login +
         "&fechaAccesoDesde=" +
@@ -93,7 +103,7 @@ export class AccesoService {
     const requestOptions: any = { headers: headers, responseType: 'blob' };
 
     return this.http.post(
-      baseUrlAcceso + "/reporteRepresentante?numDoc=" + numDoc,
+      this.baseUrlAcceso + "/reporteRepresentante?numDoc=" + numDoc,
       '',
       requestOptions
     ).pipe(
@@ -109,6 +119,6 @@ export class AccesoService {
   // Nuevo método para consultar el preregistro
   consultaPreRegistro(codigo: string): Observable<preRegistroConsultaDTO> {
     const params = new HttpParams().set('codigo', codigo);
-    return this.http.get<preRegistroConsultaDTO>(`${baseUrlAcceso}/consultaPreRegistro`, { params });
+    return this.http.get<preRegistroConsultaDTO>(`${this.baseUrlAcceso}/consultaPreRegistro`, { params });
   }
 }
