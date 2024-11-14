@@ -83,15 +83,11 @@ export class AccesoProveedorComponent {
     // Llamar al servicio para registrar
     this.proveedorService.registrar(payload).subscribe(
       response => {
+        const nroDocProveedor = response.nroDoc;  // Obtener el número de documento del representante
+        const cifrado = btoa(nroDocProveedor);    // Cifrar el número de documento usando Base64
 
-        const idProveedor = response.id;      
-        const nroDocProveedor = response.nroDoc; 
-        const idDniCombo = `${idProveedor}${nroDocProveedor}`;
-        const cifrado = btoa(idDniCombo);  
-    
-     
-        this.generarCodigoBarras(cifrado); 
-        this.codigoBarrasGenerado = true; 
+        this.generarCodigoBarras(cifrado);        // Usar el número de documento cifrado para el código de barras
+        this.codigoBarrasGenerado = true;
 
         Swal.fire({
           icon: 'success',
@@ -115,7 +111,7 @@ export class AccesoProveedorComponent {
     setTimeout(() => {
       const barcodeElement = document.getElementById('barcode');
       if (barcodeElement) {
-        JsBarcode(barcodeElement, cifrado, { 
+        JsBarcode(barcodeElement, cifrado, {  // Generar el código de barras con el número de documento cifrado
           format: 'CODE128',
           lineColor: '#0aa',
           width: 2,
@@ -126,9 +122,7 @@ export class AccesoProveedorComponent {
         console.error("No se encontró el elemento de código de barras");
       }
     }, 100);
-    }
-    
-   
+  }
 
   // Generar mensajes de error para los campos del formulario
   getErrorMessages(): string {
