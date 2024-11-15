@@ -9,4 +9,5 @@ export class Representante {
     cargo?: string;
     tipoDocumento?: TipoDocumento;
     numDoc?: number;
+    estado?: number;
 }

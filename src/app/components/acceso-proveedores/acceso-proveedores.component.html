@@ -1,112 +1,178 @@
 <app-menu></app-menu>
 <div class="container">
-  <form [formGroup]="formRegistra" (ngSubmit)="registrar()">
+  <form [formGroup]="formRegistra">
     <mat-toolbar class="toolbar-entrada-salida">
       <span>Gestión de Acceso para Proveedores</span>
     </mat-toolbar>
     <br>
-    <h6>Datos de la Empresa</h6>
 
+    <h6>Datos del Proveedor</h6>
 
     <div class="form-group row">
       <div class="col-sm-6">
         <label for="ruc">RUC</label>
         <input type="text" class="form-control" id="ruc" placeholder="RUC" formControlName="validaRuc">
-        <div *ngIf="formRegistra.get('validaRuc')?.invalid && formRegistra.get('validaRuc')?.touched">
-          <span class="text-danger">El RUC es obligatorio y debe tener 11 dígitos numéricos.</span>
-        </div>
+        <!-- Mensajes de validación -->
+        <small *ngIf="mostrarError('validaRuc', 'required')">El RUC es obligatorio.</small>
+        <small *ngIf="mostrarError('validaRuc', 'pattern')">El RUC debe tener 11 dígitos.</small>
       </div>
-
-     
       <div class="col-sm-6">
         <label for="razon-social">Razón Social</label>
-        <input type="text" class="form-control" id="razon-social" placeholder="Razón Social" formControlName="validaRazonSocial">
-        <div *ngIf="formRegistra.get('validaRazonSocial')?.invalid && formRegistra.get('validaRazonSocial')?.touched">
-          <span class="text-danger">La razón social es requerida y debe tener entre 4 y 40 caracteres.</span>
-        </div>
-      </div>
+        <input type="text" class="form-control" id="razon-social" placeholder="Razón Social"
+          formControlName="validaRazonSocial">
+        <!-- Mensajes de validación -->
+        <small *ngIf="mostrarError('validaRazonSocial', 'required')">La razón social es obligatoria.</small>
+        <small *ngIf="mostrarError('validaRazonSocial', 'minlength')">Debe tener al menos 3 caracteres.</small>
+      </div>      
     </div>
-
-
     <div class="form-group row">
-      <div class="col-sm-12">
-        <label for="producto">Descripción del Producto</label>
-        <textarea class="form-control" id="producto" rows="3" placeholder="Descripción del Producto" formControlName="validaDesProd"></textarea>
-        <div *ngIf="formRegistra.get('validaDesProd')?.invalid && formRegistra.get('validaDesProd')?.touched">
-          <span class="text-danger">La descripción del producto es obligatoria.</span>
-        </div>
+      <div class="col-sm-6">
+        <label for="descripcion">Descripción del Producto/Servicio</label>
+        <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción"
+          formControlName="validaDes"></textarea>
+        <!-- Mensajes de validación -->
+        <small *ngIf="mostrarError('validaDes', 'required')">La descripción es obligatoria.</small>
+        <small *ngIf="mostrarError('validaDes', 'minlength')">Debe tener al menos 10 caracteres.</small>
+      </div>      
+      <div class="col-sm-3">
+        <button class="btn btn-primary" type="button" (click)="openBuscarModal()">Buscar
+          Proveedor</button>
       </div>
+      <div class="col-sm-3">
+        <button class="btn btn-secondary" type="button" (click)="openRegistrarModal()">Registrar Proveedor</button>
+      </div>
+
     </div>
 
     <hr class="my-4">
 
     <h6>Datos del Representante</h6>
     <div class="form-group row">
-    
       <div class="col-sm-4">
         <label for="nombres">Nombres</label>
-        <input type="text" class="form-control" id="nombres" placeholder="Nombres" formControlName="validaNombres">
-        <div *ngIf="formRegistra.get('validaNombres')?.invalid && formRegistra.get('validaNombres')?.touched">
-          <span class="text-danger">El nombre es obligatorio.</span>
-        </div>
+        <input type="text" class="form-control" id="nombres" placeholder="Nombres" formControlName="validaNombre">
+        <small *ngIf="mostrarError('validaNombre', 'required')"> El nombre es obligatorio.</small>
+        <small *ngIf="mostrarError('validaNombre', 'minlength')"> Mínimo 3 caracteres.</small>
+        <small *ngIf="mostrarError('validaNombre', 'pattern')"> Solo letras y espacios.</small>
       </div>
-
-    
       <div class="col-sm-4">
         <label for="apellidos">Apellidos</label>
-        <input type="text" class="form-control" id="apellidos" placeholder="Apellidos" formControlName="validaApellidos">
-        <div *ngIf="formRegistra.get('validaApellidos')?.invalid && formRegistra.get('validaApellidos')?.touched">
-          <span class="text-danger">El apellido es obligatorio.</span>
-        </div>
+        <input type="text" class="form-control" id="apellidos" placeholder="Apellidos" formControlName="validaApellido">
+        <small *ngIf="mostrarError('validaApellido', 'required')"> El apellido es obligatorio.</small>
+        <small *ngIf="mostrarError('validaApellido', 'minlength')"> Mínimo 3 caracteres.</small>
+        <small *ngIf="mostrarError('validaApellido', 'pattern')"> Solo letras y espacios.</small>
       </div>
-
-
       <div class="col-sm-4">
-        <label for="cargo-responsable">Cargo Responsable</label>
-        <input type="text" class="form-control" id="cargo-responsable" placeholder="Cargo Responsable" formControlName="validaCargoRes">
-        <div *ngIf="formRegistra.get('validaCargoRes')?.invalid && formRegistra.get('validaCargoRes')?.touched">
-          <span class="text-danger">El cargo del responsable es obligatorio.</span>
-        </div>
+        <label for="cargo">Cargo</label>
+        <input type="text" class="form-control" id="cargo" placeholder="Cargo" formControlName="validaCargoRes">
+        <small *ngIf="mostrarError('validaCargoRes', 'required')"> El cargo es obligatorio.</small>
+        <small *ngIf="mostrarError('validaCargoRes', 'minlength')"> Mínimo 3 caracteres.</small>
+        <small *ngIf="mostrarError('validaCargoRes', 'pattern')"> Solo letras y espacios.</small>
       </div>
     </div>
-
-    
-    <div class="row">
-      <div class="col-md-4">
-        <div class="form-group">
-          <label for="tipo-documento">Tipo de Documento</label>
-          <select id="tipo-documento" class="form-control" formControlName="validaTipoDocumento">
-            <option value="" disabled selected>Seleccione</option>
-            <option *ngFor="let tipoDocumento of lstTipoDoc" [value]="tipoDocumento.idTipoDoc">
-              {{ tipoDocumento.descripcion }}
-            </option>
-          </select>
-          <div *ngIf="formRegistra.get('validaTipoDocumento')?.invalid && formRegistra.get('validaTipoDocumento')?.touched">
-            <span class="text-danger">Debe seleccionar un tipo de documento válido.</span>
-          </div>
-        </div>
+    <div class="form-group row">
+      <div class="col-sm-6">
+        <label for="tipo-documento">Tipo de Documento</label>
+        <mat-select formControlName="validaTipoDocumento" placeholder="Seleccione un tipo de documento"
+          class="form-control">
+          <mat-option [value]="-1" disabled>Seleccione un tipo de documento</mat-option>
+          <mat-option *ngFor="let x of lstTipoDoc" [value]="x.idTipoDoc">
+            {{ x.descripcion }}
+          </mat-option>
+        </mat-select>
+        <small *ngIf="mostrarError('validaTipoDocumento', 'invalidTipoDocumento')"> Seleccione un tipo válido.</small>
       </div>
-
-      <div class="col-sm-4">
+      <div class="col-sm-6">
         <label for="num-documento">Número de Documento</label>
-        <input type="text" class="form-control" id="num-documento" placeholder="Número de Documento" formControlName="validaNroDoc">
-        <div *ngIf="formRegistra.get('validaNroDoc')?.invalid && formRegistra.get('validaNroDoc')?.touched">
-          <span class="text-danger">El número de documento es obligatorio y no debe exceder 45 caracteres.</span>
-        </div>
-      </div>
+        <input type="text" class="form-control" id="num-documento" formControlName="validaNumeroDocumento"
+          [maxlength]="longitudMaximaDocumento">
 
-      <div class="col-sm-4">
-        <div class="action-buttons">
-          <button class="btn btn-primary" type="button" (click)="registrar()">Registrar</button>       
-         </div>
+        <!-- Mensajes de validación -->
+        <small *ngIf="mostrarError('validaNumeroDocumento', 'required')">El número es obligatorio.</small>
+        <small *ngIf="mostrarError('validaNumeroDocumento', 'pattern')">Formato inválido.</small>
+        <small *ngIf="mostrarError('validaNumeroDocumento', 'tipoDocumentoNoSeleccionado')">
+          Seleccione un tipo de documento primero.
+        </small>
+        <small *ngIf="mostrarError('validaNumeroDocumento', 'numDocExiste')">
+          El número de documento ya está registrado.
+        </small>
       </div>
     </div>
-    <div *ngIf="codigoBarrasGenerado">
-      <h6>Código de Barras Generado</h6>
-      <svg id="barcode"></svg> 
+    <div class="action-buttons">
+      <button class="btn btn-success" type="button" (click)="registrarRepresentante()" [disabled]="!formRegistra.valid || !selectedProveedor">Registrar Representante</button>
     </div>
-    
   </form>
-  
-  <p class="footer-text">Supervisor</p>
+
+  <!-- Modal Buscar Proveedor -->
+  <div class="modal-overlay" *ngIf="showBuscarModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h4>Buscar Proveedor</h4>
+        <button class="btn-close" (click)="closeBuscarModal()">X</button>
+      </div>
+      <div class="modal-body">
+        <input type="text" class="form-control" placeholder="Buscar por Razón Social" [(ngModel)]="filterRazonSocial"
+          (input)="consultarProveedores()">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>RUC</th>
+              <th>Razón social</th>
+              <th>Descripción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let proveedor of proveedores">
+              <td>{{ proveedor.ruc }}</td>
+              <td>{{ proveedor.razonSocial }}</td>
+              <td>{{ proveedor.descripcion }}</td>
+              <td>
+                <button class="btn btn-primary" (click)="selectProveedor(proveedor)">Seleccionar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Registrar Proveedor -->
+  <div class="modal-overlay" *ngIf="showRegistrarModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h4>Registrar Proveedor</h4>
+        <button class="btn-close" (click)="closeRegistrarModal()">X</button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formRegistrarProveedor">
+          <div class="form-group">
+            <label for="ruc">RUC</label>
+            <input type="text" id="ruc" formControlName="ruc" class="form-control" placeholder="Ingrese el RUC">
+            <div *ngIf="formRegistrarProveedor.get('ruc')?.invalid && formRegistrarProveedor.get('ruc')?.touched">
+              <span class="text-danger">El RUC es obligatorio y debe tener 11 dígitos.</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="razonSocial">Razón Social</label>
+            <input type="text" id="razonSocial" formControlName="razonSocial" class="form-control"
+              placeholder="Ingrese la Razón Social">
+            <div
+              *ngIf="formRegistrarProveedor.get('razonSocial')?.invalid && formRegistrarProveedor.get('razonSocial')?.touched">
+              <span class="text-danger">La razón social es obligatoria.</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" formControlName="descripcion" class="form-control"
+              placeholder="Ingrese la descripción del producto o servicio"></textarea>
+            <div
+              *ngIf="formRegistrarProveedor.get('descripcion')?.invalid && formRegistrarProveedor.get('descripcion')?.touched">
+              <span class="text-danger">La descripción es obligatoria.</span>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary" (click)="registrarProveedor()" [disabled]="!formRegistrarProveedor.valid">Registrar Proveedor</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>

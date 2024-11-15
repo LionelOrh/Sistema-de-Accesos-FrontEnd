@@ -4,16 +4,27 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Proveedor } from '../models/proveedor.model';
 import { Observable } from 'rxjs';
 
-const baseUrlProveedor = AppSettings.API_ENDPOINT + '/verAccesoProveedor';
+const baseUrlProveedor = AppSettings.API_ENDPOINT + '/proveedor';
 
 @Injectable({
-    providedIn: 'root'
-  })
+  providedIn: 'root'
+})
 
-  export class ProveedorService {
-    constructor(private http:HttpClient) { }
+export class ProveedorService {
+  constructor(private http: HttpClient) { }
 
-    registrar(data: Proveedor): Observable<any> {
-      return this.http.post(baseUrlProveedor + "/registraProveedor", data);
+  // Método para consultar proveedores
+  consultarProveedores(filtro: string): Observable<Proveedor[]> {
+    let params = new HttpParams();
+    if (filtro) {
+      params = params.set('filtro', filtro);
     }
+
+    return this.http.get<Proveedor[]>(`${baseUrlProveedor}/consultar`, { params });
   }
+
+  registrarProveedor(proveedor: Proveedor): Observable<Proveedor> {
+    return this.http.post<Proveedor>(`${baseUrlProveedor}/registrar`, proveedor);
+}
+
+}
