@@ -215,3 +215,96 @@
     cursor: pointer;
   }
   
+  
+  /* Modal */
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro */
+  z-index: 1000; /* Asegura que el modal esté por encima de otros elementos */
+}
+
+/* Contenido del modal */
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+  width: 80%;
+  height: 50%;
+  max-width: 600px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Botón de cerrar */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: red;
+}
+/* Contenedor del escáner (ajustado para hacer la cámara más pequeña) */
+.scanner-container {
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  border: 2px dashed #2196F3; /* Borde azul para destacar el escáner de códigos de barras */
+  border-radius: 10px;
+  background-color: #f0f4f8; /* Fondo más suave */
+  margin-top: 20px;
+  height: 290px; /* Reducir la altura del contenedor */
+  width: 100%; /* Hacer el contenedor más pequeño en anchura */
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden; /* Evita que el escáner sobresalga del contenedor */
+}
+
+/* Caja del escáner (más pequeña para el código de barras) */
+.zxing-scanner {
+  width: 100%;
+  height: 100%;
+  max-width: 100px; /* Reducir el tamaño máximo del escáner */
+  border: 2px solid #2196F3; /* Borde azul del escáner */
+  border-radius: 5px; /* Bordes redondeados para la caja del escáner */
+  background-color: #fff; /* Fondo blanco para el área del escáner */
+}
+
+/* Indicador de escaneo (si deseas agregar un efecto visual al escanear) */
+.scanner-indicator {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: rgba(33, 150, 243, 0.8); /* Línea azul que puede simular el escaneo */
+  animation: scanner-line 2s infinite; /* Animación de escaneo */
+}
+
+
+/* Animación de la línea de escaneo */
+@keyframes scanner-line {
+  0% {
+    top: 0;
+  }
+  50% {
+    top: 50%;
+  }
+  100% {
+    top: 100%;
+  }
+}
+
+  

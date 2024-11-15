@@ -16,16 +16,20 @@
     <button (click)="toggleScanner()" class="btn btn-right">ESCANEAR</button>
   </div>
 
-  <div *ngIf="isScannerVisible" class="scanner-container">
-  <zxing-scanner
-    (scanSuccess)="onCodeScanned($event)" 
-    [formats]="formats"
-    [torch]="true">
-  </zxing-scanner>
-</div>
+  <!-- Modal del Escáner -->
+  <div *ngIf="isScannerVisible" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" (click)="toggleScanner()">&times;</span>
+      <div class="scanner-container">
+        <zxing-scanner
+          (scanSuccess)="onCodeScanned($event)" 
+          [formats]="formats"
+          [torch]="true">
+        </zxing-scanner>
+      </div>
+    </div>
+  </div>
 
-  
-  
   <!-- Mostrar Datos Obtenidos -->
   <div class="data-entry">
     <div class="form-row">
@@ -101,5 +105,4 @@
     <button class="btn-deny">DENEGAR</button>
     <button class="btn-register">REGISTRAR INVITADO</button>
   </div>
-
 </div>
