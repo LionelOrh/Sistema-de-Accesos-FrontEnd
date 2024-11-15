@@ -24,6 +24,9 @@ export class LoginComponent implements OnInit {
   loginUsuario: LoginUsuario = {};
   roles: string[] = [];
   errMsj!: string;
+  showPassword = false;
+  
+
 
   constructor(
     private tokenService: TokenService,
@@ -37,6 +40,7 @@ export class LoginComponent implements OnInit {
 
 
     if (this.tokenService.getToken()) {
+      
         this.isLogged = true;
         this.isLoginFail = false;
         this.roles = this.tokenService.getAuthorities();
@@ -44,7 +48,11 @@ export class LoginComponent implements OnInit {
 
   }
 
-  onLogin(): void {
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
+onLogin(): void {
     this.isLoading = true; // Inicia el estado de carga
 
     this.authService.login(this.loginUsuario).subscribe(

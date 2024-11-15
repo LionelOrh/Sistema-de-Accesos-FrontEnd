@@ -1,54 +1,85 @@
+/* Fondo animado */
 body {
     margin: 0;
-    padding: 0;
-    height: 100%;
-    background: linear-gradient(135deg, #0a3a61, #1e6091); /* Degradado moderno */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
     height: 100vh;
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #0a3a61, #1e6091);
+    background-size: 200% 200%;
+    animation: gradientBG 6s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.card {
-    background-color: rgba(255, 255, 255, 0.8); /* Fondo translúcido */
-    border-radius: 25px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    width: 370px;
-    padding: 30px 25px;
-    animation: fadeIn 1s ease-in-out;
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Estilo del formulario */
+/* Estilo para la animación de entrada */
+.login-wrapper {
+    width: 400px;
+    padding: 40px 30px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 40px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     position: relative;
+    opacity: 0;
+    /* Comienza invisible */
+    transform: translateY(-20px);
+    /* Comienza desplazado hacia arriba */
+    animation: fadeIn 1s ease-out forwards;
+    /* Animación para que aparezca */
 }
 
+/* Definición de la animación */
 @keyframes fadeIn {
-    0% { opacity: 0; transform: translateY(-30px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+        /* Posición inicial más arriba */
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        /* Posición final en su lugar */
+    }
 }
 
 .logo-circle {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     overflow: hidden;
+    margin: 0 auto 20px;
+    background: white;
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
-    top: -60px;
-    left: calc(50% - 60px);
-    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
-    width: 50%;
+    width: 70%;
     height: auto;
-    margin-top: 10px;
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    text-align: center;
+    color: #1e6091;
 }
 
 .form-group {
@@ -56,37 +87,65 @@ body {
 }
 
 .input-group-text {
-    background-color: #8bc34a;
-    border: none;
+    background-color: #1e6091;
     color: white;
+    border: none;
 }
 
 .form-control {
     border-radius: 10px;
     padding: 15px;
     font-size: 1rem;
-    transition: border-color 0.3s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
 .form-control:focus {
-    border-color: #8bc34a;
-    box-shadow: 0 0 5px rgba(139, 195, 74, 0.5);
+    border-color: #1e6091;
+    box-shadow: 0 0 8px rgba(30, 96, 145, 0.5);
 }
 
-.btn-success {
-    background-color: #8bc34a;
-    border-radius: 30px;
-    width: 100%;    
-    padding: 10px 0;
+.btn-primary {
+    background: linear-gradient(135deg, #1e6091, #1c8a91);
+    color: white;
     border: none;
+    border-radius: 30px;
+    padding: 12px 0;
     font-size: 1.2rem;
-    transition: background-color 0.3s;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 100%;
 }
 
-.btn-success:hover {
-    background-color: #6da039;
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1c8a91, #1e6091);
 }
+
 .fa-spinner {
-    margin-right: 10px;
+    margin-right: 8px;
+}
+
+/* Botón para mostrar/ocultar contraseña */
+.btn-toggle-password {
+    background: none;
+    border: none;
+    padding: 0 10px;
+    color: #1e6091;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+}
+
+.btn-toggle-password:hover {
+    color: #1c8a91;
+}
+
+.input-group .form-control {
+    border-right: none;
+    /* Quita la doble línea entre el input y el botón */
+}
+
+.input-group .input-group-append .btn {
+    border-left: none;
 }
