@@ -13,9 +13,19 @@
       placeholder="Ingrese el código para buscar..."
     />
     <button (click)="buscarPorCodigo()" class="btn btn-left">CONSULTAR</button>
-    <button class="btn btn-right">ESCANEAR</button>
+    <button (click)="toggleScanner()" class="btn btn-right">ESCANEAR</button>
   </div>
 
+  <div *ngIf="isScannerVisible" class="scanner-container">
+  <zxing-scanner
+    (scanSuccess)="onCodeScanned($event)" 
+    [formats]="formats"
+    [torch]="true">
+  </zxing-scanner>
+</div>
+
+  
+  
   <!-- Mostrar Datos Obtenidos -->
   <div class="data-entry">
     <div class="form-row">
