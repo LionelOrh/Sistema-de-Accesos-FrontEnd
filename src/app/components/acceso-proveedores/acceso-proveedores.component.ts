@@ -8,6 +8,8 @@ import { ProveedorService } from '../../services/proveedor.service';
 import { UtilService } from '../../services/util.service';
 import Swal from 'sweetalert2';
 import JsBarcode from 'jsbarcode';
+import { Proveedor } from '../../models/proveedor.model';
+import { RepresentanteService } from '../../services/representante.service';
 
 @Component({
   standalone: true,
@@ -20,13 +22,23 @@ export class AccesoProveedorComponent {
   lstTipoDoc: TipoDocumento[] = [];
   formRegistra: FormGroup;
   codigoBarrasGenerado: boolean = false;
+  proveedores: any[] = [];
+  filterRazonSocial: string = '';
+  isProveedorSelected: boolean = false;
+  selectedProveedor: any = null;
+  // Declarar la propiedad para controlar el estado del modal
+  showBuscarModal: boolean = false;
+  showRegistrarModal = false;
+  formRegistrarProveedor: FormGroup;
 
-  // Referencia al elemento HTML donde se mostrará el código de barras
+  longitudMaximaDocumento: number = 8; 
+
   @ViewChild('barcode', { static: false }) barcodeElement!: ElementRef;
 
   constructor(
     private utilService: UtilService,
     private proveedorService: ProveedorService,
+    private representanteService: RepresentanteService,
     private formBuilder: FormBuilder
   ) {
     // Cargar la lista de tipos de documento
@@ -36,17 +48,118 @@ export class AccesoProveedorComponent {
 
     // Configurar el formulario
     this.formRegistra = this.formBuilder.group({
-      validaRazonSocial: ['', [Validators.required]],
-      validaRuc: ['', [Validators.required, Validators.pattern(/^[0-9]{11}$/)]],
-      validaDesProd: ['', [Validators.required]],
-      validaNombres: ['', [Validators.required]],
-      validaApellidos: ['', [Validators.required]],
-      validaCargoRes: ['', [Validators.required]],
-      validaNroDoc: ['', [Validators.required, Validators.maxLength(45)]],
+      validaRazonSocial: [{ value: '', disabled: true }, [Validators.required]],
+      validaRuc: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^[0-9]{11}$/)]],
+      validaDes: [{ value: '', disabled: true }, [Validators.required]],
+      validaNombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ ]+$')]],
+      validaApellido: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ ]+$')]],
+      validaCargoRes: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ ]+$')]],
+      validaNumeroDocumento: [
+        '',
+        [Validators.required, this.validarTipoDocumentoAntesDeEscribir()],
+      ],
       validaTipoDocumento: [-1, [Validators.required, this.tipoDocumentoValidator()]],
+    });
+
+    this.formRegistrarProveedor = this.formBuilder.group({
+      ruc: ['', [Validators.required, Validators.pattern(/^[0-9]{11}$/)]],
+      razonSocial: ['', Validators.required],
+      descripcion: ['', Validators.required]
+    });
+
+
+     // Detectar cambios en el tipo de documento
+     this.formRegistra.get('validaTipoDocumento')?.valueChanges.subscribe((value) => {
+      switch (value) {
+        case 1: // DNI
+          this.longitudMaximaDocumento = 8;
+          this.actualizarValidacionDocumento('^[0-9]{8}$');
+          break;
+        case 2: // Pasaporte
+          this.longitudMaximaDocumento = 12;
+          this.actualizarValidacionDocumento('^[a-zA-Z0-9]{9,12}$');
+          break;
+        case 3: // Carnet de Extranjería
+          this.longitudMaximaDocumento = 9;
+          this.actualizarValidacionDocumento('^[a-zA-Z0-9]{9}$');
+          break;
+        default:
+          this.longitudMaximaDocumento = 45;
+          this.formRegistra.get('validaNumeroDocumento')?.clearValidators();
+      }
+      this.formRegistra.get('validaNumeroDocumento')?.updateValueAndValidity();
+    });
+
+    // Llamada al método de validación en tiempo real
+    this.formRegistra.get('validaNumeroDocumento')?.valueChanges.subscribe((numDoc) => {
+      if (numDoc && numDoc.length > 0) {
+        this.validarNumeroDocumentoEnBackend(numDoc);
+      }
     });
   }
 
+  // Mostrar errores dinámicos
+  mostrarError(campo: string, error: string): boolean {
+    const control = this.formRegistra.get(campo);
+    return !!control?.hasError(error) && (control?.touched || control?.dirty);
+  }
+
+
+  // Validar si se intenta llenar el número de documento sin seleccionar un tipo
+  validarTipoDocumentoAntesDeEscribir(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const tipoDocumento = this.formRegistra?.get('validaTipoDocumento')?.value;
+      if (tipoDocumento === -1 && control.value) {
+        return { tipoDocumentoNoSeleccionado: true };
+      }
+      return null;
+    };
+  }
+
+   // Actualizar validación del número de documento
+   actualizarValidacionDocumento(pattern: string): void {
+    this.formRegistra.get('validaNumeroDocumento')?.setValidators([
+      Validators.required,
+      Validators.pattern(pattern),
+      this.validarTipoDocumentoAntesDeEscribir(),
+    ]);
+    this.formRegistra.get('validaNumeroDocumento')?.updateValueAndValidity();
+  }
+
+  // Método para verificar si el número de documento ya existe
+  validarNumeroDocumentoEnBackend(numDoc: string): void {
+    this.representanteService.validarNumeroDocumento(numDoc).subscribe({
+      next: (response) => {
+        if (response.existe) {
+          this.formRegistra.get('validaNumeroDocumento')?.setErrors({ numDocExiste: true });
+        } else {
+          const errors = this.formRegistra.get('validaNumeroDocumento')?.errors;
+          if (errors) {
+            delete errors['numDocExiste']; // Eliminar el error si ya no aplica
+            this.formRegistra.get('validaNumeroDocumento')?.setErrors(Object.keys(errors).length ? errors : null);
+          }
+        }
+      },
+      error: (err) => console.error('Error al validar número de documento:', err)
+    });
+  }
+
+  openBuscarModal() {
+    this.showBuscarModal = true;
+    this.consultarProveedores();
+  }
+
+  closeBuscarModal() {
+    this.showBuscarModal = false;
+  }
+
+  openRegistrarModal() {
+    this.showRegistrarModal = true;
+  }
+
+  closeRegistrarModal() {
+    this.showRegistrarModal = false;
+  }
   // Validador personalizado para el tipo de documento
   tipoDocumentoValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -55,108 +168,115 @@ export class AccesoProveedorComponent {
     };
   }
 
-  registrar() {
-    // Validar el formulario
-    if (this.formRegistra.invalid) {
-      const errores = this.getErrorMessages();
-      Swal.fire({
-        icon: 'warning',
-        title: 'Formulario incorrecto',
-        html: `<ul>${errores}</ul>`,
-        confirmButtonText: 'Cerrar'
-      });
-      return;
-    }
 
-    // Construir el payload para el registro
-    const payload = {
-      razonSocial: this.formRegistra.value.validaRazonSocial,
-      ruc: this.formRegistra.value.validaRuc,
-      descripcion: this.formRegistra.value.validaDesProd,
-      nombres: this.formRegistra.value.validaNombres,
-      apellidos: this.formRegistra.value.validaApellidos,
-      cargo: this.formRegistra.value.validaCargoRes,
-      numDoc: this.formRegistra.value.validaNroDoc,
-      tipoDocumento: this.formRegistra.value.validaTipoDocumento
-    };
-
-    // Llamar al servicio para registrar
-    this.proveedorService.registrar(payload).subscribe(
-      response => {
-        const nroDocProveedor = response.nroDoc;  // Obtener el número de documento del representante
-        const cifrado = btoa(nroDocProveedor);    // Cifrar el número de documento usando Base64
-
-        this.generarCodigoBarras(cifrado);        // Usar el número de documento cifrado para el código de barras
-        this.codigoBarrasGenerado = true;
-
-        Swal.fire({
-          icon: 'success',
-          title: 'Registro exitoso',
-          text: response.mensaje,
-          confirmButtonText: 'Cerrar'
-        });
+  // Consultar proveedores desde el backend
+  consultarProveedores() {
+    this.proveedorService.consultarProveedores(this.filterRazonSocial).subscribe(
+      (response) => {
+        this.proveedores = response;
       },
-      error => {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Hubo un error al realizar el registro. Inténtalo de nuevo.',
-          confirmButtonText: 'Cerrar'
-        });
+      () => {
+        Swal.fire('Error', 'No se pudieron cargar los proveedores.', 'error');
       }
     );
   }
 
-  generarCodigoBarras(cifrado: string) {
-    setTimeout(() => {
-      const barcodeElement = document.getElementById('barcode');
-      if (barcodeElement) {
-        JsBarcode(barcodeElement, cifrado, {  // Generar el código de barras con el número de documento cifrado
-          format: 'CODE128',
-          lineColor: '#0aa',
-          width: 2,
-          height: 40,
-          displayValue: true
-        });
-      } else {
-        console.error("No se encontró el elemento de código de barras");
+  selectProveedor(proveedor: Proveedor) {
+    this.selectedProveedor = proveedor;
+    this.isProveedorSelected = true;
+
+    this.formRegistra.patchValue({
+      validaRuc: proveedor.ruc,
+      validaRazonSocial: proveedor.razonSocial,
+      validaDes: proveedor.descripcion,
+    });
+
+    // Deshabilitar los campos relacionados con el proveedor
+    this.formRegistra.get('validaRuc')?.disable();
+    this.formRegistra.get('validaRazonSocial')?.disable();
+    this.formRegistra.get('validaDes')?.disable();
+
+    this.closeBuscarModal();
+  }
+
+  // Reiniciar el formulario
+  resetForm() {
+    this.formRegistra.reset({
+      validaRazonSocial: { value: '', disabled: true },
+      validaRuc: { value: '', disabled: true },
+      validaDes: { value: '', disabled: true },
+      validaNombres: '',
+      validaApellidos: '',
+      validaCargoRes: '',
+      validaNumDoc: '',
+      validaTipoDocumento: -1,
+    });
+    this.isProveedorSelected = false; // Indicar que no hay proveedor seleccionado
+    this.selectedProveedor = null;   // Limpiar la selección del proveedor
+  }
+
+
+  registrarProveedor() {
+    const nuevoProveedor = this.formRegistrarProveedor.value;
+    // Mostrar alerta de carga
+    Swal.fire({
+      title: 'Procesando registro',
+      text: 'Por favor, espere...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    this.proveedorService.registrarProveedor(nuevoProveedor).subscribe(
+      (response) => {
+        console.log('Proveedor registrado:', response); // Verifica que recibes el objeto completo
+        Swal.fire('Éxito', 'Proveedor registrado exitosamente.', 'success');
+        this.closeRegistrarModal();
+      },
+      (error) => {
+        console.error('Error al registrar el proveedor:', error);
+        Swal.fire('Error', 'No se pudo registrar el proveedor.', 'error');
       }
-    }, 100);
+    );
   }
 
-  // Generar mensajes de error para los campos del formulario
-  getErrorMessages(): string {
-    const errores = [];
-    const controls = this.formRegistra.controls;
+  registrarRepresentante() {
+    const nuevoRepresentante = {
+      ...this.formRegistra.value,
+      proveedor: { idProveedor: this.selectedProveedor.idProveedor },
+      nombres: this.formRegistra.value.validaNombres,
+      apellidos: this.formRegistra.value.validaApellidos,
+      cargo: this.formRegistra.value.validaCargoRes,
+      numDoc: this.formRegistra.value.validaNumDoc,
+      tipoDocumento: { idTipoDoc: this.formRegistra.value.validaTipoDocumento },
+      estado: 0
+    };
+    // Mostrar alerta de carga
+    Swal.fire({
+      title: 'Procesando registro',
+      text: 'Por favor, espere...',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
 
-    if (controls['validaRazonSocial'].hasError('required')) {
-      errores.push('<li>La razón social es obligatoria.</li>');
-    }
-
-    if (controls['validaRuc'].hasError('required')) {
-      errores.push('<li>El RUC es obligatorio.</li>');
-    } else if (controls['validaRuc'].hasError('pattern')) {
-      errores.push('<li>El RUC debe tener 11 dígitos.</li>');
-    }
-
-    if (controls['validaNombres'].hasError('required')) {
-      errores.push('<li>El nombre es obligatorio.</li>');
-    }
-
-    if (controls['validaApellidos'].hasError('required')) {
-      errores.push('<li>El apellido es obligatorio.</li>');
-    }
-
-    if (controls['validaCargoRes'].hasError('required')) {
-      errores.push('<li>El cargo del responsable es obligatorio.</li>');
-    }
-
-    if (controls['validaNroDoc'].hasError('required')) {
-      errores.push('<li>El número de documento es obligatorio.</li>');
-    } else if (controls['validaNroDoc'].hasError('maxlength')) {
-      errores.push('<li>El número de documento no debe exceder los 45 caracteres.</li>');
-    }
-
-    return errores.join('');
+    this.representanteService.registrarRepresentante(nuevoRepresentante).subscribe(
+      (response: any) => {
+        if (response.success) {
+          Swal.fire('Éxito', response.message, 'success');
+          this.resetForm();
+        } else {
+          Swal.fire('Error', 'No se pudo registrar el representante.', 'error');
+          this.resetForm();
+        }
+      },
+      (error) => {
+        console.error('Error al registrar el representante:', error);
+        Swal.fire('Error', 'No se pudo registrar el representante.', 'error');
+      }
+    );
   }
+
 }
