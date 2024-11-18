@@ -1,58 +1,77 @@
-<nav class="navbar navbar-expand-lg navbar-dark mb-4" style="background-color: #0a3a61; position: relative;">
-  <a class="navbar-brand" href="#">
-    <img src="/assets/img/logo.png" alt="Cibertec" style="height: 40px;" />
-  </a>
-  <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  </head>
-  <button class="navbar-toggler" 
-          type="button" 
-          data-toggle="collapse" 
-          data-target="#navbarNav" 
-          aria-controls="navbarNav" 
-          aria-expanded="false" 
-          aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<div class="d-flex"> 
 
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item" *ngIf="!isLogged">
-        <a class="nav-link" routerLink="/login"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</a>
-      </li>
+   <!-- Sidebar -->
+   <nav class="navbar navbar-dark flex-column p-4" style="background-color: #0a3a61; width: 250px;">
+    <div class="text-center mb-4">
+      <a class="navbar-brand" href="#">
+        <img src="/assets/img/logo.png" alt="Cibertec" style="height: 40px; margin-bottom: 15px;" />
+      </a>
+      <!-- Foto del usuario -->
+      <img *ngIf="isLogged" [src]="fotoUsuario" alt="Foto del Usuario" 
+           style="border-radius: 50%; width: 150px; height: 150px; object-fit: cover; margin-bottom: 7.5px;">
 
-      <li class="nav-item" *ngIf="isLogged && opcRegistroEntradaSalida.length > 0">
-        <a class="nav-link" routerLink="/{{ opcRegistroEntradaSalida[0].ruta }}">
-          Registro de Entrada y Salida
+      <!-- Nombre del usuario -->
+      <h4 *ngIf="isLogged"
+          style="color: #ffffff; font-family: 'Poppins', sans-serif; font-weight: 200; font-size: 1.1rem; margin-top: 20px;"> {{ saludo }} 
+      </h4>
+      <h2 *ngIf="isLogged"
+          style="color: #ffffff; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.2rem; margin-bottom: 8px;"> 
+        {{ nombreUsuario }}
+        <hr>
+      </h2>
+     
+    </div>
+    
+    <!-- Opciones de menú -->
+    <ul class="navbar-nav w-100">
+      <li class="nav-item mb-2" *ngIf="!isLogged">
+        <a class="nav-link text-white" routerLink="/login">
+          <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
         </a>
       </li>
-
-      <li class="nav-item" *ngIf="isLogged && opcRegistroInvitado.length > 0">
-        <a class="nav-link" routerLink="/{{ opcRegistroInvitado[0].ruta }}">
-          Registrar Invitado
+      <li class="nav-item mb-2" *ngIf="isLogged && opcRegistroEntradaSalida.length > 0">
+        <a class="nav-link text-white" routerLink="/{{ opcRegistroEntradaSalida[0].ruta }}">
+          <i class="fas fa-clock"></i> Registro de Entrada y Salida
         </a>
       </li>
-
-      <li class="nav-item" *ngIf="isLogged && opcConsultaReporte.length > 0">
-        <a class="nav-link" routerLink="/{{ opcConsultaReporte[0].ruta }}">
-          Consulta y Reporte de Accesos
+      <li class="nav-item mb-2" *ngIf="isLogged && opcRegistroInvitado.length > 0">
+        <a class="nav-link text-white" routerLink="/{{ opcRegistroInvitado[0].ruta }}">
+          <i class="fas fa-user-plus"></i> Registrar Invitado
         </a>
       </li>
-
-      <li class="nav-item" *ngIf="isLogged && opcAccesoProveedor.length > 0">
-        <a class="nav-link" routerLink="/{{ opcAccesoProveedor[0].ruta }}">
-          Gestión de Acceso para Proveedores
+      <li class="nav-item mb-2" *ngIf="isLogged && opcConsultaReporte.length > 0">
+        <a class="nav-link text-white" routerLink="/{{ opcConsultaReporte[0].ruta }}">
+          <i class="fas fa-chart-bar"></i> Consulta y Reporte de Accesos
+        </a>
+      </li>
+      <li class="nav-item mb-2" *ngIf="isLogged && opcAccesoProveedor.length > 0">
+        <a class="nav-link text-white" routerLink="/{{ opcAccesoProveedor[0].ruta }}">
+          <i class="fas fa-truck"></i> Gestión de Acceso para Proveedores
         </a>
       </li>
     </ul>
 
-    <!-- Botón de Cerrar Sesión en la esquina izquierda -->
-    <ul class="navbar-nav" style="position: absolute; right: 10px; top: 10px;">
-      <li class="nav-item" *ngIf="isLogged">
-        <a class="nav-link" style="cursor: pointer;" (click)="onLogOut()">
-          <i class="fas fa-door-open"></i> Cerrar Sesión
-        </a>
-      </li>
-    </ul>
-  </div>
-</nav>
+    <div class="text-center mb-4">
+    <h3 *ngIf="isLogged"
+          style="color: #ffffff; font-family: 'Poppins', sans-serif; font-weight: 100; font-size: 0.95rem; margin-top: 40px;"> Hora:
+        {{ horaActual }}
+      </h3>
+
+      <h3 *ngIf="isLogged"
+      style="color: #ffffff; font-family: 'Poppins', sans-serif; font-weight: 100; font-size: 0.95rem; margin-top: 5px;"> {{ fechaActual }}
+  </h3>
+</div>
+    <!-- Botón de Cerrar Sesión -->
+    <div class="mt-auto">
+      <ul class="navbar-nav">
+        <li class="nav-item" *ngIf="isLogged">
+          <a class="nav-link text-white" style="cursor: pointer;" (click)="onLogOut()">
+            <i class="fas fa-door-open"></i> Cerrar Sesión
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>

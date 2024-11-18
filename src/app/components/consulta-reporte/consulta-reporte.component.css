@@ -1,19 +1,38 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
+/* Estilo general */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  display: flex; /* Usamos flexbox para alinear los elementos horizontalmente */
+  height: 100vh; /* Aseguramos que el body tenga una altura completa de la pantalla */
 }
 
+
+/* Contenedor principal */ 
+.container {
+  margin-left: 300px; /* Espacio para el menú lateral */
+  margin-right: 30px; /* Margen derecho para separar del borde */
+  margin-top: 20px; /* Margen superior */
+  margin-bottom: 20px; /* Margen inferior */
+  padding: 20px; /* Espacio interno dentro del contenedor */
+  display: flex;
+  flex-direction: column; /* Alinea el contenido verticalmente dentro del contenedor */
+  height: calc(100vh - 40px); /* Resta los márgenes superior e inferior */
+}
+
+
+/* Otras secciones del contenido (si es necesario) */
 .toolbar-entrada-salida {
-  background-color: #0a3a61;
+  background: linear-gradient(135deg, #0a3a61, #1e6091); 
   color: white;
   padding: 15px 20px;
-  font-size: 1.2rem; 
-  text-align: center;
-  border-radius: 10px;
+  font-size: 1.2rem;
+  text-align: center; 
+  border-radius: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   width: 100%;
 }
+
+/* El resto de los estilos (continúan igual) */
 
 .custom-toolbar {
   padding: 1rem;

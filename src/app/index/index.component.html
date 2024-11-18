@@ -1,61 +1,22 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<div class="container text-center d-flex flex-column align-items-center justify-content-center min-vh-100">
-    <div class="content-container">
-        <h2 *ngIf="isLogged">Bienvenido al sistema, {{nombreUsuario}}</h2>
-        <h5 *ngIf="!isLogged">Para ingresar debe Iniciar Sesión</h5>
-
-        <div class="row justify-content-center mt-4">
-            <div class="col-md-4 mb-4" *ngIf="!isLogged">
-                <div class="card custom-card" routerLink="/login" style="cursor: pointer;">
-                    <div class="card-body">
-                        <i class="fas fa-sign-in-alt fa-2x"></i>
-                        <h5 class="card-title">Iniciar Sesión</h5>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4 mb-4" *ngIf="isLogged && opcRegistroEntradaSalida.length > 0">
-                <div class="card custom-card" [routerLink]="['/', opcRegistroEntradaSalida[0].ruta]" style="cursor: pointer;">
-                    <div class="card-body">
-                        <i class="fas fa-user-clock fa-2x"></i>
-                        <h5 class="card-title">Registro de Entrada y Salida</h5>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4 mb-4" *ngIf="isLogged && opcRegistroVisita.length > 0">
-                <div class="card custom-card" [routerLink]="['/', opcRegistroVisita[0].ruta]" style="cursor: pointer;">
-                    <div class="card-body">
-                        <i class="fas fa-user-plus fa-2x"></i>
-                        <h5 class="card-title">Registrar Invitado</h5>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4 mb-4" *ngIf="isLogged && opcConsultaReporte.length > 0">
-                <div class="card custom-card" [routerLink]="['/', opcConsultaReporte[0].ruta]" style="cursor: pointer;">
-                    <div class="card-body">
-                        <i class="fas fa-chart-line fa-2x"></i>
-                        <h5 class="card-title">Consulta y Reporte de Accesos</h5>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4 mb-4" *ngIf="isLogged && opcAccesoProveedor.length > 0">
-                <div class="card custom-card" [routerLink]="['/', opcAccesoProveedor[0].ruta]" style="cursor: pointer;">
-                    <div class="card-body">
-                        <i class="fas fa-user-shield fa-2x"></i>
-                        <h5 class="card-title">Gestión de Acceso para Proveedores</h5>
-                    </div>
-                </div>
-            </div>
+<app-menu></app-menu>
+<body>
+    <!-- Contenido Principal -->
+    <div class="content">
+      <h1>Bienvenido al Proyecto</h1>
+      
+      <!-- Sección de Comunicados -->
+      <div class="comunicados">
+        <h2>Comunicados</h2>
+        <div class="comunicado">
+          <h5>Título del Comunicado 1</h5>
+          <p>Contenido del comunicado, que puede incluir detalles importantes o novedades para la comunidad.</p>
         </div>
-
-        <!-- Botón de Cerrar Sesión en la esquina -->
-        <div class="logout-button">
-            <a class="btn btn-light" *ngIf="isLogged" (click)="onLogOut()" style="cursor: pointer;">
-                <i class="fas fa-door-open"></i> Cerrar Sesión
-            </a>
+        <div class="comunicado">
+          <h5>Título del Comunicado 2</h5>
+          <p>Contenido del comunicado, que puede incluir detalles importantes o novedades para la comunidad.</p>
         </div>
+        <!-- Más comunicados se pueden agregar aquí -->
+      </div>
     </div>
-</div>
+  </body>
+  

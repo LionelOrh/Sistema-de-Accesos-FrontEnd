@@ -1,73 +1,94 @@
-.container {
-    min-height: 100vh; /* Ocupar toda la altura de la pantalla */
-    display: flex; /* Para centrar el contenido */
-    align-items: center; /* Centra verticalmente el contenido */
-    justify-content: center; /* Centra horizontalmente el contenido */
-    width: 100%; /* Asegura que ocupe todo el ancho */
-    height: 100%; /* Asegura que ocupe toda la altura */
-    padding: 0; /* Elimina el padding del contenedor */
+/* Estilo general */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  height: 100vh;
+  background-size: 200% 200%; /* Tamaño del degradado */
+  animation: gradientBG 6s ease infinite; /* Animación para el fondo */
+  overflow-x: hidden; /* Evita que aparezca una barra de desplazamiento horizontal */
 }
 
-.content-container {
-    border: 2px solid #0a3a61; /* Borde alrededor del contenedor */
-    border-radius: 10px; /* Esquinas redondeadas */
-    padding: 100px; /* Espaciado interno del contenedor */
-    background-color: white; /* Color de fondo del contenedor */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Sombra alrededor del contenedor */
+/* Animación de fondo */
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-.custom-card {
-    border: 3px solid #0a3a61; /* Cambia el grosor del borde aquí */
-    border-radius: 15px; /* Esquinas redondeadas */
-    background-color: #0a3a61; /* Color de fondo de la tarjeta */
-    color: white; /* Color del texto en la tarjeta */
-    transition: transform 0.3s, box-shadow 0.3s; /* Transiciones para efectos */
-    display: flex; /* Habilita el uso de flexbox */
-    flex-direction: column; /* Coloca los elementos en una columna */
-    justify-content: center; /* Centra verticalmente el contenido */
-    align-items: center; /* Centra horizontalmente */
-    height: 200px; /* Altura fija de la tarjeta */
-    padding: 0px; /* Espaciado interno */
-    max-width: 200px; /* Ajusta el ancho máximo */
-    width: 100%; /* Para que se ajuste al ancho de la columna */
+/* Menú lateral (navbar) */
+.navbar {
+  width: 250px;
+  background: linear-gradient(135deg, #0a3a61, #1e6091); /* Fondo degradado */
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  overflow-y: auto;
 }
 
-/* Esta regla asegura que la tarjeta no tenga un ancho fijo */
-.col-md-4 {
-    display: flex; /* Permite flexbox en el contenedor de la columna */
-    justify-content: center; /* Centra las tarjetas en el contenedor */
-    align-items: center; /* Centra verticalmente las tarjetas */
+/* Estilo de enlaces dentro del menú lateral */
+.nav-link {
+  padding: 10px;
+  border-radius: 5px;
+  color: white; /* Texto blanco */
+  display: block;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.custom-card:hover {
-    transform: translateY(-5px); /* Efecto al pasar el mouse */
-    box-shadow: 0 4px 90px rgba(0, 0, 0, 0.3); /* Sombra al pasar el mouse */
+/* Efecto hover para enlaces */
+.nav-link:hover {
+  background-color: #1e6091;
+  transform: scale(1.05); /* Efecto de aumento al pasar el mouse */
 }
 
-.card-body {
-    flex: 1; /* Asegura que el contenido ocupe el espacio restante */
-    display: flex; /* Habilita el uso de flexbox en el cuerpo de la tarjeta */
-    flex-direction: column; /* Coloca los elementos en una columna */
-    justify-content: center; /* Centra verticalmente el contenido */
-    align-items: center; /* Centra horizontalmente */
+/* Contenido principal, para que no quede cubierto por el menú */
+.content {
+  margin-left: 250px; /* Deja espacio para el menú lateral */
+  padding: 20px;
+  color: 0a3a61;
+  width: calc(100% - 250px); /* Asegura que el contenido ocupe todo el espacio disponible */
 }
 
-.card-title {
-    margin-top: 10px; /* Ajusta el espaciado entre el ícono y el título */
-    text-align: center; /* Centra el texto horizontalmente */
+/* Estilos para la sección de comunicados */
+.comunicados {
+  margin-top: 20px;
 }
 
-.btn-light:hover {
-    background-color: darkgreen; /* Color de fondo más oscuro al pasar el mouse */
-     color: white;
+.comunicado {
+  background-color: rgba(45, 145, 226, 0.1);
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.logout-button {
-    position: absolute; /* Posicionamiento absoluto */
-    top: 20px; /* Distancia desde la parte superior */
-    right: 20px; /* Distancia desde el lado derecho */
-    z-index: 1000; /* Asegura que el botón esté por encima de otros elementos */
+.comunicado h5 {
+  margin: 0;
+  color: #0a3a61;
 }
 
+.comunicado p {
+  color: #1e6091;
+}
 
+/* En pantallas grandes, mostramos siempre el menú */
+@media (min-width: 768px) {
+  .navbar {
+    left: 0;
+    width: 250px;
+  }
 
+  .content {
+    margin-left: 250px; /* Espacio para el menú */
+  }
+}
