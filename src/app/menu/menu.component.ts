@@ -28,22 +28,29 @@ export class MenuComponent implements OnInit {
   fotoUsuario = "";
   idUsuario = 0;  
   
-  get saludo(): string {
-    const hour = new Date().getHours();
-    if (hour < 12) {
-        return '¡Buenos días!';
-    } else if (hour < 18) {
-        return '¡Buenas tardes!';
-    } else {
-        return '¡Buenas noches!';
-    }
-}
+  //Detalles extras
+  horaActual = '';
+  saludo = '';
+  private timerInterval: any; // Referencia al intervalo
 
-  get horaActual(): string {
+  ngOnDestroy() {
+    // Limpiar el intervalo cuando el componente se destruya
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+  }
+
+  private updateTime() {
     const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');  
-    const minutes = now.getMinutes().toString().padStart(2, '0'); 
-    return `${hours}:${minutes}`;
+    this.horaActual = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const hour = now.getHours();
+    if (hour < 12) {
+      this.saludo = '¡Buenos días!';
+    } else if (hour < 18) {
+      this.saludo = '¡Buenas tardes!';
+    } else {
+      this.saludo = '¡Buenas noches!';
+    }
   }
 
   // Getter para la fecha actual en formato: Día de la semana, Día de mes, Año
@@ -57,6 +64,9 @@ export class MenuComponent implements OnInit {
     };
     return now.toLocaleDateString('es-ES', options); // Formato español
   }
+
+  //Fin de detalles extras
+
   constructor(private tokenService: TokenService, private router: Router, private http: HttpClient) {
     console.log("MenuComponent >>> constructor >>> " + this.tokenService.getToken());
   }
@@ -78,6 +88,9 @@ export class MenuComponent implements OnInit {
       this.router.navigate(['/login']);
     }
     console.log("MenuComponent >>> ngOnInit >>> ");
+       // Configurar la actualización en tiempo real
+       this.updateTime();
+       this.timerInterval = setInterval(() => this.updateTime(), 1000);
   }
 
   getUserPhoto(idUsuario: number) {
