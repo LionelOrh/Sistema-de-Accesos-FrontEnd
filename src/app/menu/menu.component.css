@@ -1,0 +1,78 @@
+/* Estilo general */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh; /* Altura completa */
+  display: flex; /* Layout horizontal */
+  overflow-x: hidden; /* Evita desbordamiento horizontal */
+  background: linear-gradient(135deg, #0a3a61, #1e6091); /* Fondo degradado */
+  background-size: 200% 200%;
+  animation: gradientBG 6s ease infinite;
+}
+
+/* Animación de fondo */
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Menú lateral */
+.navbar {
+  width: 250px;
+  background: linear-gradient(135deg, #0a3a61, #1e6091);
+  height: 100vh; /* Altura total */
+  position: fixed; /* Barra fija */
+  top: 0;
+  left: 0;
+  padding: 20px;
+  overflow-y: auto; /* Scroll vertical */
+  z-index: 1000;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Opciones del menú */
+.nav-link {
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  display: block;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.nav-link:hover {
+  background-color: #1e6091;
+  transform: scale(1.05);
+}
+
+/* Contenido principal */
+.content {
+  margin-left: 250px; /* Espacio para la barra lateral */
+  padding: 20px;
+  color: white;
+  flex: 1; /* Ocupa todo el espacio restante */
+  overflow-y: auto; /* Scroll vertical */
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  .navbar {
+    width: 100%; /* Menú ocupa el ancho completo en pantallas pequeñas */
+    height: auto; /* Ajusta la altura */
+    position: relative; /* Ya no es fija */
+  }
+
+  .content {
+    margin-left: 0; /* Elimina el margen */
+    padding-top: 20px; /* Espacio para evitar solapamientos */
+  }
+}
+ hr{
+background-color: gray;
+ }
