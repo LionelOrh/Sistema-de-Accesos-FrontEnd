@@ -5,6 +5,7 @@ import { Proveedor } from '../models/proveedor.model';
 import { Observable } from 'rxjs';
 
 const baseUrlProveedor = AppSettings.API_ENDPOINT + '/proveedor';
+const baseUrlUtil = AppSettings.API_ENDPOINT + '/util';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,20 @@ export class ProveedorService {
 
   registrarProveedor(proveedor: Proveedor): Observable<Proveedor> {
     return this.http.post<Proveedor>(`${baseUrlProveedor}/registrar`, proveedor);
-}
+  }
+
+  // Método para validar si un ruc existe
+  validarRuc(ruc: string): Observable<{ existe: boolean }> {
+    return this.http.get<{ existe: boolean }>(`${baseUrlUtil}/validar-ruc`, {
+      params: { ruc },
+    });
+  }
+
+
+  validaRazonSocial(razonSocial: string): Observable<{ existe: boolean }> {
+    return this.http.get<{ existe: boolean }>(`${baseUrlUtil}/validar-razonSocial`, {
+      params: { razonSocial },
+    });
+  }
 
 }
