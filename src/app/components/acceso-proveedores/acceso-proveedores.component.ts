@@ -305,16 +305,23 @@ export class AccesoProveedorComponent {
   }
 
   registrarRepresentante() {
+    if (!this.selectedProveedor) {
+      Swal.fire('Error', 'Debe seleccionar un proveedor antes de registrar el representante.', 'error');
+      return;
+    }
+  
     const nuevoRepresentante = {
-      ...this.formRegistra.value,
       proveedor: { idProveedor: this.selectedProveedor.idProveedor },
-      nombres: this.formRegistra.value.validaNombres,
-      apellidos: this.formRegistra.value.validaApellidos,
-      cargo: this.formRegistra.value.validaCargoRes,
-      numDoc: this.formRegistra.value.validaNumDoc,
-      tipoDocumento: { idTipoDoc: this.formRegistra.value.validaTipoDocumento },
+      nombres: this.formRegistra.get('validaNombre')?.value || '',
+      apellidos: this.formRegistra.get('validaApellido')?.value || '',
+      cargo: this.formRegistra.get('validaCargoRes')?.value || '',
+      numDoc: this.formRegistra.get('validaNumeroDocumento')?.value || '',
+      tipoDocumento: { idTipoDoc: this.formRegistra.get('validaTipoDocumento')?.value || null },
       estado: 0
     };
+  
+    console.log('Datos enviados al backend:', nuevoRepresentante);
+  
     // Mostrar alerta de carga
     Swal.fire({
       title: 'Procesando registro',
@@ -324,22 +331,23 @@ export class AccesoProveedorComponent {
         Swal.showLoading();
       },
     });
-
+  
     this.representanteService.registrarRepresentante(nuevoRepresentante).subscribe(
       (response: any) => {
         if (response.success) {
           Swal.fire('Éxito', response.message, 'success');
-          this.resetForm();
+          this.resetForm(); // Limpia el formulario después del registro
         } else {
-          Swal.fire('Error', 'No se pudo registrar el representante.', 'error');
+          Swal.fire('Error', response.message || 'No se pudo registrar el representante.', 'error');
           this.resetForm();
         }
       },
       (error) => {
         console.error('Error al registrar el representante:', error);
-        Swal.fire('Error', 'No se pudo registrar el representante.', 'error');
+        Swal.fire('Error', 'Ocurrió un error inesperado al registrar el representante.', 'error');
       }
     );
   }
+  
 
 }
