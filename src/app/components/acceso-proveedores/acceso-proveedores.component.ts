@@ -63,8 +63,8 @@ export class AccesoProveedorComponent {
 
     this.formRegistrarProveedor = this.formBuilder.group({
       ruc: ['', [Validators.required, Validators.pattern(/^[0-9]{11}$/)]],
-      razonSocial: ['', Validators.required],
-      descripcion: ['', Validators.required]
+      razonSocial: ['', [Validators.required, Validators.pattern('^[a-zA-ZÀ-ÿ0-9\\s\\-\\.]{3,100}$')]],
+      descripcion: ['', [Validators.required, Validators.pattern('^[a-zA-ZÀ-ÿ0-9\\s\\,\\.\\-\\(\\)]{10,500}$')]],
     });
 
 
@@ -96,6 +96,19 @@ export class AccesoProveedorComponent {
         this.validarNumeroDocumentoEnBackend(numDoc);
       }
     });
+
+    // Llamada al método de validación en tiempo real
+    this.formRegistrarProveedor.get('ruc')?.valueChanges.subscribe((ruc) => {
+      if (ruc && ruc.length > 0) {
+        this.validarRucEnBackend(ruc);
+      }
+    });
+
+    this.formRegistrarProveedor.get('razonSocial')?.valueChanges.subscribe((razonSocial) =>{
+      if (razonSocial && razonSocial.length > 0){
+        this.validarRazonSocialEnBackend(razonSocial);
+      }
+    });
   }
 
   // Mostrar errores dinámicos
@@ -103,6 +116,11 @@ export class AccesoProveedorComponent {
     const control = this.formRegistra.get(campo);
     return !!control?.hasError(error) && (control?.touched || control?.dirty);
   }
+    // Mostrar errores dinámicos
+    mostrarErrorProveedor(campo: string, error: string): boolean {
+      const control = this.formRegistrarProveedor.get(campo);
+      return !!control?.hasError(error) && (control?.touched || control?.dirty);
+    }
 
 
   // Validar si se intenta llenar el número de documento sin seleccionar un tipo
@@ -144,6 +162,44 @@ export class AccesoProveedorComponent {
     });
   }
 
+  // Método para verificar si la Razón Social ya existe
+  validarRazonSocialEnBackend(razonSocial: string): void {
+    this.proveedorService.validaRazonSocial(razonSocial).subscribe({
+      next: (response) => {
+        if (response.existe) {
+          this.formRegistrarProveedor.get('razonSocial')?.setErrors({ razonSocialExiste: true });
+        } else {
+          const errors = this.formRegistrarProveedor.get('razonSocial')?.errors;
+          if (errors) {
+            delete errors['razonSocialExiste']; // Eliminar el error si ya no aplica
+            this.formRegistra.get('razonSocial')?.setErrors(Object.keys(errors).length ? errors : null);
+          }
+        }
+      },
+      error: (err) => console.error('Error al validar número de documento:', err)
+    });
+  }
+
+    // Método para verificar si el RUC ya existe
+    validarRucEnBackend(ruc: string): void {
+      this.proveedorService.validarRuc(ruc).subscribe({
+        next: (response) => {
+          if (response.existe) {
+            this.formRegistrarProveedor.get('ruc')?.setErrors({ rucExiste: true });
+          } else {
+            const errors = this.formRegistrarProveedor.get('ruc')?.errors;
+            if (errors) {
+              delete errors['rucExiste']; // Eliminar el error si ya no aplica
+              this.formRegistrarProveedor.get('ruc')?.setErrors(Object.keys(errors).length ? errors : null);
+            }
+          }
+        },
+        error: (err) => console.error('Error al validar ruc:', err)
+      });
+    }
+
+  
+
   openBuscarModal() {
     this.showBuscarModal = true;
     this.consultarProveedores();
@@ -151,10 +207,17 @@ export class AccesoProveedorComponent {
 
   closeBuscarModal() {
     this.showBuscarModal = false;
+    this.filterRazonSocial = ''; // Limpiar el filtro de búsqueda
+    this.proveedores = []; // Limpiar la lista de resultados
   }
 
   openRegistrarModal() {
     this.showRegistrarModal = true;
+    this.formRegistrarProveedor.reset({
+      ruc: '',
+      razonSocial: '',
+      descripcion: ''
+    });
   }
 
   closeRegistrarModal() {

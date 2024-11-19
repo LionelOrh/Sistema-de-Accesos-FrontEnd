@@ -23,7 +23,7 @@
         <!-- Mensajes de validación -->
         <small *ngIf="mostrarError('validaRazonSocial', 'required')">La razón social es obligatoria.</small>
         <small *ngIf="mostrarError('validaRazonSocial', 'minlength')">Debe tener al menos 3 caracteres.</small>
-      </div>      
+      </div>
     </div>
     <div class="form-group row">
       <div class="col-sm-6">
@@ -33,7 +33,7 @@
         <!-- Mensajes de validación -->
         <small *ngIf="mostrarError('validaDes', 'required')">La descripción es obligatoria.</small>
         <small *ngIf="mostrarError('validaDes', 'minlength')">Debe tener al menos 10 caracteres.</small>
-      </div>      
+      </div>
       <div class="col-sm-3">
         <button class="btn btn-primary" type="button" (click)="openBuscarModal()">Buscar
           Proveedor</button>
@@ -85,7 +85,7 @@
       <div class="col-sm-6">
         <label for="num-documento">Número de Documento</label>
         <input type="text" class="form-control" id="num-documento" formControlName="validaNumeroDocumento"
-          [maxlength]="longitudMaximaDocumento">
+          [maxlength]="longitudMaximaDocumento" placeholder="Número de Documento">
 
         <!-- Mensajes de validación -->
         <small *ngIf="mostrarError('validaNumeroDocumento', 'required')">El número es obligatorio.</small>
@@ -99,7 +99,8 @@
       </div>
     </div>
     <div class="action-buttons">
-      <button class="btn btn-success" type="button" (click)="registrarRepresentante()" [disabled]="!formRegistra.valid || !selectedProveedor">Registrar Representante</button>
+      <button class="btn btn-success" type="button" (click)="registrarRepresentante()"
+        [disabled]="!formRegistra.valid || !selectedProveedor">Registrar Representante</button>
     </div>
   </form>
 
@@ -119,6 +120,7 @@
               <th>RUC</th>
               <th>Razón social</th>
               <th>Descripción</th>
+              <th>Confirmación</th>
             </tr>
           </thead>
           <tbody>
@@ -148,18 +150,18 @@
           <div class="form-group">
             <label for="ruc">RUC</label>
             <input type="text" id="ruc" formControlName="ruc" class="form-control" placeholder="Ingrese el RUC">
-            <div *ngIf="formRegistrarProveedor.get('ruc')?.invalid && formRegistrarProveedor.get('ruc')?.touched">
-              <span class="text-danger">El RUC es obligatorio y debe tener 11 dígitos.</span>
-            </div>
+            <small *ngIf="mostrarErrorProveedor('ruc', 'pattern')">Formato Inválido</small>
+            <small *ngIf="mostrarErrorProveedor('ruc', 'required')">El ruc es obligatorio.</small>
+            <small *ngIf="mostrarErrorProveedor('ruc', 'rucExiste')">El ruc ya está registrado.</small>
+
           </div>
           <div class="form-group">
             <label for="razonSocial">Razón Social</label>
             <input type="text" id="razonSocial" formControlName="razonSocial" class="form-control"
               placeholder="Ingrese la Razón Social">
-            <div
-              *ngIf="formRegistrarProveedor.get('razonSocial')?.invalid && formRegistrarProveedor.get('razonSocial')?.touched">
-              <span class="text-danger">La razón social es obligatoria.</span>
-            </div>
+              <small *ngIf="mostrarErrorProveedor('razonSocial', 'pattern')">Formato Inválido</small>
+              <small *ngIf="mostrarErrorProveedor('razonSocial', 'required')">La Razón Social es obligatorio.</small>
+              <small *ngIf="mostrarErrorProveedor('razonSocial', 'razonSocialExiste')">Ya está registrado.</small>
           </div>
           <div class="form-group">
             <label for="descripcion">Descripción</label>
@@ -170,7 +172,8 @@
               <span class="text-danger">La descripción es obligatoria.</span>
             </div>
           </div>
-          <button type="button" class="btn btn-primary" (click)="registrarProveedor()" [disabled]="!formRegistrarProveedor.valid">Registrar Proveedor</button>
+          <button type="button" class="btn btn-primary" (click)="registrarProveedor()"
+            [disabled]="!formRegistrarProveedor.valid">Registrar Proveedor</button>
         </form>
       </div>
     </div>
