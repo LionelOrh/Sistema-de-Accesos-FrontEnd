@@ -2,21 +2,20 @@
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  display: flex; /* Usamos flexbox para alinear los elementos horizontalmente */
-  height: 100vh; /* Aseguramos que el body tenga una altura completa de la pantalla */
+  display: flex;
+  height: 100vh;
+  background-size: 200% 200%; /* Tamaño del degradado */
+  animation: gradientBG 6s ease infinite; /* Animación para el fondo */
+  overflow-x: hidden; /* Evita que aparezca una barra de desplazamiento horizontal */
 }
 
 
 /* Contenedor principal */
 .container {
-  margin-left: 300px; /* Espacio para el menú lateral */
-  margin-right: 30px; /* Margen derecho para separar del borde */
-  margin-top: 20px; /* Margen superior */
-  margin-bottom: 20px; /* Margen inferior */
-  padding: 20px; /* Espacio interno dentro del contenedor */
-  display: flex;
-  flex-direction: column; /* Alinea el contenido verticalmente dentro del contenedor */
-  height: calc(100vh - 40px); /* Resta los márgenes superior e inferior */
+  margin-left: 300px; /* Deja espacio para el menú lateral */
+  padding: 20px;
+  color: 0a3a61;
+  width: calc(100% - 310px); /* Asegura que el contenido ocupe todo el espacio disponible */
 }
  
   .toolbar-entrada-salida {

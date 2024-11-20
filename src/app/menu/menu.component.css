@@ -2,10 +2,10 @@
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  min-height: 100vh; /* Altura completa */
-  display: flex; /* Layout horizontal */
-  overflow-x: hidden; /* Evita desbordamiento horizontal */
-  background: linear-gradient(135deg, #0a3a61, #1e6091); /* Fondo degradado */
+  min-height: 120vh;
+  display: flex;
+  overflow-x: hidden;
+  background: linear-gradient(135deg, #0a3a61, #1e6091);
   background-size: 200% 200%;
   animation: gradientBG 6s ease infinite;
 }
@@ -23,56 +23,33 @@ body {
   }
 }
 
+hr{
+  background-color: rgb(114, 112, 112);
+}
+
 /* Menú lateral */
 .navbar {
-  width: 250px;
-  background: linear-gradient(135deg, #0a3a61, #1e6091);
-  height: 100vh; /* Altura total */
+  width: 280px;
+  background: linear-gradient(135deg, #0a3a61, #1e6091); 
+  height: 100vh; /* Un poco menos para separarlo del borde */
   position: fixed; /* Barra fija */
-  top: 0;
-  left: 0;
   padding: 20px;
   overflow-y: auto; /* Scroll vertical */
   z-index: 1000;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2); /* Sombra elegante */
 }
 
 /* Opciones del menú */
 .nav-link {
-  padding: 10px;
-  border-radius: 5px;
+  border-radius: 10px; /* Bordes redondeados */
   color: white;
   display: block;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  text-align: center; /* Centra el texto */
 }
 
 .nav-link:hover {
-  background-color: #1e6091;
-  transform: scale(1.05);
+  background-color: #144d72;
+  transform: scale(1.05); /* Pequeño efecto al pasar el mouse */
 }
 
-/* Contenido principal */
-.content {
-  margin-left: 250px; /* Espacio para la barra lateral */
-  padding: 20px;
-  color: white;
-  flex: 1; /* Ocupa todo el espacio restante */
-  overflow-y: auto; /* Scroll vertical */
-}
-
-/* Ajustes responsivos */
-@media (max-width: 768px) {
-  .navbar {
-    width: 100%; /* Menú ocupa el ancho completo en pantallas pequeñas */
-    height: auto; /* Ajusta la altura */
-    position: relative; /* Ya no es fija */
-  }
-
-  .content {
-    margin-left: 0; /* Elimina el margen */
-    padding-top: 20px; /* Espacio para evitar solapamientos */
-  }
-}
- hr{
-background-color: gray;
- }

@@ -9,86 +9,101 @@ body {
   overflow-x: hidden; /* Evita que aparezca una barra de desplazamiento horizontal */
 }
 
-/* Animación de fondo */
-@keyframes gradientBG {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-/* Menú lateral (navbar) */
-.navbar {
-  width: 250px;
-  background: linear-gradient(135deg, #0a3a61, #1e6091); /* Fondo degradado */
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  padding: 20px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  overflow-y: auto;
-}
-
-/* Estilo de enlaces dentro del menú lateral */
-.nav-link {
-  padding: 10px;
-  border-radius: 5px;
-  color: white; /* Texto blanco */
-  display: block;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-/* Efecto hover para enlaces */
-.nav-link:hover {
-  background-color: #1e6091;
-  transform: scale(1.05); /* Efecto de aumento al pasar el mouse */
-}
-
 /* Contenido principal, para que no quede cubierto por el menú */
 .content {
-  margin-left: 250px; /* Deja espacio para el menú lateral */
+  margin-left: 300px; /* Deja espacio para el menú lateral */
   padding: 20px;
   color: 0a3a61;
-  width: calc(100% - 250px); /* Asegura que el contenido ocupe todo el espacio disponible */
+  width: calc(100% - 310px); /* Asegura que el contenido ocupe todo el espacio disponible */
 }
 
-/* Estilos para la sección de comunicados */
-.comunicados {
-  margin-top: 20px;
+/* Estilo para el encabezado principal */
+h1 {
+  text-align: center; /* Centra el texto horizontalmente */
+  font-size: 2.5rem; /* Tamaño de fuente grande */
+  color: #0a3a61; /* Azul profesional */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Sombra suave para destacar */
+  font-weight: 700; /* Negrita */
+  letter-spacing: 1px; /* Espaciado entre letras */
+  line-height: 1.5; /* Espaciado entre líneas */
+  padding: 10px; /* Espaciado interno */
+  border-radius: 8px; /* Bordes redondeados */
 }
 
-.comunicado {
+/* Contenedor del carrusel */
+.carousel-container {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Carrusel */
+.carousel {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+/* Elementos del carrusel */
+.carousel-item {
+  min-width: 100%;
   background-color: rgba(45, 145, 226, 0.1);
-  padding: 15px;
-  margin-bottom: 10px;
+  padding: 20px;
+  text-align: center;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
-.comunicado h5 {
-  margin: 0;
-  color: #0a3a61;
+/* Mostrar el comunicado activo */
+.carousel-item.active {
+  opacity: 1;
 }
 
-.comunicado p {
-  color: #1e6091;
+/* Botones de navegación */
+button.prev, button.next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* En pantallas grandes, mostramos siempre el menú */
-@media (min-width: 768px) {
-  .navbar {
-    left: 0;
-    width: 250px;
-  }
-
-  .content {
-    margin-left: 250px; /* Espacio para el menú */
-  }
+button.prev {
+  left: 10px;
 }
+
+button.next {
+  right: 10px;
+}
+
+button.prev:hover, button.next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Estilo para la imagen dentro del carrusel */
+.carousel-image {
+  width: 100%;  /* Ocupa el 100% del contenedor */
+  height: auto; /* Mantiene la proporción de la imagen */
+  border-radius: 8px; /* Bordes redondeados */
+  margin-top: 20px; /* Espacio superior entre el texto y la imagen */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+h5 {
+  font-weight: bold;
+}
+
