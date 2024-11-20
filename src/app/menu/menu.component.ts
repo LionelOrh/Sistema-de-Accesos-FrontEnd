@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, AppMaterialModule, FormsModule, CommonModule],
+  imports: [RouterLink, AppMaterialModule, FormsModule, CommonModule],
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css']
 })
@@ -53,7 +53,6 @@ export class MenuComponent implements OnInit {
     }
   }
 
-  // Getter para la fecha actual en formato: Día de la semana, Día de mes, Año
   get fechaActual(): string {
     const now = new Date();
     const options: Intl.DateTimeFormatOptions = {
@@ -62,7 +61,7 @@ export class MenuComponent implements OnInit {
       month: 'short',
       year: 'numeric'
     };
-    return now.toLocaleDateString('es-ES', options); // Formato español
+    return now.toLocaleDateString('es-ES', options); 
   }
 
   //Fin de detalles extras
@@ -88,13 +87,11 @@ export class MenuComponent implements OnInit {
       this.router.navigate(['/login']);
     }
     console.log("MenuComponent >>> ngOnInit >>> ");
-       // Configurar la actualización en tiempo real
        this.updateTime();
        this.timerInterval = setInterval(() => this.updateTime(), 1000);
   }
 
   getUserPhoto(idUsuario: number) {
-    // Ahora solo asignamos la URL del backend para la foto
     this.fotoUsuario = `http://localhost:8090/url/usuario/${idUsuario}`;
   }
   

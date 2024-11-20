@@ -1,22 +1,28 @@
 <app-menu></app-menu>
-<body>
-    <!-- Contenido Principal -->
-    <div class="content">
-      <h1>Bienvenido al Proyecto</h1>
-      
-      <!-- Sección de Comunicados -->
-      <div class="comunicados">
-        <h2>Comunicados</h2>
-        <div class="comunicado">
-          <h5>Título del Comunicado 1</h5>
-          <p>Contenido del comunicado, que puede incluir detalles importantes o novedades para la comunidad.</p>
+<body> 
+  <!-- Contenido Principal -->
+  <div class="content">
+    <h1>Bienvenido(a) al Sistema de Accesos Cibertec</h1>
+
+    <!-- Sección de Comunicados en formato carrusel -->
+    <div class="carousel-container">
+      <div class="carousel">
+        <div class="carousel-item" [ngClass]="{'active': currentIndex === 0}">
+          <h5>Comunicado Importante: Mantenimiento Programado del Sistema</h5>
+          <img src="/assets/comunicados/comunicado_mantenimiento.png" alt="Imagen del Comunicado de Mantenimiento" class="carousel-image">
         </div>
-        <div class="comunicado">
-          <h5>Título del Comunicado 2</h5>
-          <p>Contenido del comunicado, que puede incluir detalles importantes o novedades para la comunidad.</p>
+        <div class="carousel-item" [ngClass]="{'active': currentIndex === 1}">
+          <h5>Comunicado APEC</h5>
+          <img src="/assets/comunicados/comunicado_apec.png" alt="Imagen del Comunicado APEC" class="carousel-image">
         </div>
-        <!-- Más comunicados se pueden agregar aquí -->
+        <div class="carousel-item" [ngClass]="{'active': currentIndex === 2}">
+          <h5>Comunicado de Contacto</h5>
+          <a href="https://api.whatsapp.com/send?phone=51993555555" target="_blank"><img src="/assets/comunicados/contacto.jpg" alt="Imagen de Contacto" class="carousel-image"></a>
+        </div>
       </div>
+      <!-- Controles del carrusel -->
+      <button class="prev" (click)="showPrev()">‹</button>
+      <button class="next" (click)="showNext()">›</button>
     </div>
-  </body>
-  
+  </div>
+</body>
