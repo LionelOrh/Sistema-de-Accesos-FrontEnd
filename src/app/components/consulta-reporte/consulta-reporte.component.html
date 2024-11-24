@@ -20,22 +20,36 @@
     <div class="row">
       <mat-form-field class="col-md-4">
         <mat-label>Código o Nro Documento</mat-label>
-        <input matInput [(ngModel)]="varLoginOrNumDoc">
-      </mat-form-field>
+        <input matInput [(ngModel)]="varLoginOrNumDoc" 
+               pattern="^[a-zA-Z0-9]*$"
+               (keypress)="allowLettersAndNumbers($event)">
+        <mat-error *ngIf="varLoginOrNumDoc && !varLoginOrNumDoc.match('^[a-zA-Z0-9]*$')">
+          Solo se permiten letras y números.
+        </mat-error>
+      </mat-form-field>      
 
       <mat-form-field class="col-md-4">
         <mat-label>Fecha (Desde)</mat-label>
-        <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde">
+        <input matInput 
+               [matDatepicker]="picker1" 
+               [(ngModel)]="varFechaAccesoDesde" 
+               [max]="maxDate" 
+               (keypress)="allowNumbersOnly($event)">
         <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
         <mat-datepicker #picker1></mat-datepicker>
       </mat-form-field>
-
+      
       <mat-form-field class="col-md-4">
         <mat-label>Fecha (Hasta)</mat-label>
-        <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta">
+        <input matInput 
+               [matDatepicker]="picker2" 
+               [(ngModel)]="varFechaAccesoHasta" 
+               [max]="maxDate" 
+               (keypress)="allowNumbersOnly($event)">
         <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
         <mat-datepicker #picker2></mat-datepicker>
       </mat-form-field>
+      
     </div>
 
     <!-- Botón Filtrar -->
@@ -112,21 +126,36 @@
     <div class="row justify-content-center">
       <mat-form-field class="col-md-4">
         <mat-label>Nro Documento</mat-label>
-        <input matInput [(ngModel)]="varNumDocRe">
+        <input matInput [(ngModel)]="varNumDocRe" 
+               pattern="^[0-9]*$"
+               (keypress)="allowOnlyNumbers($event)">
+        <mat-error *ngIf="varNumDocRe && !varNumDocRe.match('^[0-9]*$')">
+          Solo se permiten números.
+        </mat-error>
       </mat-form-field>
+      
       <mat-form-field class="col-md-4">
         <mat-label>Fecha (Desde)</mat-label>
-        <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde">
+        <input matInput 
+               [matDatepicker]="picker1" 
+               [(ngModel)]="varFechaAccesoDesde" 
+               [max]="maxDate" 
+               (keypress)="allowNumbersOnly($event)">
         <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
         <mat-datepicker #picker1></mat-datepicker>
       </mat-form-field>
-
+      
       <mat-form-field class="col-md-4">
         <mat-label>Fecha (Hasta)</mat-label>
-        <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta">
+        <input matInput 
+               [matDatepicker]="picker2" 
+               [(ngModel)]="varFechaAccesoHasta" 
+               [max]="maxDate" 
+               (keypress)="allowNumbersOnly($event)">
         <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
         <mat-datepicker #picker2></mat-datepicker>
       </mat-form-field>
+      
     </div>
 
     <!-- Botón Filtrar -->

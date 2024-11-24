@@ -18,7 +18,6 @@ import Swal from 'sweetalert2';
 })
 
 export class ConsultaReporteComponent implements OnInit {
-  
   mostrarInternos = true; 
   mostrarRepresentante = false;
   
@@ -54,10 +53,41 @@ export class ConsultaReporteComponent implements OnInit {
   varFechaAccesoDesdeR: Date = new Date(2024, 0, 1);
   varFechaAccesoHastaR: Date = new Date();
 
+  //Validación en los campos de Login/NroDoc y NroDoc
+  allowOnlyNumbers(event: KeyboardEvent): void {
+    const regex = /^[0-9]+$/;
+    const input = String.fromCharCode(event.keyCode || event.which);
+    if (!regex.test(input)) {
+      event.preventDefault();
+    }
+  }
+
+  allowLettersAndNumbers(event: KeyboardEvent): void {
+    const regex = /^[a-zA-Z0-9]+$/;
+    const input = String.fromCharCode(event.keyCode || event.which);
+    if (!regex.test(input)) {
+      event.preventDefault();
+    }
+  }
+
+   // Método para actualizar dinámicamente la fecha máxima
+   maxDate: Date = new Date();
+   updateMaxDate(): void {
+    this.maxDate = new Date(); 
+  }
+   // Método para permitir solo números
+   allowNumbersOnly(event: KeyboardEvent): void {
+    const charCode = event.key.charCodeAt(0);
+    // Permite solo números (0-9)
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
+  }
+
   constructor(private utilService: UtilService, private accesoService: AccesoService,  private cdr: ChangeDetectorRef) { }
 
   ngOnInit() {
-
+    this.updateMaxDate();
   }
 
   // Función para formatear las fechas a 'YYYY-MM-DD'
@@ -88,7 +118,7 @@ export class ConsultaReporteComponent implements OnInit {
         if (response.length === 0) {
           Swal.fire({
             title: 'Sin resultados',
-            text: 'No se encontraron representantes con el número de documento ingresado.',
+            text: 'No se encontraron resultados con los criterios ingresados',
             icon: 'warning',
             showConfirmButton: true
           });
@@ -116,8 +146,6 @@ export class ConsultaReporteComponent implements OnInit {
     );
   }
   
-  
-  
   async filtrarRepresentante() {
     Swal.fire({
       title: 'Procesando',
@@ -144,7 +172,7 @@ export class ConsultaReporteComponent implements OnInit {
         if (response.length === 0) {
           Swal.fire({
             title: 'Sin resultados',
-            text: 'No se encontraron representantes con el número de documento ingresado.',
+            text: 'No se encontraron resultados con los criterios ingresados',
             icon: 'warning',
             showConfirmButton: true
           });
