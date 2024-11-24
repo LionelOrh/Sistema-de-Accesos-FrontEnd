@@ -36,11 +36,11 @@ export class IndexComponent implements OnInit, OnDestroy {
   }
 
   showPrev(): void {
-    this.currentIndex = (this.currentIndex > 0) ? this.currentIndex - 1 : 2; // Volver al último comunicado
+    this.currentIndex = (this.currentIndex > 0) ? this.currentIndex - 1 : 1; // Volver al último comunicado
   }
 
   showNext(): void {
-    this.currentIndex = (this.currentIndex < 2) ? this.currentIndex + 1 : 0; // Volver al primer comunicado
+    this.currentIndex = (this.currentIndex < 1) ? this.currentIndex + 1 : 0; // Volver al primer comunicado
   }
 
   ngOnDestroy() {

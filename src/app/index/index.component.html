@@ -1,23 +1,27 @@
 <app-menu></app-menu>
-<body> 
+
+<body>
   <!-- Contenido Principal -->
   <div class="content">
     <h1>Bienvenido(a) al Sistema de Accesos Cibertec</h1>
-
+    <!-- Agregar el botón flotante -->
+    <a href="https://api.whatsapp.com/send?phone=51993555555&text=¡Hola!%20Quiero%20hablar%20con%20el%20chatbot."
+      target="_blank" class="whatsapp-btn">
+      <i class="fab fa-whatsapp"></i>
+      <span class="whatsapp-tooltip">¡Hola, tienes alguna duda o consulta? 
+        <br>¡Haz clic aquí y chatea con nosotros!</span>
+    </a>
     <!-- Sección de Comunicados en formato carrusel -->
     <div class="carousel-container">
       <div class="carousel">
         <div class="carousel-item" [ngClass]="{'active': currentIndex === 0}">
           <h5>Comunicado Importante: Mantenimiento Programado del Sistema</h5>
-          <img src="/assets/comunicados/comunicado_mantenimiento.png" alt="Imagen del Comunicado de Mantenimiento" class="carousel-image">
+          <img src="/assets/comunicados/comunicado_mantenimiento.png" alt="Imagen del Comunicado de Mantenimiento"
+            class="carousel-image">
         </div>
         <div class="carousel-item" [ngClass]="{'active': currentIndex === 1}">
           <h5>Comunicado APEC</h5>
           <img src="/assets/comunicados/comunicado_apec.png" alt="Imagen del Comunicado APEC" class="carousel-image">
-        </div>
-        <div class="carousel-item" [ngClass]="{'active': currentIndex === 2}">
-          <h5>Comunicado de Contacto</h5>
-          <a href="https://api.whatsapp.com/send?phone=51993555555" target="_blank"><img src="/assets/comunicados/contacto.jpg" alt="Imagen de Contacto" class="carousel-image"></a>
         </div>
       </div>
       <!-- Controles del carrusel -->

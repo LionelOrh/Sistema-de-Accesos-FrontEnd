@@ -97,36 +97,43 @@ export class MenuComponent implements OnInit {
   
   onLogOut(): void {
     Swal.fire({
-      title: '¿Estás seguro?',
-      text: '¿Quieres cerrar sesión?',
-      icon: 'warning',
+      title: 'Cerrar sesión',
+      text: '¿Estás seguro de que quieres salir?',
+      icon: 'question', 
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#28a745', 
+      cancelButtonColor: '#d33', 
       confirmButtonText: 'Sí, cerrar sesión',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
+      background: '#f4f4f9',
+      color: '#282828',
+      padding: '3em',
+      width: '40%',
+      customClass: {
+        title: 'swal-title', 
+        confirmButton: 'swal-confirm-btn', 
+        cancelButton: 'swal-cancel-btn',
+        container: 'swal-container'
+      }
     }).then((result) => {
       if (result.isConfirmed) {
-        // Mostrar el mensaje de carga
         Swal.fire({
-          title: 'Cerrando sesión...',
-          text: 'Por favor, espera...',
           allowOutsideClick: false,
           didOpen: () => {
-            Swal.showLoading();
+            Swal.showLoading(); 
+          },
+          background: 'rgba(0, 0, 0, 0',
+          customClass: {
+            title: 'swal-loading-title',
           }
         });
   
-        // Simulamos un retraso para mostrar la carga (en un caso real sería el tiempo de procesamiento)
         setTimeout(() => {
-          // Llamar al método de cierre de sesión
           this.tokenService.logOut();
-          // Redirigir al login
           this.router.navigate(['/login']);
           
-          // Cerrar el mensaje de carga
           Swal.close();
-        }, 2000); // 2 segundos de retraso antes de redirigir
+        }, 2000); 
       }
     });
   }
