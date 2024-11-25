@@ -4,195 +4,257 @@ body {
   font-family: 'Poppins', sans-serif;
   display: flex;
   height: 100vh;
-  background-size: 200% 200%; /* Tamaño del degradado */
-  animation: gradientBG 6s ease infinite; /* Animación para el fondo */
-  overflow-x: hidden; /* Evita que aparezca una barra de desplazamiento horizontal */
+  background-size: 200% 200%;
+  /* Tamaño del degradado */
+  animation: gradientBG 6s ease infinite;
+  /* Animación para el fondo */
+  overflow-x: hidden;
+  /* Evita que aparezca una barra de desplazamiento horizontal */
 }
 
 /* Contenedor principal */
 .container {
-  margin-left: 300px; /* Deja espacio para el menú lateral */
+  margin-left: 300px;
+  /* Deja espacio para el menú lateral */
   padding: 20px;
   color: 0a3a61;
-  width: calc(100% - 310px); /* Asegura que el contenido ocupe todo el espacio disponible */
+  width: calc(100% - 310px);
+  /* Asegura que el contenido ocupe todo el espacio disponible */
 }
 
-  .toolbar-entrada-salida {
-    background-color: #0a3a61;
-    color: white;
-    padding: 15px 20px;
-    font-size: 1.2rem;
-    text-align: center;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    width: 100%;
-  }
+.toolbar-entrada-salida {
+  background-color: #0a3a61;
+  color: white;
+  padding: 15px 20px;
+  font-size: 1.2rem;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  width: 100%;
+}
+
 h6 {
-    font-weight: bold;
-    margin-bottom: 10px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .form-group.row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start; /* Alinea los elementos desde la parte superior */
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  /* Alinea los elementos desde la parte superior */
 }
 
 .col-sm-6,
 .col-sm-4,
 .col-sm-12 {
-    flex: 0 0 calc(100% / 3 - 10px);
-    max-width: calc(100% / 3 - 10px);
-    display: flex;
-    flex-direction: column;
+  flex: 0 0 calc(100% / 3 - 10px);
+  max-width: calc(100% / 3 - 10px);
+  display: flex;
+  flex-direction: column;
 }
 
 .col-sm-6 {
-    flex: 0 0 calc(50% - 10px);
-    max-width: calc(50% - 10px);
-    display: flex;
-    flex-direction: column;
+  flex: 0 0 calc(50% - 10px);
+  max-width: calc(50% - 10px);
+  display: flex;
+  flex-direction: column;
 }
 
 .col-sm-12 {
-    flex: 0 0 100%;
-    max-width: 100%;
-    display: flex;
-    flex-direction: column;
+  flex: 0 0 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 label {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 textarea {
-    width: 100%;
-    resize: none;
+  width: 100%;
+  resize: none;
 }
 
 .form-control {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 8px 12px;
-    width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 8px 12px;
+  width: 100%;
 }
 
 .action-buttons {
-    display: flex;
-    justify-content: center; /* Alinea el botón en el centro de su columna */
-    margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  /* Alinea el botón en el centro de su columna */
+  margin-top: 20px;
 }
 
 .btn-qr {
-    background-color: #8bc34a;
-    color: white;
-    padding: 8px 60px;
-    border-radius: 20px;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
+  background-color: #8bc34a;
+  color: white;
+  padding: 8px 60px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
 }
+
 hr.my-4 {
-    border-top: 1px solid #ddd;
-    margin: 1.5rem 0;
-  }
+  border-top: 1px solid #ddd;
+  margin: 1.5rem 0;
+}
+
 .footer-text {
-    text-align: right;
-    font-weight: bold;
-    margin-top: 20px;
+  text-align: right;
+  font-weight: bold;
+  margin-top: 20px;
 }
 
 
 svg {
-    border: 1px solid red; /* Para verificar si se está mostrando */
+  border: 1px solid red;
+  /* Para verificar si se está mostrando */
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  /* Asegura que el modal esté sobre todo */
+}
+
+.modal-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 50%;
+  /* Cambia esto para ajustar el tamaño del modal */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.5s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.modal-header h4 {
+  margin: 0;
+}
+
+.modal-body {
+  margin-top: 20px;
+}
+
+.btn-close {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.table th {
+  background-color: #f4f4f4;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
 
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000; /* Asegura que el modal esté sobre todo */
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .modal-container {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 50%; /* Cambia esto para ajustar el tamaño del modal */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    animation: fadeIn 0.5s ease;
-  }
-  
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-  }
-  
-  .modal-header h4 {
-    margin: 0;
-  }
-  
-  .modal-body {
-    margin-top: 20px;
-  }
-  
-  .btn-close {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-  }
-  
-  .table th,
-  .table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-  
-  .table th {
-    background-color: #f4f4f4;
-  }
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  small {
-    color: red;
-    font-size: 0.9em;
-  }
-  .form-control.ng-invalid.ng-touched {
-    border-color: red;
-  }
-  
+}
+
+small {
+  color: red;
+  font-size: 0.9em;
+}
+
+.form-control.ng-invalid.ng-touched {
+  border-color: red;
+}
+
+/* Estilos para el botón flotante de WhatsApp */
+.whatsapp-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #25d366;
+  border-radius: 50%;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: inline-block;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.whatsapp-btn i {
+  color: white;
+  font-size: 30px;
+  position: relative;
+}
+
+/* Tooltip */
+.whatsapp-tooltip {
+  visibility: hidden;
+  position: absolute;
+  text-align: center;
+  bottom: 50%;
+  right: 110%;
+  transform: translateY(50%);
+  background-color: white;
+  color: black;
+  padding: 12px 10px;
+  border-radius: 25px;
+  border: 2px solid #25d366;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0s 0.3s;
+  white-space: nowrap;
+  font-family: 'Poppins', sans-serif;
+  max-width: 400px;
+  z-index: 1;
+}
+
+.whatsapp-btn:hover .whatsapp-tooltip {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.3s ease, visibility 0s 0s;
+}

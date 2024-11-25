@@ -4,18 +4,23 @@ body {
   font-family: 'Poppins', sans-serif;
   display: flex;
   height: 100vh;
-  background-size: 200% 200%; /* Tamaño del degradado */
-  animation: gradientBG 6s ease infinite; /* Animación para el fondo */
-  overflow-x: hidden; /* Evita que aparezca una barra de desplazamiento horizontal */
+  background-size: 200% 200%;
+  /* Tamaño del degradado */
+  animation: gradientBG 6s ease infinite;
+  /* Animación para el fondo */
+  overflow-x: hidden;
+  /* Evita que aparezca una barra de desplazamiento horizontal */
 }
 
 
-/* Contenedor principal */ 
+/* Contenedor principal */
 .container {
-  margin-left: 300px; /* Deja espacio para el menú lateral */
+  margin-left: 300px;
+  /* Deja espacio para el menú lateral */
   padding: 20px;
   color: 0a3a61;
-  width: calc(100% - 310px); /* Asegura que el contenido ocupe todo el espacio disponible */
+  width: calc(100% - 310px);
+  /* Asegura que el contenido ocupe todo el espacio disponible */
 }
 
 
@@ -93,11 +98,14 @@ body {
   border-collapse: collapse;
 }
 
-.table, .table th, .table td {
+.table,
+.table th,
+.table td {
   border: 1px solid #ddd;
 }
 
-.table th, .table td {
+.table th,
+.table td {
   padding: 10px;
   text-align: left;
 }
@@ -115,72 +123,99 @@ body {
 }
 
 .page-title {
-  font-family: 'Roboto', sans-serif; /* Usa una fuente moderna y limpia */
-  font-size: 1.5rem; /* Tamaño grande para que se destaque */
-  font-weight: bold; /* Aumenta el peso de la fuente para hacerla más impactante */
-  color: #0a3a61; /* Un color verde vibrante para resaltar */
-  text-align: center; /* Centra el título en la página */
-  margin-top: 40px; /* Da espacio superior para que no esté pegado al borde */
-  margin-bottom: 20px; /* Da espacio debajo para separar del contenido */
-  text-transform: uppercase; /* Convierte el texto a mayúsculas para mayor énfasis */
-  letter-spacing: 2px; /* Añade un poco de espaciado entre las letras para un estilo más moderno */
-  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Un sutil sombreado para que el texto se destaque */
+  font-family: 'Roboto', sans-serif;
+  /* Usa una fuente moderna y limpia */
+  font-size: 1.5rem;
+  /* Tamaño grande para que se destaque */
+  font-weight: bold;
+  /* Aumenta el peso de la fuente para hacerla más impactante */
+  color: #0a3a61;
+  /* Un color verde vibrante para resaltar */
+  text-align: center;
+  /* Centra el título en la página */
+  margin-top: 40px;
+  /* Da espacio superior para que no esté pegado al borde */
+  margin-bottom: 20px;
+  /* Da espacio debajo para separar del contenido */
+  text-transform: uppercase;
+  /* Convierte el texto a mayúsculas para mayor énfasis */
+  letter-spacing: 2px;
+  /* Añade un poco de espaciado entre las letras para un estilo más moderno */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  /* Un sutil sombreado para que el texto se destaque */
 }
 
 .button-container {
   display: flex;
   justify-content: center;
-  gap: 20px; /* Espacio entre los botones */
+  gap: 20px;
+  /* Espacio entre los botones */
   margin-top: 20px;
 }
 
 .btns {
-  padding: 12px 24px; /* Tamaño adecuado para los botones */
-  border-radius: 30px; /* Bordes redondeados */
-  font-size: 16px; /* Tamaño de texto */
-  transition: background-color 0.3s ease, transform 0.3s ease; /* Transición para un efecto suave */
+  padding: 12px 24px;
+  /* Tamaño adecuado para los botones */
+  border-radius: 30px;
+  /* Bordes redondeados */
+  font-size: 16px;
+  /* Tamaño de texto */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  /* Transición para un efecto suave */
 }
 
 .btn-internos {
-  background-color: #4CAF50; /* Color verde para Internos y Externos */
+  background-color: #4CAF50;
+  /* Color verde para Internos y Externos */
   color: white;
   border: none;
 }
 
 .btn-internos:hover {
-  background-color: #45a049; /* Un tono más oscuro al pasar el ratón */
-  transform: scale(1.05); /* Aumenta ligeramente el tamaño */
+  background-color: #45a049;
+  /* Un tono más oscuro al pasar el ratón */
+  transform: scale(1.05);
+  /* Aumenta ligeramente el tamaño */
 }
 
 .btn-representantes {
-  background-color: #2196F3; /* Color azul para Representantes */
+  background-color: #2196F3;
+  /* Color azul para Representantes */
   color: white;
   border: none;
 }
 
 .btn-representantes:hover {
-  background-color: #1e88e5; /* Un tono más oscuro al pasar el ratón */
-  transform: scale(1.05); /* Aumenta ligeramente el tamaño */
+  background-color: #1e88e5;
+  /* Un tono más oscuro al pasar el ratón */
+  transform: scale(1.05);
+  /* Aumenta ligeramente el tamaño */
 }
 
 .mat-column-login {
   flex: 0 0 15%;
 }
+
 .mat-column-nombres {
   flex: 0 0 15%;
 }
+
 .mat-column-apellidos {
   flex: 0 0 15%;
 }
+
 .mat-column-numDoc {
   flex: 0 0 15%;
 }
+
 .mat-column-fecha {
   flex: 0 0 15%;
 }
+
 .mat-column-hora {
   flex: 0 0 10%;
 }
+
 .mat-column-estado {
   flex: 0 0 15%;
 }
@@ -189,24 +224,79 @@ body {
 .mat-column-nombre {
   flex: 0 0 15%;
 }
+
 .mat-column-apellido {
   flex: 0 0 15%;
 }
+
 .mat-column-numDocs {
   flex: 0 0 15%;
 }
+
 .mat-column-cargo {
   flex: 0 0 10%;
 }
+
 .mat-column-proveedor {
   flex: 0 0 15%;
 }
+
 .mat-column-fechas {
   flex: 0 0 10%;
 }
+
 .mat-column-horas {
   flex: 0 0 10%;
 }
+
 .mat-column-estados {
   flex: 0 0 10%;
+}
+
+/* Estilos para el botón flotante de WhatsApp */
+.whatsapp-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #25d366;
+  border-radius: 50%;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: inline-block;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.whatsapp-btn i {
+  color: white;
+  font-size: 30px;
+  position: relative;
+}
+
+/* Tooltip */
+.whatsapp-tooltip {
+  visibility: hidden;
+  position: absolute;
+  text-align: center;
+  bottom: 50%;
+  right: 110%;
+  transform: translateY(50%);
+  background-color: white;
+  color: black;
+  padding: 12px 10px;
+  border-radius: 25px;
+  border: 2px solid #25d366;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0s 0.3s;
+  white-space: nowrap;
+  font-family: 'Poppins', sans-serif;
+  max-width: 400px;
+  z-index: 1;
+}
+
+.whatsapp-btn:hover .whatsapp-tooltip {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.3s ease, visibility 0s 0s;
 }
