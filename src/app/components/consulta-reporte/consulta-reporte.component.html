@@ -1,232 +1,230 @@
 <app-menu></app-menu>
-<body> 
-<div class="container">
 
-  <mat-toolbar class="toolbar-entrada-salida">
-    <span>Consulta y Reporte del Control de Accesos</span>
-  </mat-toolbar>
+<body>
+  <div class="container">
 
-   <!-- Botones de selección -->
-   <div class="button-container">
-    <button class="btns btn-internos" (click)="mostrarInternosExternos()">Internos y Externos</button>
-    <button class="btns btn-representantes" (click)="mostrarRepresentantes()">Representantes</button>
-  </div>
+    <mat-toolbar class="toolbar-entrada-salida">
+      <span>Consulta y Reporte del Control de Accesos</span>
+    </mat-toolbar>
+    <!-- Agregar el botón flotante -->
+    <a href="https://api.whatsapp.com/send?phone=51993555555&text=¡Hola!%20Quiero%20hablar%20con%20el%20chatbot."
+      target="_blank" class="whatsapp-btn">
+      <i class="fab fa-whatsapp"></i>
+      <span class="whatsapp-tooltip">¡Hola, tienes alguna duda o consulta?
+        <br>¡Haz clic aquí y chatea con nosotros!</span>
+    </a>
 
-  <!-- Sección Internos y Externos -->
-  <div *ngIf="mostrarInternos">
-    <h1 class="page-title">Internos y Externos</h1>
-
-    <!-- Filtros de búsqueda -->
-    <div class="row">
-      <mat-form-field class="col-md-4">
-        <mat-label>Código o Nro Documento</mat-label>
-        <input matInput [(ngModel)]="varLoginOrNumDoc" 
-               pattern="^[a-zA-Z0-9]*$"
-               (keypress)="allowLettersAndNumbers($event)">
-        <mat-error *ngIf="varLoginOrNumDoc && !varLoginOrNumDoc.match('^[a-zA-Z0-9]*$')">
-          Solo se permiten letras y números.
-        </mat-error>
-      </mat-form-field>      
-
-      <mat-form-field class="col-md-4">
-        <mat-label>Fecha (Desde)</mat-label>
-        <input matInput 
-               [matDatepicker]="picker1" 
-               [(ngModel)]="varFechaAccesoDesde" 
-               [max]="maxDate" 
-               (keypress)="allowNumbersOnly($event)">
-        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
-        <mat-datepicker #picker1></mat-datepicker>
-      </mat-form-field>
-      
-      <mat-form-field class="col-md-4">
-        <mat-label>Fecha (Hasta)</mat-label>
-        <input matInput 
-               [matDatepicker]="picker2" 
-               [(ngModel)]="varFechaAccesoHasta" 
-               [max]="maxDate" 
-               (keypress)="allowNumbersOnly($event)">
-        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-        <mat-datepicker #picker2></mat-datepicker>
-      </mat-form-field>
-      
+    <!-- Botones de selección -->
+    <div class="button-container">
+      <button class="btns btn-internos" (click)="mostrarInternosExternos()">Internos y Externos</button>
+      <button class="btns btn-representantes" (click)="mostrarRepresentantes()">Representantes</button>
     </div>
 
-    <!-- Botón Filtrar -->
-    <div class="text-center">
-      <button type="submit" class="btn btn-success" style="width: 200px; margin-top: 20px;" (click)="filtrar()">Filtrar</button>
+    <!-- Sección Internos y Externos -->
+    <div *ngIf="mostrarInternos">
+      <h1 class="page-title">Internos y Externos</h1>
+
+      <!-- Filtros de búsqueda -->
+      <div class="row">
+        <mat-form-field class="col-md-4">
+          <mat-label>Código o Nro Documento</mat-label>
+          <input matInput [(ngModel)]="varLoginOrNumDoc" pattern="^[a-zA-Z0-9]*$"
+            (keypress)="allowLettersAndNumbers($event)">
+          <mat-error *ngIf="varLoginOrNumDoc && !varLoginOrNumDoc.match('^[a-zA-Z0-9]*$')">
+            Solo se permiten letras y números.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="col-md-4">
+          <mat-label>Fecha (Desde)</mat-label>
+          <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde" [max]="maxDate"
+            (keypress)="allowNumbersOnly($event)">
+          <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field class="col-md-4">
+          <mat-label>Fecha (Hasta)</mat-label>
+          <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta" [max]="maxDate"
+            (keypress)="allowNumbersOnly($event)">
+          <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+
+      </div>
+
+      <!-- Botón Filtrar -->
+      <div class="text-center">
+        <button type="submit" class="btn btn-success" style="width: 200px; margin-top: 20px;"
+          (click)="filtrar()">Filtrar</button>
+      </div>
+
+      <!-- Botón Exportar -->
+      <div class="action-buttons mt-6 text-center">
+        <button class="btn btn-excel" (click)="exportarExcel()">EXCEL</button>
+      </div>
+
+      <!-- Tabla de resultados -->
+      <div class="row" style="margin-top: 3%">
+        <mat-table [dataSource]="dataSource" #table class="mat-elevation-z8">
+
+          <ng-container matColumnDef="login">
+            <mat-header-cell *matHeaderCellDef>Código</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.usuario?.login || 'Código no registrado' }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="nombres">
+            <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.usuario?.nombres || 'Nombre no registrado' }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="apellidos">
+            <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.usuario?.apellidos || 'Apellido no registrado' }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="numDoc">
+            <mat-header-cell *matHeaderCellDef>Nro Documento</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.usuario?.numDoc || 'Nro Documento no registrado' }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="fecha">
+            <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.fechaAcceso ? (aux.fechaAcceso | date) : 'Fecha no registrada'
+              }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="hora">
+            <mat-header-cell *matHeaderCellDef>Hora</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.horaAcceso || 'Hora no registrada' }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="estado">
+            <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.tipoAcceso || 'Estado no registrado'}}</mat-cell>
+          </ng-container>
+
+          <!-- Fila para cuando no hay datos -->
+          <tr *ngIf="dataSource && dataSource.data.length === 0" class="mat-row">
+            <td class="mat-cell" [attr.colspan]="displayedColumns.length" style="text-align: center; color: black;">
+              No hay datos disponibles con los filtros aplicados.
+            </td>
+          </tr>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let aux; columns: displayedColumns"></mat-row>
+        </mat-table>
+
+        <!-- Paginación -->
+        <div class="paginator-container" style="margin-top: 20px;">
+          <mat-paginator [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>
     </div>
 
-    <!-- Botón Exportar -->
-    <div class="action-buttons mt-6 text-center">
-      <button class="btn btn-excel" (click)="exportarExcel()">EXCEL</button>
-    </div>
+    <!-- Sección Representantes -->
+    <div *ngIf="mostrarRepresentante">
+      <h1 class="page-title">Representantes</h1>
 
-    <!-- Tabla de resultados -->
-    <div class="row" style="margin-top: 3%">
-      <mat-table [dataSource]="dataSource" #table class="mat-elevation-z8">
+      <div class="row justify-content-center">
+        <mat-form-field class="col-md-4">
+          <mat-label>Nro Documento</mat-label>
+          <input matInput [(ngModel)]="varNumDocRe" pattern="^[0-9]*$" (keypress)="allowOnlyNumbers($event)">
+          <mat-error *ngIf="varNumDocRe && !varNumDocRe.match('^[0-9]*$')">
+            Solo se permiten números.
+          </mat-error>
+        </mat-form-field>
 
-        <ng-container matColumnDef="login">
-          <mat-header-cell *matHeaderCellDef>Código</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.usuario?.login || 'Código no registrado' }}</mat-cell>
-        </ng-container>
+        <mat-form-field class="col-md-4">
+          <mat-label>Fecha (Desde)</mat-label>
+          <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde" [max]="maxDate"
+            (keypress)="allowNumbersOnly($event)">
+          <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
 
-        <ng-container matColumnDef="nombres">
-          <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.usuario?.nombres || 'Nombre no registrado' }}</mat-cell>
-        </ng-container>
+        <mat-form-field class="col-md-4">
+          <mat-label>Fecha (Hasta)</mat-label>
+          <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta" [max]="maxDate"
+            (keypress)="allowNumbersOnly($event)">
+          <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
 
-        <ng-container matColumnDef="apellidos">
-          <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.usuario?.apellidos || 'Apellido no registrado' }}</mat-cell>
-        </ng-container>
+      </div>
 
-        <ng-container matColumnDef="numDoc">
-          <mat-header-cell *matHeaderCellDef>Nro Documento</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.usuario?.numDoc || 'Nro Documento no registrado' }}</mat-cell>
-        </ng-container>
+      <!-- Botón Filtrar -->
+      <div class="text-center">
+        <button type="submit" class="btn btn-success" style="width: 200px; margin-top: 20px;"
+          (click)="filtrarRepresentante()">Filtrar</button>
+      </div>
 
-        <ng-container matColumnDef="fecha">
-          <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.fechaAcceso ? (aux.fechaAcceso | date) : 'Fecha no registrada' }}</mat-cell>
-        </ng-container>
+      <!-- Botón Exportar -->
+      <div class="action-buttons mt-6 text-center">
+        <button class="btn btn-excel" (click)="exportarExcelRepresentante()">EXCEL</button>
+      </div>
 
-        <ng-container matColumnDef="hora">
-          <mat-header-cell *matHeaderCellDef>Hora</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.horaAcceso || 'Hora no registrada' }}</mat-cell>
-        </ng-container>
+      <!-- Tabla de resultados -->
+      <div class="row" style="margin-top: 3%">
+        <mat-table [dataSource]="dataSourceRepresentante" #tableRepresentante class="mat-elevation-z8">
 
-        <ng-container matColumnDef="estado">
-          <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.tipoAcceso || 'Estado no registrado'}}</mat-cell>
-        </ng-container>
-        
-         <!-- Fila para cuando no hay datos -->
-       <tr *ngIf="dataSource && dataSource.data.length === 0" class="mat-row">
-        <td class="mat-cell" [attr.colspan]="displayedColumns.length" style="text-align: center; color: black;">
-           No hay datos disponibles con los filtros aplicados.
-        </td>
-        </tr>
+          <ng-container matColumnDef="nombre">
+            <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.representante?.nombres || 'Nombre no registrado' }}</mat-cell>
+          </ng-container>
 
-        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let aux; columns: displayedColumns"></mat-row>
-      </mat-table>
+          <ng-container matColumnDef="apellido">
+            <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.representante?.apellidos || 'Apellido no registrado' }}</mat-cell>
+          </ng-container>
 
-      <!-- Paginación -->
-      <div class="paginator-container" style="margin-top: 20px;">
-        <mat-paginator [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
+          <ng-container matColumnDef="cargo">
+            <mat-header-cell *matHeaderCellDef>Cargo</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.representante?.cargo || 'Cargo no registrado' }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="numDocs">
+            <mat-header-cell *matHeaderCellDef>Nro Documento</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.representante?.numDoc || 'Nro Documento no registrado' }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="proveedor">
+            <mat-header-cell *matHeaderCellDef>Proveedor</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.representante.proveedor?.razonSocial || 'Proveedor no registrado'
+              }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="fechas">
+            <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.fechaAcceso ? (aux.fechaAcceso | date) : 'Fecha no registrada'
+              }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="horas">
+            <mat-header-cell *matHeaderCellDef>Hora</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.horaAcceso || 'Hora no registrada' }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="estados">
+            <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.tipoAcceso || 'Estado no registrado'}}</mat-cell>
+          </ng-container>
+
+          <!-- Fila de mensaje cuando no hay datos -->
+          <tr *ngIf="dataSourceRepresentante && dataSourceRepresentante.data.length === 0" class="mat-row">
+            <td class="mat-cell" [attr.colspan]="displayedColumnsRepresentante.length" style="text-align: center;">
+              No se encontraron representantes con el número de documento ingresado.
+            </td>
+          </tr>
+
+          <mat-header-row *matHeaderRowDef="displayedColumnsRepresentante"></mat-header-row>
+          <mat-row *matRowDef="let aux; columns: displayedColumnsRepresentante"></mat-row>
+        </mat-table>
+
+        <div class="paginator-container" style="margin-top: 20px;">
+          <mat-paginator #paginator2 [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
+        </div>
       </div>
     </div>
   </div>
-
-  <!-- Sección Representantes -->
-  <div *ngIf="mostrarRepresentante">
-    <h1 class="page-title">Representantes</h1>
-
-    <div class="row justify-content-center">
-      <mat-form-field class="col-md-4">
-        <mat-label>Nro Documento</mat-label>
-        <input matInput [(ngModel)]="varNumDocRe" 
-               pattern="^[0-9]*$"
-               (keypress)="allowOnlyNumbers($event)">
-        <mat-error *ngIf="varNumDocRe && !varNumDocRe.match('^[0-9]*$')">
-          Solo se permiten números.
-        </mat-error>
-      </mat-form-field>
-      
-      <mat-form-field class="col-md-4">
-        <mat-label>Fecha (Desde)</mat-label>
-        <input matInput 
-               [matDatepicker]="picker1" 
-               [(ngModel)]="varFechaAccesoDesde" 
-               [max]="maxDate" 
-               (keypress)="allowNumbersOnly($event)">
-        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
-        <mat-datepicker #picker1></mat-datepicker>
-      </mat-form-field>
-      
-      <mat-form-field class="col-md-4">
-        <mat-label>Fecha (Hasta)</mat-label>
-        <input matInput 
-               [matDatepicker]="picker2" 
-               [(ngModel)]="varFechaAccesoHasta" 
-               [max]="maxDate" 
-               (keypress)="allowNumbersOnly($event)">
-        <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
-        <mat-datepicker #picker2></mat-datepicker>
-      </mat-form-field>
-      
-    </div>
-
-    <!-- Botón Filtrar -->
-    <div class="text-center">
-      <button type="submit" class="btn btn-success" style="width: 200px; margin-top: 20px;" (click)="filtrarRepresentante()">Filtrar</button>
-    </div>
-
-    <!-- Botón Exportar -->
-    <div class="action-buttons mt-6 text-center">
-      <button class="btn btn-excel" (click)="exportarExcelRepresentante()">EXCEL</button>
-    </div>
-
-    <!-- Tabla de resultados -->
-    <div class="row" style="margin-top: 3%">
-      <mat-table [dataSource]="dataSourceRepresentante" #tableRepresentante class="mat-elevation-z8">
-
-        <ng-container matColumnDef="nombre">
-          <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.representante?.nombres || 'Nombre no registrado' }}</mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="apellido">
-          <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.representante?.apellidos || 'Apellido no registrado' }}</mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="cargo">
-          <mat-header-cell *matHeaderCellDef>Cargo</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.representante?.cargo || 'Cargo no registrado' }}</mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="numDocs">
-          <mat-header-cell *matHeaderCellDef>Nro Documento</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.representante?.numDoc || 'Nro Documento no registrado' }}</mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="proveedor">
-          <mat-header-cell *matHeaderCellDef>Proveedor</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.representante.proveedor?.razonSocial || 'Proveedor no registrado' }}</mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="fechas">
-          <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.fechaAcceso ? (aux.fechaAcceso | date) : 'Fecha no registrada' }}</mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="horas">
-          <mat-header-cell *matHeaderCellDef>Hora</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.horaAcceso || 'Hora no registrada' }}</mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="estados">
-          <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
-          <mat-cell *matCellDef="let aux">{{ aux.tipoAcceso || 'Estado no registrado'}}</mat-cell>
-        </ng-container>
-
-         <!-- Fila de mensaje cuando no hay datos -->
-  <tr *ngIf="dataSourceRepresentante && dataSourceRepresentante.data.length === 0" class="mat-row">
-    <td class="mat-cell" [attr.colspan]="displayedColumnsRepresentante.length" style="text-align: center;">
-      No se encontraron representantes con el número de documento ingresado.
-    </td>
-  </tr>
-
-        <mat-header-row *matHeaderRowDef="displayedColumnsRepresentante"></mat-header-row>
-        <mat-row *matRowDef="let aux; columns: displayedColumnsRepresentante"></mat-row>
-      </mat-table>
-
-      <div class="paginator-container" style="margin-top: 20px;">
-        <mat-paginator #paginator2 [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
-      </div>
-    </div>
-  </div>
-</div>
 </body>

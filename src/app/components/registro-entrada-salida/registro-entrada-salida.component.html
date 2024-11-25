@@ -1,110 +1,75 @@
 <app-menu></app-menu>
-<body> 
-<div class="container">
-  <mat-toolbar class="toolbar-entrada-salida">
-    <span>Registro de Entrada y Salida</span>
-  </mat-toolbar>
 
-  <!-- Campo de Búsqueda -->
-  <div class="custom-toolbar">
-    <input
-      type="text"
-      [(ngModel)]="codigoBusqueda"
-      class="search-input"
-      placeholder="Ingrese el código para buscar..."
-    />
-    <button (click)="buscarPorCodigo()" class="btn btn-left">CONSULTAR</button>
-    <button (click)="toggleScanner()" class="btn btn-right">ESCANEAR</button>
-  </div>
+<body>
+  <div class="container">
+    <mat-toolbar class="toolbar-entrada-salida">
+      <span>Registro de Entrada y Salida</span>
+    </mat-toolbar>
+    <!-- Agregar el botón flotante -->
+    <a href="https://api.whatsapp.com/send?phone=51993555555&text=¡Hola!%20Quiero%20hablar%20con%20el%20chatbot."
+      target="_blank" class="whatsapp-btn">
+      <i class="fab fa-whatsapp"></i>
+      <span class="whatsapp-tooltip">¡Hola, tienes alguna duda o consulta?
+        <br>¡Haz clic aquí y chatea con nosotros!</span>
+    </a>
+    <!-- Campo de Búsqueda -->
+    <div class="custom-toolbar">
+      <input type="text" [(ngModel)]="codigoBusqueda" class="search-input"
+        placeholder="Ingrese el código para buscar..." />
+      <button (click)="buscarPorCodigo()" class="btn btn-left">CONSULTAR</button>
+      <button (click)="toggleScanner()" class="btn btn-right">ESCANEAR</button>
+    </div>
 
-  <!-- Modal del Escáner -->
-  <div *ngIf="isScannerVisible" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" (click)="toggleScanner()">&times;</span>
-      <div class="scanner-container">
-        <zxing-scanner
-          (scanSuccess)="onCodeScanned($event)" 
-          [formats]="formats"
-          [torch]="true">
-        </zxing-scanner>
+    <!-- Modal del Escáner -->
+    <div *ngIf="isScannerVisible" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" (click)="toggleScanner()">&times;</span>
+        <div class="scanner-container">
+          <zxing-scanner (scanSuccess)="onCodeScanned($event)" [formats]="formats" [torch]="true">
+          </zxing-scanner>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Mostrar Datos Obtenidos -->
-  <div class="data-entry">
-    <div class="form-row">
-      <div class="form-labels">
-        <label for="codigo">CÓDIGO:</label>
-        <label for="identificacion">IDENTIFICACIÓN:</label>
-        <label for="nombres">NOMBRES:</label>
-        <label for="apellidos">APELLIDOS:</label>
-        <label for="estado">ESTADO:</label>
-      </div>
-      <div class="form-fields">
-        <input
-          type="text"
-          id="codigo"
-          class="form-control"
-          [value]="resultado?.codigo || ''"
-          placeholder="CÓDIGO"
-          disabled
-        />
-        <input
-          type="text"
-          id="identificacion"
-          class="form-control"
-          [value]="resultado?.identificacion || ''"
-          placeholder="IDENTIFICACIÓN"
-          disabled
-        />
-        <input
-          type="text"
-          id="nombres"
-          class="form-control"
-          [value]="resultado?.nombres || ''"
-          placeholder="NOMBRES"
-          disabled
-        />
-        <input
-          type="text"
-          id="apellidos"
-          class="form-control"
-          [value]="resultado?.apellidos || ''"
-          placeholder="APELLIDOS"
-          disabled
-        />
-        <input
-          type="text"
-          id="estado"
-          class="form-control"
-          [value]="resultado?.estado || ''"
-          placeholder="ESTADO"
-          disabled
-        />
-      </div>
-      <!-- Foto -->
-      <div class="photo-container">
-        <div class="photo-box">
-          <img
-            *ngIf="resultado?.foto"
-            [src]="resultado?.foto"  
-            alt="Foto"
-            class="qr-image"
-          />
-          <div *ngIf="!resultado?.foto" class="qr-placeholder">
-            Sin Foto
+    <!-- Mostrar Datos Obtenidos -->
+    <div class="data-entry">
+      <div class="form-row">
+        <div class="form-labels">
+          <label for="codigo">CÓDIGO:</label>
+          <label for="identificacion">IDENTIFICACIÓN:</label>
+          <label for="nombres">NOMBRES:</label>
+          <label for="apellidos">APELLIDOS:</label>
+          <label for="estado">ESTADO:</label>
+        </div>
+        <div class="form-fields">
+          <input type="text" id="codigo" class="form-control" [value]="resultado?.codigo || ''" placeholder="CÓDIGO"
+            disabled />
+          <input type="text" id="identificacion" class="form-control" [value]="resultado?.identificacion || ''"
+            placeholder="IDENTIFICACIÓN" disabled />
+          <input type="text" id="nombres" class="form-control" [value]="resultado?.nombres || ''" placeholder="NOMBRES"
+            disabled />
+          <input type="text" id="apellidos" class="form-control" [value]="resultado?.apellidos || ''"
+            placeholder="APELLIDOS" disabled />
+          <input type="text" id="estado" class="form-control" [value]="resultado?.estado || ''" placeholder="ESTADO"
+            disabled />
+        </div>
+        <!-- Foto -->
+        <div class="photo-container">
+          <div class="photo-box">
+            <img *ngIf="resultado?.foto" [src]="resultado?.foto" alt="Foto" class="qr-image" />
+            <div *ngIf="!resultado?.foto" class="qr-placeholder">
+              Sin Foto
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Botones Adicionales -->
-  <div class="action-buttons">
-    <button class="btn-permit" (click)="registrarAcceso()">PERMITIR</button>
-    <button class="btn-deny">DENEGAR</button>
-    <button class="btn-register">REGISTRAR INVITADO</button>
+    <!-- Botones Adicionales -->
+    <div class="action-buttons">
+      <button class="btn-permit" (click)="registrarAcceso()">PERMITIR</button>
+      <button class="btn-deny">DENEGAR</button>
+      <button class="btn-register">REGISTRAR INVITADO</button>
+    </div>
   </div>
-</div>
-</body> 
+</body>
