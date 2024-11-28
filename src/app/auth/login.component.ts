@@ -12,7 +12,7 @@ import { MenuComponent } from '../menu/menu.component';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent],
+  imports: [AppMaterialModule, FormsModule, CommonModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
   roles: string[] = [];
   errMsj!: string;
   showPassword = false;
-  isInputValid = true; // Para verificar si los campos son válidos
+  isInputValid = false; // Para verificar si los campos son válidos
   showAlert = false; // Para mostrar la alerta flotante
   alertMessage = ''; // Mensaje que se mostrará en la alerta flotante
 
@@ -69,18 +69,30 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  checkInputValidity(): void {
+   // Actualizamos esta función para verificar ambos campos (usuario y contraseña)
+   checkInputValidity(): void {
     const loginField = this.loginUsuario.login || '';
     const passwordField = this.loginUsuario.password || '';
 
+    // Validación de caracteres especiales
     if (/[^a-zA-Z0-9]/.test(loginField) || /[^a-zA-Z0-9]/.test(passwordField)) {
       this.isInputValid = false;
       this.alertMessage = 'No se permiten caracteres especiales';
       this.showAlert = true;
-    } else {
+    }
+    // Validación de espacios en blanco
+    else if (loginField.includes(' ') || passwordField.includes(' ')) {
+      this.isInputValid = false;
+      this.alertMessage = 'No se permiten espacios en blanco';
+      this.showAlert = true;
+    }
+    // Si ambos campos son válidos, habilitamos el botón
+    else if (loginField.length > 0 && passwordField.length > 0) {
       this.isInputValid = true;
       this.alertMessage = ''; // Elimina el mensaje cuando la entrada es válida
       this.showAlert = false; // Oculta la alerta flotante
+    } else {
+      this.isInputValid = false; // Si algún campo está vacío, el botón se deshabilita
     }
   }
 
