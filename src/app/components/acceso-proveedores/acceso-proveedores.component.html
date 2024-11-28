@@ -59,25 +59,31 @@
       <div class="form-group row">
         <div class="col-sm-4">
           <label for="nombres">Nombres</label>
-          <input type="text" class="form-control" id="nombres" placeholder="Nombres" formControlName="validaNombre">
-          <small *ngIf="mostrarError('validaNombre', 'required')"> El nombre es obligatorio.</small>
-          <small *ngIf="mostrarError('validaNombre', 'minlength')"> Mínimo 3 caracteres.</small>
-          <small *ngIf="mostrarError('validaNombre', 'pattern')"> Solo letras y espacios.</small>
+          <input type="text" class="form-control" id="nombres" placeholder="Nombres" formControlName="validaNombre"maxlength="20">
+          <small>
+            <div *ngIf="mostrarError('validaNombre', 'required')">El nombre es obligatorio.</div>
+            <div *ngIf="mostrarError('validaNombre', 'pattern')">Ingrese nombres válidos.</div>
+            <div *ngIf="mostrarError('validaNombre', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
+        </small>
         </div>
         <div class="col-sm-4">
           <label for="apellidos">Apellidos</label>
-          <input type="text" class="form-control" id="apellidos" placeholder="Apellidos"
+          <input type="text" class="form-control" id="apellidos" placeholder="Apellidos " maxlength="20"
             formControlName="validaApellido">
-          <small *ngIf="mostrarError('validaApellido', 'required')"> El apellido es obligatorio.</small>
-          <small *ngIf="mostrarError('validaApellido', 'minlength')"> Mínimo 3 caracteres.</small>
-          <small *ngIf="mostrarError('validaApellido', 'pattern')"> Solo letras y espacios.</small>
+            <small>
+              <div *ngIf="mostrarError('validaApellido', 'required')">El apellido es obligatorio.</div>
+              <div *ngIf="mostrarError('validaApellido', 'pattern')">Ingrese apellidos validos</div>
+              <div *ngIf="mostrarError('validaApellido', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
+          </small>
         </div>
         <div class="col-sm-4">
           <label for="cargo">Cargo</label>
-          <input type="text" class="form-control" id="cargo" placeholder="Cargo" formControlName="validaCargoRes">
-          <small *ngIf="mostrarError('validaCargoRes', 'required')"> El cargo es obligatorio.</small>
-          <small *ngIf="mostrarError('validaCargoRes', 'minlength')"> Mínimo 3 caracteres.</small>
-          <small *ngIf="mostrarError('validaCargoRes', 'pattern')"> Solo letras y espacios.</small>
+          <input type="text" class="form-control" id="cargo" placeholder="Cargo" formControlName="validaCargoRes" maxlength="20"> 
+          <small>
+            <div *ngIf="mostrarError('validaCargoRes', 'required')"> El cargo es obligatorio.</div>
+          <div *ngIf="mostrarError('validaCargoRes', 'pattern')">Ingrese cargo valido.</div>
+          <div *ngIf="mostrarError('validaCargoRes', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
+        </small>
         </div>
       </div>
       <div class="form-group row">

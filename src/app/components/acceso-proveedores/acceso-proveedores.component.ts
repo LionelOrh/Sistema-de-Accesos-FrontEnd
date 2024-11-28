@@ -51,9 +51,14 @@ export class AccesoProveedorComponent {
       validaRazonSocial: [{ value: '', disabled: true }, [Validators.required]],
       validaRuc: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^[0-9]{11}$/)]],
       validaDes: [{ value: '', disabled: true }, [Validators.required]],
-      validaNombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ ]+$')]],
-      validaApellido: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ ]+$')]],
-      validaCargoRes: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ ]+$')]],
+      validaNombre: ['', [Validators.required, Validators.minLength(3), 
+        Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'), 
+        this.validarEspacios(), this.validarTresLetrasRepetidas()]],      
+        validaApellido: ['', [Validators.required, Validators.minLength(3), 
+          Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'), 
+          this.validarEspacios(), this.validarTresLetrasRepetidas()]],
+      validaCargoRes: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'), 
+        this.validarEspacios(), this.validarTresLetrasRepetidas()]],  
       validaNumeroDocumento: [
         '',
         [Validators.required, this.validarTipoDocumentoAntesDeEscribir()],
@@ -131,6 +136,23 @@ export class AccesoProveedorComponent {
         return { tipoDocumentoNoSeleccionado: true };
       }
       return null;
+    };
+  }
+  
+  // Validador personalizado para comprobar si el campo está vacío o solo tiene espacios
+  validarEspacios(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value?.trim();
+      return value ? null : { soloEspacios: true };
+    };
+  }
+
+  // Validador personalizado para evitar 3 letras repetidas
+  validarTresLetrasRepetidas(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      const regex = /(.)\1\1/; // Expresión regular para encontrar tres caracteres repetidos
+      return value && regex.test(value) ? { tresLetrasRepetidas: true } : null;
     };
   }
 

@@ -2,7 +2,6 @@
     <h2>Ya has iniciado sesión</h2>
 </div>
 <ng-template #loggedOut>
-
     <head>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
@@ -23,7 +22,8 @@
                                 <span class="input-group-text"><i class="fas fa-user"></i></span>
                             </div>
                             <input type="text" name="login" id="login" class="form-control"
-                                [(ngModel)]="loginUsuario.login" required placeholder="Usuario">
+                                [(ngModel)]="loginUsuario.login" required placeholder="Usuario"
+                                (input)="checkInputValidity()">
                         </div>
                     </div>
                     <div class="form-group">
@@ -34,7 +34,7 @@
                             </div>
                             <input [type]="showPassword ? 'text' : 'password'" name="password" id="password"
                                 class="form-control" [(ngModel)]="loginUsuario.password" required
-                                placeholder="Contraseña" />
+                                placeholder="Contraseña" (input)="checkInputValidity()" />
                             <div class="input-group-append">
                                 <button type="button" class="btn btn-toggle-password"
                                     (click)="togglePasswordVisibility()">
@@ -44,7 +44,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-primary" [disabled]="!f.valid || isLoading">
+                        <button class="btn btn-primary" [disabled]="!isInputValid || isLoading">
                             <span *ngIf="!isLoading">INGRESAR</span>
                             <span *ngIf="isLoading">
                                 <i class="fas fa-spinner fa-spin"></i> Cargando...
@@ -54,5 +54,11 @@
                 </form>
             </div>
         </div>
+
+      <!-- Alerta flotante -->
+<div *ngIf="showAlert" class="alert-float">
+    {{ alertMessage }}
+</div>
+
     </body>
 </ng-template>

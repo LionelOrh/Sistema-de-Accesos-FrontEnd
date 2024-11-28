@@ -7,4 +7,5 @@ export class preRegistroConsultaDTO {
     foto?: string;            // URL de la foto (solo para usuarios)
     id?: number;              // ID del usuario o representante
     tipo?: string;            // "usuario" o "representante"
+    motivo?: string;
   }

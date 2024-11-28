@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AppMaterialModule } from '../../app.material.module';
-import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms'
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../menu/menu.component';
 import { TipoDocumento } from '../../models/tipoDocumento.model';
@@ -9,12 +9,10 @@ import { InvitadoService } from '../../services/invitado.service';
 import { TokenService } from '../../security/token.service';
 import { Usuario } from '../../models/usuario.model';
 import Swal from 'sweetalert2';
-import { Invitacion } from '../../models/invitacion.model';
 
 @Component({
   standalone: true,
   imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule],
-
   selector: 'app-registrar-externo',
   templateUrl: './registrar-invitado.component.html',
   styleUrls: ['./registrar-invitado.component.css']
@@ -36,19 +34,19 @@ export class RegistrarExternoComponent {
 
     // Inicialización del formulario
     this.formRegistra = this.formBuilder.group({
-      validaNombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ ]+$')]],
-      validaApellido: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ ]+$')]],
-      validaCelular: ['', [Validators.required, Validators.pattern('^[0-9]{9}$')]],
-      validaTipoDocumento: [-1, [this.tipoDocumentoValidator()]], // Validador para tipo de documento
-      validaNumeroDocumento: [
-        '',
-        [Validators.required, this.validarTipoDocumentoAntesDeEscribir()],
-      ],
-      validaCorreo: ['', [Validators.required, Validators.email]],
-      validaMotivo: ['', [Validators.required, Validators.minLength(4), Validators.pattern('^[a-zA-Z0-9ÑñáéíóúÁÉÍÓÚ ]+$')]],
+      validaNombre: ['', [Validators.required, Validators.minLength(3), 
+                          Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'), 
+                          this.validarEspacios(), this.validarTresLetrasRepetidas()]],
+      validaApellido: ['', [Validators.required, Validators.minLength(3), 
+                            Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'), 
+                            this.validarEspacios(), this.validarTresLetrasRepetidas()]],
+      validaCelular: ['', [Validators.required, Validators.pattern('^9[0-9]{8}$'), this.validarEspacios()]],
+      validaTipoDocumento: [-1, [this.tipoDocumentoValidator()]],
+      validaNumeroDocumento: ['', [Validators.required, this.validarTipoDocumentoAntesDeEscribir(), this.validarEspacios()]],
+      validaCorreo: ['', [Validators.required, Validators.pattern('^[^\\s]+@[^\\s]+\\.com$'), this.validarEspacios()]],
+      validaMotivo: ['', [Validators.required, Validators.minLength(15),
+                          Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{15,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'), this.validarEspacios(),  this.validarTresLetrasRepetidas()]], 
     });
-
-    
 
     // Detectar cambios en el tipo de documento
     this.formRegistra.get('validaTipoDocumento')?.valueChanges.subscribe((value) => {
@@ -71,7 +69,11 @@ export class RegistrarExternoComponent {
       }
       this.formRegistra.get('validaNumeroDocumento')?.updateValueAndValidity();
     });
+
     this.objUsuario.idUsuario = this.tokenService.getUserId();
+
+    // Validaciones en tiempo real
+    
 
     // Llamada al método de validación en tiempo real
     this.formRegistra.get('validaNumeroDocumento')?.valueChanges.subscribe((numDoc) => {
@@ -79,10 +81,27 @@ export class RegistrarExternoComponent {
         this.validarNumeroDocumentoEnBackend(numDoc);
       }
     });
-  } 
+  }
 
-   // Método para verificar si el número de documento ya existe
-   validarNumeroDocumentoEnBackend(numDoc: string): void {
+  // Validador personalizado para comprobar si el campo está vacío o solo tiene espacios
+  validarEspacios(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value?.trim();
+      return value ? null : { soloEspacios: true };
+    };
+  }
+
+  // Validador personalizado para evitar 3 letras repetidas
+  validarTresLetrasRepetidas(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      const regex = /(.)\1\1/; // Expresión regular para encontrar tres caracteres repetidos
+      return value && regex.test(value) ? { tresLetrasRepetidas: true } : null;
+    };
+  }
+
+  // Método para verificar si el número de documento ya existe
+  validarNumeroDocumentoEnBackend(numDoc: string): void {
     this.invitadoService.validarNumeroDocumento(numDoc).subscribe({
       next: (response) => {
         if (response.existe) {
@@ -110,20 +129,15 @@ export class RegistrarExternoComponent {
   validarTipoDocumentoAntesDeEscribir(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const tipoDocumento = this.formRegistra?.get('validaTipoDocumento')?.value;
-      if (tipoDocumento === -1 && control.value) {
-        return { tipoDocumentoNoSeleccionado: true };
-      }
-      return null;
+      return tipoDocumento === -1 && control.value ? { tipoDocumentoNoSeleccionado: true } : null;
     };
-
-
   }
 
   // Actualizar validación del número de documento
   actualizarValidacionDocumento(pattern: string): void {
-    this.formRegistra.get('validaNumeroDocumento')?.setValidators([
-      Validators.required,
-      Validators.pattern(pattern),
+    this.formRegistra.get('validaNumeroDocumento')?.setValidators([ 
+      Validators.required, 
+      Validators.pattern(pattern), 
       this.validarTipoDocumentoAntesDeEscribir(),
     ]);
     this.formRegistra.get('validaNumeroDocumento')?.updateValueAndValidity();
@@ -180,6 +194,4 @@ export class RegistrarExternoComponent {
     this.formRegistra.reset();
     this.formRegistra.patchValue({ validaTipoDocumento: -1 });
   }
-
-  
 }

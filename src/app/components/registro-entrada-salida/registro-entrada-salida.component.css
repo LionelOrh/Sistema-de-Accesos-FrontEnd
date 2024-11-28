@@ -38,7 +38,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: 1010px;
   margin-top: 20px;
 }
 
@@ -49,6 +49,9 @@ body {
   border-radius: 20px;
   border: none;
   cursor: pointer;
+  margin-left: 20px;
+
+  
 }
 
 .btn-left {
@@ -111,6 +114,9 @@ body {
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-bottom: 10px;
+  width: 580px;
+  margin-left: 20px;
+
 }
 
 .photo-container {
@@ -387,4 +393,30 @@ body {
   visibility: visible;
   opacity: 1;
   transition: opacity 0.3s ease, visibility 0s 0s;
+}
+
+/* Estilo para la alerta flotante */
+.alert-float {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-50%);
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Animación para la alerta */
+@keyframes slideIn {
+  0% {
+      right: -300px;
+  }
+  100% {
+      right: 0;
+  }
 }

@@ -1,6 +1,6 @@
-import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppMaterialModule } from '../../app.material.module';
-import { AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MenuComponent } from '../../menu/menu.component';
 import { preRegistroConsultaDTO } from '../../models/preRegistroConsultaDTO.model';
@@ -10,115 +10,185 @@ import { Acceso } from '../../models/acceso.model';
 import { TokenService } from '../../security/token.service';
 import { Usuario } from '../../models/usuario.model';
 import { BarcodeFormat } from '@zxing/library';
-import { ZXingScannerModule } from '@zxing/ngx-scanner'; 
-import { Howl } from 'howler'; 
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { Howl } from 'howler';
 
 @Component({
   standalone: true,
-  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, ZXingScannerModule],
+  imports: [
+    AppMaterialModule,
+    FormsModule,
+    CommonModule,
+    MenuComponent,
+    ReactiveFormsModule,
+    ZXingScannerModule,
+  ],
   selector: 'app-registro-entrada-salida',
   templateUrl: './registro-entrada-salida.component.html',
   styleUrls: ['./registro-entrada-salida.component.css'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]  
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class RegistrarEntradaSalidaComponent {
   codigoBusqueda: string = ''; // Campo de búsqueda
-  isScannerVisible: boolean = false;
-  formats: BarcodeFormat[] = [BarcodeFormat.EAN_13, BarcodeFormat.UPC_A, BarcodeFormat.EAN_8, BarcodeFormat.CODE_128, BarcodeFormat.CODE_39];
+  isScannerVisible: boolean = false; // Escáner visible
+  formats: BarcodeFormat[] = [
+    BarcodeFormat.EAN_13,
+    BarcodeFormat.UPC_A,
+    BarcodeFormat.EAN_8,
+    BarcodeFormat.CODE_128,
+    BarcodeFormat.CODE_39,
+  ];
   resultado: preRegistroConsultaDTO | null = null; // Resultado de la consulta
   objUsuario: Usuario = {};
-  
-  constructor(private accesoService: AccesoService, private tokenService: TokenService) {
-    this.objUsuario.idUsuario = this.tokenService.getUserId();
+  botonesHabilitados: boolean = false; // Control para habilitar/deshabilitar botones
+  isInputValid = true; // Para verificar si los campos son válidos
+  showAlert = false; // Para mostrar la alerta flotante
+  alertMessage = ''; // Mensaje que se mostrará en la alerta flotante
+
+  constructor(
+    private accesoService: AccesoService,
+    private tokenService: TokenService
+  ) {
+    this.objUsuario.idUsuario = this.tokenService.getUserId(); // Obtiene el ID del usuario autenticado
   }
 
-  // Método para buscar datos
+  validarCaracteresEspeciales(): boolean {
+    // Si el campo está vacío, no se muestra la alerta
+    if (this.codigoBusqueda.trim() === '') {
+      this.showAlert = false; // Ocultar alerta si el campo está vacío
+      return true; // No se valida si está vacío
+    }
+  
+    // Regex para el formato del código ingresado (por ejemplo, alfanumérico de longitud específica)
+    const formatoCodigo = /^([0-9]{8}|[a-zA-Z0-9]{9,12}|[a-zA-Z0-9]{9}|[0-9]{9})$/;
+    
+    // Verificar si el código sigue el formato esperado
+    if (formatoCodigo.test(this.codigoBusqueda)) {
+      this.isInputValid = true; // Actualiza el estado de validez
+      this.alertMessage = ''; // Limpia el mensaje de alerta
+      this.showAlert = false; // Oculta la alerta si el código es válido
+      return true; // El código es válido
+    } else {
+      this.isInputValid = false; // Actualiza el estado de validez
+      this.alertMessage = 'Formato de código incorrecto'; // Mensaje de formato incorrecto
+      this.showAlert = true; // Muestra la alerta flotante si el código es inválido
+      return false; // Detiene la ejecución si no sigue el formato esperado
+    }
+  }
+  
+
+
+  // Buscar datos por código ingresado
   buscarPorCodigo() {
-    this.accesoService.consultaPreRegistro(this.codigoBusqueda).subscribe({
-      next: (data) => {
-        console.log('Foto recibida:', data.foto); // Verificar la URL recibida
-        this.resultado = data; // Carga los datos obtenidos
-      },
-      error: () => {
-        this.mostrarAlertaError();
-      },
+    if (this.validarCaracteresEspeciales()) {
+      Swal.fire({
+        title: 'Buscando...',
+        text: 'Por favor, espera mientras procesamos tu solicitud.',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+      });
+
+      this.accesoService.consultaPreRegistro(this.codigoBusqueda).subscribe({
+        next: (data) => {
+          Swal.close();
+          if (data) {
+            console.log('Datos recibidos:', data);
+            this.resultado = data;
+            this.botonesHabilitados = true;
+          } else {
+            this.mostrarAlertaError('No se encontraron registros con este código.');
+          }
+        },
+        error: (error) => {
+          Swal.close();
+          console.error('Error en la consulta:', error);
+          this.mostrarAlertaError('Ocurrió un error al buscar los datos.');
+        },
+      });
+    } else {
+      this.validarCaracteresEspeciales();
+    }
+  }
+
+ 
+
+  // Mostrar alerta de error
+  mostrarAlertaError(mensaje: string) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: mensaje,
+      confirmButtonText: 'OK',
+    }).then(() => {
+      this.limpiarCampos();
     });
   }
 
-  // Método para activar o desactivar el escáner
+  // Alternar visibilidad del escáner
   toggleScanner() {
     this.isScannerVisible = !this.isScannerVisible;
   }
 
-  // Método para manejar el código escaneado
+  // Manejar el código escaneado
   onCodeScanned(code: string) {
-    this.playBeep(); // Reproducir el sonido de "bip"
-    this.codigoBusqueda = code;  // Aquí usamos el código escaneado directamente
-    this.buscarPorCodigo();  // Realizamos la búsqueda con el código escaneado
-    this.isScannerVisible = false;  // Ocultamos el escáner después de escanear
+    this.playBeep();
+    this.codigoBusqueda = code;
+    this.buscarPorCodigo();
+    this.isScannerVisible = false;
   }
 
-  // Método para reproducir un sonido de "bip"
+  // Reproducir sonido de escaneo
   playBeep() {
     const beep = new Howl({
-      src: ['https://actions.google.com/sounds/v1/alarms/beep_short.ogg'], // URL del sonido "bip"
-      volume: 1.0, // Volumen del sonido (puedes ajustarlo de 0.0 a 1.0)
+      src: ['https://actions.google.com/sounds/v1/alarms/beep_short.ogg'],
+      volume: 1.0,
     });
     beep.play();
   }
 
-  // Mostrar alerta de error
-  mostrarAlertaError() {
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'No se encontró ningún resultado para el código ingresado.',
-      confirmButtonText: 'OK',
-    }).then(() => {
-      this.limpiarCampos(); // Limpiar los campos al cerrar la alerta
-    });
-  }
+ // Limpiar los campos y deshabilitar botones
+limpiarCampos() {
+  this.resultado = null;
+  this.codigoBusqueda = '';
+  this.botonesHabilitados = false;  // Deshabilitar los botones
+}
 
-  // Limpiar los campos
-  limpiarCampos() {
-    this.resultado = null;
-    this.codigoBusqueda = '';
-  }
-
+  // Registrar acceso
   registrarAcceso() {
     if (this.resultado && this.resultado.id && this.resultado.tipo) {
       const registroAcceso: Acceso = {
-        idUsuario: this.resultado.tipo === 'usuario' ? this.resultado.id : undefined,
-        idRepresentante: this.resultado.tipo === 'representante' ? this.resultado.id : undefined,
+        idUsuario:
+          this.resultado.tipo === 'usuario' ? this.resultado.id : undefined,
+        idRepresentante:
+          this.resultado.tipo === 'representante' ? this.resultado.id : undefined,
         idUsuarioRegAcceso: Number(this.objUsuario.idUsuario),
       };
 
-      // Mostrar alerta de "Registrando..."
       Swal.fire({
         title: 'Registrando...',
-        text: 'Por favor, espera mientras se realiza el registro.',
+        text: 'Por favor, espera.',
         allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading(); // Mostrar animación de carga
-        },
+        didOpen: () => Swal.showLoading(),
       });
 
       this.accesoService.registrarAcceso(registroAcceso).subscribe({
-        next: (response) => {
-          console.log('Respuesta exitosa del backend:', response);
-          Swal.close(); // Cerrar la alerta de carga
-          Swal.fire('Registro Exitoso', 'El registro se ha realizado correctamente.', 'success');
+        next: () => {
+          Swal.close();
+          Swal.fire(
+            'Registro Exitoso',
+            'El registro se realizó correctamente.',
+            'success'
+          );
           this.limpiarCampos();
         },
-        error: (error) => {
-          console.error('Error capturado en el frontend:', error);
-          Swal.close(); // Cerrar la alerta de carga
-          Swal.fire('Error', 'No se pudo realizar el registro.', 'error');
+        error: () => {
+          Swal.close();
+          Swal.fire('Error', 'No se pudo registrar.', 'error');
           this.limpiarCampos();
         },
       });
     } else {
-      Swal.fire('Error', 'Los datos de la consulta no son válidos.', 'error');
+      Swal.fire('Error', 'Datos de consulta inválidos.', 'error');
       this.limpiarCampos();
     }
   }

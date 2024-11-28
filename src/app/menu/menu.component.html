@@ -14,15 +14,15 @@
       
       <!-- Foto del usuario -->
       <img *ngIf="isLogged" [src]="fotoUsuario" alt="Foto del Usuario"
-        style="border-radius: 50%; width: 170px; height: 170px; object-fit: cover; margin-bottom: 7.5px;">
+        style="border-radius: 50%; width: 120px; height: 120px; object-fit: cover; margin-bottom: 7.5px;">
 
       <!-- Nombre del usuario -->
       <h4 *ngIf="isLogged"
-        style="color: #ffffff; font-family: 'Poppins', sans-serif; font-weight: 200; font-size: 1.1rem; margin-top: 20px;">
+        style="color: #ffffff; font-family: 'Poppins', sans-serif; font-weight: 150; font-size: 1.1rem; margin-top: 10px;">
         {{ saludo }}
       </h4>
       <h2 *ngIf="isLogged"
-        style="color: #ffffff; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.2rem; margin-bottom: 8px;">
+        style="color: #ffffff; font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 1.2rem; margin-bottom: px;">
         {{ nombreUsuario }}
         <hr>
       </h2>
@@ -69,7 +69,7 @@
     <!-- Botón de Cerrar Sesión -->
       <ul class="navbar-nav">
         <li class="nav-item" *ngIf="isLogged">
-          <a class="nav-link text-white" style="cursor: pointer; margin-top: 40px;" (click)="onLogOut()">
+          <a class="nav-link text-white" style="cursor: pointer; margin-top: 30px;" (click)="onLogOut()">
             <i class="fas fa-door-open"></i> Cerrar Sesión
           </a>
         </li>
