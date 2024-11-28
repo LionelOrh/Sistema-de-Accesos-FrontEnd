@@ -31,7 +31,7 @@ export class AccesoProveedorComponent {
   showRegistrarModal = false;
   formRegistrarProveedor: FormGroup;
 
-  longitudMaximaDocumento: number = 8; 
+  longitudMaximaDocumento: number = 8;
 
   @ViewChild('barcode', { static: false }) barcodeElement!: ElementRef;
 
@@ -51,14 +51,14 @@ export class AccesoProveedorComponent {
       validaRazonSocial: [{ value: '', disabled: true }, [Validators.required]],
       validaRuc: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^[0-9]{11}$/)]],
       validaDes: [{ value: '', disabled: true }, [Validators.required]],
-      validaNombre: ['', [Validators.required, Validators.minLength(3), 
-        Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'), 
-        this.validarEspacios(), this.validarTresLetrasRepetidas()]],      
-        validaApellido: ['', [Validators.required, Validators.minLength(3), 
-          Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'), 
-          this.validarEspacios(), this.validarTresLetrasRepetidas()]],
-      validaCargoRes: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'), 
-        this.validarEspacios(), this.validarTresLetrasRepetidas()]],  
+      validaNombre: ['', [Validators.required, Validators.minLength(3),
+      Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
+      this.validarEspacios(), this.validarTresLetrasRepetidas()]],
+      validaApellido: ['', [Validators.required, Validators.minLength(3),
+      Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
+      this.validarEspacios(), this.validarTresLetrasRepetidas()]],
+      validaCargoRes: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
+      this.validarEspacios(), this.validarTresLetrasRepetidas()]],
       validaNumeroDocumento: [
         '',
         [Validators.required, this.validarTipoDocumentoAntesDeEscribir()],
@@ -73,8 +73,8 @@ export class AccesoProveedorComponent {
     });
 
 
-     // Detectar cambios en el tipo de documento
-     this.formRegistra.get('validaTipoDocumento')?.valueChanges.subscribe((value) => {
+    // Detectar cambios en el tipo de documento
+    this.formRegistra.get('validaTipoDocumento')?.valueChanges.subscribe((value) => {
       switch (value) {
         case 1: // DNI
           this.longitudMaximaDocumento = 8;
@@ -109,8 +109,8 @@ export class AccesoProveedorComponent {
       }
     });
 
-    this.formRegistrarProveedor.get('razonSocial')?.valueChanges.subscribe((razonSocial) =>{
-      if (razonSocial && razonSocial.length > 0){
+    this.formRegistrarProveedor.get('razonSocial')?.valueChanges.subscribe((razonSocial) => {
+      if (razonSocial && razonSocial.length > 0) {
         this.validarRazonSocialEnBackend(razonSocial);
       }
     });
@@ -121,11 +121,11 @@ export class AccesoProveedorComponent {
     const control = this.formRegistra.get(campo);
     return !!control?.hasError(error) && (control?.touched || control?.dirty);
   }
-    // Mostrar errores dinámicos
-    mostrarErrorProveedor(campo: string, error: string): boolean {
-      const control = this.formRegistrarProveedor.get(campo);
-      return !!control?.hasError(error) && (control?.touched || control?.dirty);
-    }
+  // Mostrar errores dinámicos
+  mostrarErrorProveedor(campo: string, error: string): boolean {
+    const control = this.formRegistrarProveedor.get(campo);
+    return !!control?.hasError(error) && (control?.touched || control?.dirty);
+  }
 
 
   // Validar si se intenta llenar el número de documento sin seleccionar un tipo
@@ -138,7 +138,7 @@ export class AccesoProveedorComponent {
       return null;
     };
   }
-  
+
   // Validador personalizado para comprobar si el campo está vacío o solo tiene espacios
   validarEspacios(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -156,8 +156,8 @@ export class AccesoProveedorComponent {
     };
   }
 
-   // Actualizar validación del número de documento
-   actualizarValidacionDocumento(pattern: string): void {
+  // Actualizar validación del número de documento
+  actualizarValidacionDocumento(pattern: string): void {
     this.formRegistra.get('validaNumeroDocumento')?.setValidators([
       Validators.required,
       Validators.pattern(pattern),
@@ -202,25 +202,25 @@ export class AccesoProveedorComponent {
     });
   }
 
-    // Método para verificar si el RUC ya existe
-    validarRucEnBackend(ruc: string): void {
-      this.proveedorService.validarRuc(ruc).subscribe({
-        next: (response) => {
-          if (response.existe) {
-            this.formRegistrarProveedor.get('ruc')?.setErrors({ rucExiste: true });
-          } else {
-            const errors = this.formRegistrarProveedor.get('ruc')?.errors;
-            if (errors) {
-              delete errors['rucExiste']; // Eliminar el error si ya no aplica
-              this.formRegistrarProveedor.get('ruc')?.setErrors(Object.keys(errors).length ? errors : null);
-            }
+  // Método para verificar si el RUC ya existe
+  validarRucEnBackend(ruc: string): void {
+    this.proveedorService.validarRuc(ruc).subscribe({
+      next: (response) => {
+        if (response.existe) {
+          this.formRegistrarProveedor.get('ruc')?.setErrors({ rucExiste: true });
+        } else {
+          const errors = this.formRegistrarProveedor.get('ruc')?.errors;
+          if (errors) {
+            delete errors['rucExiste']; // Eliminar el error si ya no aplica
+            this.formRegistrarProveedor.get('ruc')?.setErrors(Object.keys(errors).length ? errors : null);
           }
-        },
-        error: (err) => console.error('Error al validar ruc:', err)
-      });
-    }
+        }
+      },
+      error: (err) => console.error('Error al validar ruc:', err)
+    });
+  }
 
-  
+
 
   openBuscarModal() {
     this.showBuscarModal = true;
@@ -331,7 +331,7 @@ export class AccesoProveedorComponent {
       Swal.fire('Error', 'Debe seleccionar un proveedor antes de registrar el representante.', 'error');
       return;
     }
-  
+
     const nuevoRepresentante = {
       proveedor: { idProveedor: this.selectedProveedor.idProveedor },
       nombres: this.formRegistra.get('validaNombre')?.value || '',
@@ -341,9 +341,9 @@ export class AccesoProveedorComponent {
       tipoDocumento: { idTipoDoc: this.formRegistra.get('validaTipoDocumento')?.value || null },
       estado: 0
     };
-  
+
     console.log('Datos enviados al backend:', nuevoRepresentante);
-  
+
     // Mostrar alerta de carga
     Swal.fire({
       title: 'Procesando registro',
@@ -353,7 +353,7 @@ export class AccesoProveedorComponent {
         Swal.showLoading();
       },
     });
-  
+
     this.representanteService.registrarRepresentante(nuevoRepresentante).subscribe(
       (response: any) => {
         if (response.success) {
@@ -370,6 +370,6 @@ export class AccesoProveedorComponent {
       }
     );
   }
-  
+
 
 }
