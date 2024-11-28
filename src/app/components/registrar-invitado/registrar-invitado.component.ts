@@ -45,7 +45,7 @@ export class RegistrarExternoComponent {
       validaNumeroDocumento: ['', [Validators.required, this.validarTipoDocumentoAntesDeEscribir(), this.validarEspacios()]],
       validaCorreo: ['', [Validators.required, Validators.pattern('^[^\\s]+@[^\\s]+\\.com$'), this.validarEspacios()]],
       validaMotivo: ['', [Validators.required, Validators.minLength(15),
-                          Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{15,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'), this.validarEspacios(),  this.validarTresLetrasRepetidas()]], 
+                          Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s.,]*$'), this.validarEspacios(),  this.validarTresLetrasRepetidas()]], 
     });
 
     // Detectar cambios en el tipo de documento
