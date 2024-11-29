@@ -58,10 +58,10 @@ export class RegistrarEntradaSalidaComponent {
       this.showAlert = false; // Ocultar alerta si el campo está vacío
       return true; // No se valida si está vacío
     }
-  
+
     // Regex para el formato del código ingresado (por ejemplo, alfanumérico de longitud específica)
     const formatoCodigo = /^([0-9]{8}|[a-zA-Z0-9]{9,12}|[a-zA-Z0-9]{9}|[0-9]{9})$/;
-    
+
     // Verificar si el código sigue el formato esperado
     if (formatoCodigo.test(this.codigoBusqueda)) {
       this.isInputValid = true; // Actualiza el estado de validez
@@ -75,7 +75,7 @@ export class RegistrarEntradaSalidaComponent {
       return false; // Detiene la ejecución si no sigue el formato esperado
     }
   }
-  
+
 
 
   // Buscar datos por código ingresado
@@ -110,7 +110,7 @@ export class RegistrarEntradaSalidaComponent {
     }
   }
 
- 
+
 
   // Mostrar alerta de error
   mostrarAlertaError(mensaje: string) {
@@ -146,12 +146,12 @@ export class RegistrarEntradaSalidaComponent {
     beep.play();
   }
 
- // Limpiar los campos y deshabilitar botones
-limpiarCampos() {
-  this.resultado = null;
-  this.codigoBusqueda = '';
-  this.botonesHabilitados = false;  // Deshabilitar los botones
-}
+  // Limpiar los campos y deshabilitar botones
+  limpiarCampos() {
+    this.resultado = null;
+    this.codigoBusqueda = '';
+    this.botonesHabilitados = false;  // Deshabilitar los botones
+  }
 
   // Registrar acceso
   registrarAcceso() {
