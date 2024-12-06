@@ -48,9 +48,9 @@ export class AccesoProveedorComponent {
 
     // Configurar el formulario
     this.formRegistra = this.formBuilder.group({
-      validaRazonSocial: [{ value: '', disabled: true }, [Validators.required]],
-      validaRuc: [{ value: '', disabled: true }, [Validators.required, Validators.pattern(/^[0-9]{11}$/)]],
-      validaDes: [{ value: '', disabled: true }, [Validators.required]],
+      validaRazonSocial: [{ value: '', disabled: true }],
+      validaRuc: [{ value: '', disabled: true }],
+      validaDes: [{ value: '', disabled: true }],
       validaNombre: ['', [Validators.required, Validators.minLength(3),
       Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
       this.validarEspacios(), this.validarTresLetrasRepetidas()]],
@@ -69,30 +69,31 @@ export class AccesoProveedorComponent {
     this.formRegistrarProveedor = this.formBuilder.group({
       ruc: ['', [Validators.required, Validators.pattern(/^[0-9]{11}$/)]],
       razonSocial: ['', [Validators.required, Validators.pattern('^[a-zA-ZÀ-ÿ0-9\\s\\-\\.]{3,100}$')]],
-      descripcion: ['', [Validators.required, Validators.pattern('^[a-zA-ZÀ-ÿ0-9\\s\\,\\.\\-\\(\\)]{10,500}$')]],
+      descripcion: ['', [Validators.required, Validators.pattern('^[a-zA-ZÀ-ÿ0-9\\s\\-\\.]{3,500}$'),Validators.minLength(10)]],
     });
 
 
     // Detectar cambios en el tipo de documento
-    this.formRegistra.get('validaTipoDocumento')?.valueChanges.subscribe((value) => {
-      switch (value) {
+    this.formRegistra.get('validaTipoDocumento')?.valueChanges.subscribe((tipoDoc) => {
+      const numeroDocumentoControl = this.formRegistra.get('validaNumeroDocumento');
+      numeroDocumentoControl?.setValue(''); // Resetear el valor
+      numeroDocumentoControl?.clearValidators(); // Limpiar validadores
+
+      switch (tipoDoc) {
         case 1: // DNI
           this.longitudMaximaDocumento = 8;
-          this.actualizarValidacionDocumento('^[0-9]{8}$');
+          numeroDocumentoControl?.setValidators([Validators.required, this.validarNumeroDocumento()]);
           break;
         case 2: // Pasaporte
           this.longitudMaximaDocumento = 12;
-          this.actualizarValidacionDocumento('^[a-zA-Z0-9]{9,12}$');
+          numeroDocumentoControl?.setValidators([Validators.required, this.validarNumeroDocumento()]);
           break;
         case 3: // Carnet de Extranjería
           this.longitudMaximaDocumento = 9;
-          this.actualizarValidacionDocumento('^[a-zA-Z0-9]{9}$');
+          numeroDocumentoControl?.setValidators([Validators.required, this.validarNumeroDocumento()]);
           break;
-        default:
-          this.longitudMaximaDocumento = 45;
-          this.formRegistra.get('validaNumeroDocumento')?.clearValidators();
       }
-      this.formRegistra.get('validaNumeroDocumento')?.updateValueAndValidity();
+      numeroDocumentoControl?.updateValueAndValidity();
     });
 
     // Llamada al método de validación en tiempo real
@@ -115,6 +116,73 @@ export class AccesoProveedorComponent {
       }
     });
   }
+
+  // Validador para el número de documento
+  validarNumeroDocumento(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const tipoDoc = this.formRegistra?.get('validaTipoDocumento')?.value;
+      const numero = control.value;
+
+      if (!numero) {
+        return null; // Si no hay valor, no se valida
+      }
+
+      // Validación para DNI
+      if (tipoDoc === 1) { // DNI
+        if (!/^[0-9]{8}$/.test(numero)) {
+          return { formatoInvalido: true }; // Debe tener 8 dígitos
+        }
+        if (/^(\d)\1+$/.test(numero)) {
+          return { documentoInvalido: true }; // No debe ser "00000000" ni secuencias repetitivas
+        }
+      }
+
+      // Validación para Pasaporte
+      if (tipoDoc === 2) { // Pasaporte
+        if (!/^[a-zA-Z0-9]{9,12}$/.test(numero)) {
+          return { formatoInvalido: true }; // Longitud de 9 a 12 caracteres alfanuméricos
+        }
+        if (/^([a-zA-Z0-9])\1+$/.test(numero)) {
+          return { documentoInvalido: true }; // No debe ser una secuencia repetitiva
+        }
+      }
+
+      // Validación para Carnet de Extranjería
+      if (tipoDoc === 3) { // Carnet de Extranjería
+        if (!/^[a-zA-Z0-9]{9}$/.test(numero)) {
+          return { formatoInvalido: true }; // Debe tener exactamente 9 caracteres alfanuméricos
+        }
+        if (/^([a-zA-Z0-9])\1+$/.test(numero)) {
+          return { documentoInvalido: true }; // No debe ser una secuencia repetitiva
+        }
+      }
+
+      // Validaciones adicionales para otros tipos de documentos
+      // Aquí puedes añadir más tipos según las reglas específicas
+
+      return null; // Sin errores
+    };
+  }
+
+  // Validación adicional en tiempo real
+  validarSecuenciaRepetida(): void {
+    const control = this.formRegistra.get('validaNumeroDocumento');
+    if (!control) return;
+
+    const tipoDoc = this.formRegistra.get('validaTipoDocumento')?.value;
+    const numero = control.value;
+
+    if (tipoDoc && numero && /^(\w)\1+$/.test(numero)) {
+      control.setErrors({ documentoInvalido: true });
+    } else {
+      const errors = control.errors;
+      if (errors) {
+        delete errors['documentoInvalido'];
+        control.setErrors(Object.keys(errors).length ? errors : null);
+      }
+    }
+  }
+
 
   // Mostrar errores dinámicos
   mostrarError(campo: string, error: string): boolean {
