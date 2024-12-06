@@ -9,8 +9,9 @@
         <a href="https://api.whatsapp.com/send?phone=51993555555&text=¡Hola!%20Quiero%20hablar%20con%20el%20chatbot."
            target="_blank" class="whatsapp-btn">
             <i class="fab fa-whatsapp"></i>
-            <span class="whatsapp-tooltip">¡Hola, tienes alguna duda o consulta?
-                <br>¡Haz clic aquí y chatea con nosotros!</span>
+            <span class="whatsapp-tooltip">
+                ¡Hola, tienes alguna duda o consulta? <br> ¡Haz clic aquí y chatea con nosotros!
+            </span>
         </a>
        
         <div class="form-container">
@@ -35,7 +36,7 @@
                         <input formControlName="validaApellido" class="form-control" placeholder="Apellidos" maxlength="20">
                         <small>
                             <div *ngIf="mostrarError('validaApellido', 'required')">El apellido es obligatorio.</div>
-                            <div *ngIf="mostrarError('validaApellido', 'pattern')">Ingrese apellidos validos</div>
+                            <div *ngIf="mostrarError('validaApellido', 'pattern')">Ingrese apellidos válidos.</div>
                             <div *ngIf="mostrarError('validaApellido', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
                         </small>
                     </div>
@@ -48,7 +49,7 @@
                         <input formControlName="validaCelular" class="form-control" placeholder="Celular" maxlength="9">
                         <small>
                             <div *ngIf="mostrarError('validaCelular', 'required')">El celular es obligatorio.</div>
-                            <div *ngIf="mostrarError('validaCelular', 'pattern')">Inicie con 9 y tener 9 dígitos. (955-955-955)</div>
+                            <div *ngIf="mostrarError('validaCelular', 'pattern')">Debe iniciar con 9 y tener 9 dígitos.</div>
                         </small>
                     </div>
                 </div>
@@ -59,15 +60,14 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="tipo-documento">Tipo de Documento</label>
-                        <mat-select formControlName="validaTipoDocumento" placeholder="Seleccione un tipo de documento" class="form-control">
+                        <mat-select formControlName="validaTipoDocumento" placeholder="Seleccione un tipo de documento"
+                            class="form-control">
                             <mat-option [value]="-1" disabled>Seleccione un tipo de documento</mat-option>
                             <mat-option *ngFor="let x of lstTipoDoc" [value]="x.idTipoDoc">
                                 {{ x.descripcion }}
                             </mat-option>
                         </mat-select>
-                        <small>
-                            <div *ngIf="mostrarError('validaTipoDocumento', 'invalidTipoDocumento')">Seleccione un tipo válido.</div>
-                        </small>
+                        <small *ngIf="mostrarError('validaTipoDocumento', 'invalidTipoDocumento')">Seleccione un tipo válido.</small>
                     </div>
                 </div>
 
@@ -75,15 +75,19 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="numero-documento">Número de Documento</label>
-                        <input formControlName="validaNumeroDocumento" class="form-control" placeholder="Número de Documento" [maxlength]="longitudMaximaDocumento" />
+                        <input type="text" class="form-control" id="num-documento" formControlName="validaNumeroDocumento"
+                            [maxlength]="longitudMaximaDocumento" placeholder="Número de Documento">
                         <small>
-                            <div *ngIf="mostrarError('validaNumeroDocumento', 'required')">El número es obligatorio.</div>
-                            <div *ngIf="mostrarError('validaNumeroDocumento', 'pattern')">Formato inválido.</div>
-                            <div *ngIf="mostrarError('validaNumeroDocumento', 'tipoDocumentoNoSeleccionado')">Seleccione un tipo de documento primero.</div>
-                            <div *ngIf="mostrarError('validaNumeroDocumento', 'numDocExiste')">El número de documento ya está registrado.</div>
+                            <div *ngIf="mostrarError('validaNumeroDocumento', 'required')">El número de documento es obligatorio.</div>
+                            <div *ngIf="mostrarError('validaNumeroDocumento', 'tipoDocumentoNoSeleccionado')">Seleccione un tipo de documento antes de ingresar el número.</div>
+                            <div *ngIf="mostrarError('validaNumeroDocumento', 'numDocExiste')">El número ya está registrado.</div>
+                            <div *ngIf="mostrarError('validaNumeroDocumento', 'formatoInvalido')">Formato inválido.</div>
+                            <div *ngIf="mostrarError('validaNumeroDocumento', 'documentoInvalido')">Secuencia repetitiva no permitida.</div>
+                        
                         </small>
                     </div>
                 </div>
+                
 
                 <!-- Campo Correo -->
                 <div class="col-md-5">
@@ -93,22 +97,23 @@
                         <small>
                             <div *ngIf="mostrarError('validaCorreo', 'required')">El correo es obligatorio.</div>
                             <div *ngIf="mostrarError('validaCorreo', 'pattern')">Formato de correo inválido.</div>
-                            <div *ngIf="mostrarError('validaCorreo', 'soloEspacios')">No se permite campos vacíos.</div>
                         </small>
                     </div>
                 </div>
             </div>
 
             <!-- Campo Motivo -->
-            <div class="form-group">
-                <label for="motivo">Motivo</label>
-                <textarea formControlName="validaMotivo" id="motivo" class="form-control" rows="3" placeholder="Motivo" maxlength="100"></textarea>
-                <small>
-                    <div *ngIf="mostrarError('validaMotivo', 'required')">El motivo es obligatorio.</div>
-                    <div *ngIf="mostrarError('validaMotivo', 'pattern')">Ingrese como mínimo 15 caracteres.</div>
-                    <div *ngIf="mostrarError('validaMotivo', 'tresLetrasRepetidas')">Ingrese un motivo válido.</div>
-                </small>
-            </div>
+      <!-- Campo Motivo -->
+<div class="form-group">
+    <label for="motivo">Motivo</label>
+    <textarea formControlName="validaMotivo" id="motivo" class="form-control" rows="3" placeholder="Motivo" maxlength="100"></textarea>
+    <small>
+      <div *ngIf="mostrarError('validaMotivo', 'required')">El motivo es obligatorio.</div>
+      <div *ngIf="mostrarError('validaMotivo', 'minlength')">Debe tener al menos 15 caracteres.</div>
+      <div *ngIf="mostrarError('validaMotivo', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
+    </small>
+  </div>
+  
 
             <!-- Botón de Registro -->
             <div class="text-center">

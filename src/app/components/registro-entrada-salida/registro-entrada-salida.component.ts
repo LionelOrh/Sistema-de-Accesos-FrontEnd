@@ -51,64 +51,135 @@ export class RegistrarEntradaSalidaComponent {
   ) {
     this.objUsuario.idUsuario = this.tokenService.getUserId(); // Obtiene el ID del usuario autenticado
   }
-
   validarCaracteresEspeciales(): boolean {
-    // Si el campo está vacío, no se muestra la alerta
     if (this.codigoBusqueda.trim() === '') {
-      this.showAlert = false; // Ocultar alerta si el campo está vacío
-      return true; // No se valida si está vacío
+      this.showAlert = false;
+      return true;
     }
-
-    // Regex para el formato del código ingresado (por ejemplo, alfanumérico de longitud específica)
-    const formatoCodigo = /^([0-9]{8}|[a-zA-Z0-9]{9,12}|[a-zA-Z0-9]{9}|[0-9]{9})$/;
-
-    // Verificar si el código sigue el formato esperado
-    if (formatoCodigo.test(this.codigoBusqueda)) {
-      this.isInputValid = true; // Actualiza el estado de validez
-      this.alertMessage = ''; // Limpia el mensaje de alerta
-      this.showAlert = false; // Oculta la alerta si el código es válido
-      return true; // El código es válido
-    } else {
-      this.isInputValid = false; // Actualiza el estado de validez
-      this.alertMessage = 'Formato de código incorrecto'; // Mensaje de formato incorrecto
-      this.showAlert = true; // Muestra la alerta flotante si el código es inválido
-      return false; // Detiene la ejecución si no sigue el formato esperado
+  
+    const tieneSecuenciaRepetitiva = (codigo: string) => {
+      return /^(\d)\1*$/.test(codigo);
+    };
+  
+    const tieneSecuenciaConsecutiva = (codigo: string) => {
+      let consecutivoAscendente = true;
+      let consecutivoDescendente = true;
+  
+      for (let i = 0; i < codigo.length - 1; i++) {
+        if (parseInt(codigo[i]) + 1 !== parseInt(codigo[i + 1])) {
+          consecutivoAscendente = false;
+        }
+        if (parseInt(codigo[i]) - 1 !== parseInt(codigo[i + 1])) {
+          consecutivoDescendente = false;
+        }
+      }
+      return consecutivoAscendente || consecutivoDescendente;
+    };
+  
+    const tieneCuatroCerosConsecutivos = (codigo: string) => {
+      return /000/.test(codigo); // Detecta si hay 3 o más ceros consecutivos
+    };
+  
+    const regexDNI = /^[0-9]{8}$/;
+    if (
+      regexDNI.test(this.codigoBusqueda) &&
+      !tieneSecuenciaRepetitiva(this.codigoBusqueda) &&
+      !tieneSecuenciaConsecutiva(this.codigoBusqueda) &&
+      !tieneCuatroCerosConsecutivos(this.codigoBusqueda)
+    ) {
+      this.isInputValid = true;
+      this.alertMessage = '';
+      this.showAlert = false;
+      return true;
     }
+  
+    const regexCarnetExtranjeria = /^[a-zA-Z0-9]{9}$/;
+    if (
+      regexCarnetExtranjeria.test(this.codigoBusqueda) &&
+      !tieneSecuenciaRepetitiva(this.codigoBusqueda) &&
+      !tieneSecuenciaConsecutiva(this.codigoBusqueda) &&
+      !tieneCuatroCerosConsecutivos(this.codigoBusqueda)
+    ) {
+      this.isInputValid = true;
+      this.alertMessage = '';
+      this.showAlert = false;
+      return true;
+    }
+  
+    const regexPasaporte = /^[a-zA-Z0-9]{9}$/;
+    const regexPasaporteNumerico = /^[0-9]{8}$/;
+    if (
+      (regexPasaporte.test(this.codigoBusqueda) || regexPasaporteNumerico.test(this.codigoBusqueda)) &&
+      !tieneSecuenciaRepetitiva(this.codigoBusqueda) &&
+      !tieneSecuenciaConsecutiva(this.codigoBusqueda) &&
+      !tieneCuatroCerosConsecutivos(this.codigoBusqueda)
+    ) {
+      this.isInputValid = true;
+      this.alertMessage = '';
+      this.showAlert = false;
+      return true;
+    }
+  
+    const regexCodigoEstudiante = /^[a-zA-Z]{1}[0-9]{9}$/;
+    if (
+      regexCodigoEstudiante.test(this.codigoBusqueda) &&
+      !tieneSecuenciaRepetitiva(this.codigoBusqueda) &&
+      !tieneSecuenciaConsecutiva(this.codigoBusqueda) &&
+      !tieneCuatroCerosConsecutivos(this.codigoBusqueda)
+    ) {
+      this.isInputValid = true;
+      this.alertMessage = '';
+      this.showAlert = false;
+      return true;
+    }
+  
+    this.isInputValid = false;
+    this.alertMessage = 'Formato de código incorrecto';
+    this.showAlert = true;
+    return false;
   }
+  
+
+// Buscar datos por código ingresado
+buscarPorCodigo() {
+  if (this.validarCaracteresEspeciales()) {
+    Swal.fire({
+      title: 'Buscando...',
+      text: 'Por favor, espera mientras procesamos tu solicitud.',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
+    });
+
+    this.accesoService.consultaPreRegistro(this.codigoBusqueda).subscribe({
+      next: (data) => {
+        Swal.close();
+        if (data && Object.keys(data).length > 0) {
+          console.log('Datos recibidos:', data);
+          this.resultado = data;
+          this.botonesHabilitados = true; // Habilitar botones solo si hay resultados
+        } else {
+          this.mostrarAlertaError('Usuario no encontrado. Por favor, verifica el código ingresado.');
+        }
+      },
 
 
-
-  // Buscar datos por código ingresado
-  buscarPorCodigo() {
-    if (this.validarCaracteresEspeciales()) {
-      Swal.fire({
-        title: 'Buscando...',
-        text: 'Por favor, espera mientras procesamos tu solicitud.',
-        allowOutsideClick: false,
-        didOpen: () => Swal.showLoading(),
-      });
-
-      this.accesoService.consultaPreRegistro(this.codigoBusqueda).subscribe({
-        next: (data) => {
-          Swal.close();
-          if (data) {
-            console.log('Datos recibidos:', data);
-            this.resultado = data;
-            this.botonesHabilitados = true;
-          } else {
-            this.mostrarAlertaError('No se encontraron registros con este código.');
-          }
-        },
-        error: (error) => {
-          Swal.close();
-          console.error('Error en la consulta:', error);
-          this.mostrarAlertaError('Ocurrió un error al buscar los datos.');
-        },
-      });
+       error: (error) => {
+    Swal.close();
+    if (error.status === 404) {
+      // Si el backend devuelve 404 para "no encontrado"
+      this.mostrarAlertaError('Usuario no encontrado. Por favor, verifica el código ingresado.');
     } else {
-      this.validarCaracteresEspeciales();
+      console.error('Error en la consulta:', error);
+      this.mostrarAlertaError('Ocurrió un error al buscar los datos.');
     }
+  },
+});
+  } else {
+    this.validarCaracteresEspeciales();
   }
+}
+
+
 
 
 

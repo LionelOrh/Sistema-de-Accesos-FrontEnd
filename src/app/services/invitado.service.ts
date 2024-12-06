@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { Usuario } from '../models/usuario.model';
 import { Invitacion } from '../models/invitacion.model';
 
-const baseUrlExterno = AppSettings.API_ENDPOINT + '/invitacion';
+const baseUrlExterno = AppSettings.API_ENDPOINT + '/ng serinvitacion';
 const baseUrlUtil = AppSettings.API_ENDPOINT + '/util';
 @Injectable({
   providedIn: 'root'
