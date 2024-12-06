@@ -17,21 +17,15 @@
 
       <h6>Datos del Proveedor</h6>
 
-      <div class="form-group row">  
+      <div class="form-group row">
         <div class="col-sm-6">
           <label for="ruc">RUC</label>
           <input type="text" class="form-control" id="ruc" placeholder="RUC" formControlName="validaRuc">
-          <!-- Mensajes de validación -->
-          <small *ngIf="mostrarError('validaRuc', 'required')">El RUC es obligatorio.</small>
-          <small *ngIf="mostrarError('validaRuc', 'pattern')">El RUC debe tener 11 dígitos.</small>
         </div>
         <div class="col-sm-6">
           <label for="razon-social">Razón Social</label>
           <input type="text" class="form-control" id="razon-social" placeholder="Razón Social"
             formControlName="validaRazonSocial">
-          <!-- Mensajes de validación -->
-          <small *ngIf="mostrarError('validaRazonSocial', 'required')">La razón social es obligatoria.</small>
-          <small *ngIf="mostrarError('validaRazonSocial', 'minlength')">Debe tener al menos 3 caracteres.</small>
         </div>
       </div>
       <div class="form-group row">
@@ -39,9 +33,6 @@
           <label for="descripcion">Descripción del Producto/Servicio</label>
           <textarea class="form-control" id="descripcion" rows="3" placeholder="Descripción"
             formControlName="validaDes"></textarea>
-          <!-- Mensajes de validación -->
-          <small *ngIf="mostrarError('validaDes', 'required')">La descripción es obligatoria.</small>
-          <small *ngIf="mostrarError('validaDes', 'minlength')">Debe tener al menos 10 caracteres.</small>
         </div>
         <div class="col-sm-3">
           <button class="btn btn-primary" type="button" (click)="openBuscarModal()">Buscar
@@ -59,31 +50,36 @@
       <div class="form-group row">
         <div class="col-sm-4">
           <label for="nombres">Nombres</label>
-          <input type="text" class="form-control" id="nombres" placeholder="Nombres" formControlName="validaNombre"maxlength="20">
+          <input type="text" class="form-control" id="nombres" placeholder="Nombres" formControlName="validaNombre"
+            maxlength="20">
           <small>
             <div *ngIf="mostrarError('validaNombre', 'required')">El nombre es obligatorio.</div>
             <div *ngIf="mostrarError('validaNombre', 'pattern')">Ingrese nombres válidos.</div>
-            <div *ngIf="mostrarError('validaNombre', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
-        </small>
+            <div *ngIf="mostrarError('validaNombre', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos
+              repetidos.</div>
+          </small>
         </div>
         <div class="col-sm-4">
           <label for="apellidos">Apellidos</label>
           <input type="text" class="form-control" id="apellidos" placeholder="Apellidos " maxlength="20"
             formControlName="validaApellido">
-            <small>
-              <div *ngIf="mostrarError('validaApellido', 'required')">El apellido es obligatorio.</div>
-              <div *ngIf="mostrarError('validaApellido', 'pattern')">Ingrese apellidos validos</div>
-              <div *ngIf="mostrarError('validaApellido', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
+          <small>
+            <div *ngIf="mostrarError('validaApellido', 'required')">El apellido es obligatorio.</div>
+            <div *ngIf="mostrarError('validaApellido', 'pattern')">Ingrese apellidos validos</div>
+            <div *ngIf="mostrarError('validaApellido', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos
+              repetidos.</div>
           </small>
         </div>
         <div class="col-sm-4">
           <label for="cargo">Cargo</label>
-          <input type="text" class="form-control" id="cargo" placeholder="Cargo" formControlName="validaCargoRes" maxlength="20"> 
+          <input type="text" class="form-control" id="cargo" placeholder="Cargo" formControlName="validaCargoRes"
+            maxlength="20">
           <small>
             <div *ngIf="mostrarError('validaCargoRes', 'required')"> El cargo es obligatorio.</div>
-          <div *ngIf="mostrarError('validaCargoRes', 'pattern')">Ingrese cargo valido.</div>
-          <div *ngIf="mostrarError('validaCargoRes', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
-        </small>
+            <div *ngIf="mostrarError('validaCargoRes', 'pattern')">Ingrese cargo valido.</div>
+            <div *ngIf="mostrarError('validaCargoRes', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos
+              repetidos.</div>
+          </small>
         </div>
       </div>
       <div class="form-group row">
@@ -102,17 +98,33 @@
           <label for="num-documento">Número de Documento</label>
           <input type="text" class="form-control" id="num-documento" formControlName="validaNumeroDocumento"
             [maxlength]="longitudMaximaDocumento" placeholder="Número de Documento">
-
           <!-- Mensajes de validación -->
-          <small *ngIf="mostrarError('validaNumeroDocumento', 'required')">El número es obligatorio.</small>
-          <small *ngIf="mostrarError('validaNumeroDocumento', 'pattern')">Formato inválido.</small>
+          <small *ngIf="mostrarError('validaNumeroDocumento', 'required')">
+            El número de documento es obligatorio.
+          </small>
           <small *ngIf="mostrarError('validaNumeroDocumento', 'tipoDocumentoNoSeleccionado')">
-            Seleccione un tipo de documento primero.
+            Seleccione un tipo de documento antes de ingresar el número.
           </small>
           <small *ngIf="mostrarError('validaNumeroDocumento', 'numDocExiste')">
-            El número de documento ya está registrado.
+            El número de documento ya está registrado en el sistema. Ingrese otro.
+          </small>
+          <small *ngIf="mostrarError('validaNumeroDocumento', 'formatoInvalido')">
+            El número de documento tiene un formato inválido.
+          </small>
+          <small *ngIf="mostrarError('validaNumeroDocumento', 'documentoInvalido')">
+            El número de documento no puede contener una secuencia repetitiva.
+          </small>
+          <small *ngIf="mostrarError('validaNumeroDocumento', 'formatoInvalido')">
+            <ng-container [ngSwitch]="formRegistra.get('validaTipoDocumento')?.value">
+              <span *ngSwitchCase="1">Debe tener exactamente 8 dígitos numéricos para el DNI.</span>
+              <span *ngSwitchCase="2">Debe tener entre 9 y 12 caracteres alfanuméricos para el pasaporte.</span>
+              <span *ngSwitchCase="3">Debe tener exactamente 9 caracteres alfanuméricos para el carnet de
+                extranjería.</span>
+              <span *ngSwitchDefault>El formato es inválido para el tipo de documento seleccionado.</span>
+            </ng-container>
           </small>
         </div>
+
       </div>
       <div class="action-buttons">
         <button class="btn btn-success" type="button" (click)="registrarRepresentante()"
@@ -166,7 +178,8 @@
             <div class="form-group">
               <label for="ruc">RUC</label>
               <input type="text" id="ruc" formControlName="ruc" class="form-control" placeholder="Ingrese el RUC">
-              <small *ngIf="mostrarErrorProveedor('ruc', 'pattern')">Formato Inválido</small>
+              <small *ngIf="mostrarErrorProveedor('ruc', 'pattern')">Formato Inválido, Debe tener exactamente 11 dígitos
+                numéricos.</small>
               <small *ngIf="mostrarErrorProveedor('ruc', 'required')">El ruc es obligatorio.</small>
               <small *ngIf="mostrarErrorProveedor('ruc', 'rucExiste')">El ruc ya está registrado.</small>
 
@@ -175,7 +188,8 @@
               <label for="razonSocial">Razón Social</label>
               <input type="text" id="razonSocial" formControlName="razonSocial" class="form-control"
                 placeholder="Ingrese la Razón Social">
-              <small *ngIf="mostrarErrorProveedor('razonSocial', 'pattern')">Formato Inválido</small>
+              <small *ngIf="mostrarErrorProveedor('razonSocial', 'pattern')">La Razón Social debe
+                contener solo letras, números, puntos, guiones, espacios y tildes.</small>
               <small *ngIf="mostrarErrorProveedor('razonSocial', 'required')">La Razón Social es obligatorio.</small>
               <small *ngIf="mostrarErrorProveedor('razonSocial', 'razonSocialExiste')">Ya está registrado.</small>
             </div>
@@ -183,10 +197,13 @@
               <label for="descripcion">Descripción</label>
               <textarea id="descripcion" formControlName="descripcion" class="form-control"
                 placeholder="Ingrese la descripción del producto o servicio"></textarea>
-              <div
-                *ngIf="formRegistrarProveedor.get('descripcion')?.invalid && formRegistrarProveedor.get('descripcion')?.touched">
-                <span class="text-danger">La descripción es obligatoria.</span>
-              </div>
+              <small *ngIf="mostrarErrorProveedor('descripcion', 'required')">La descripción es obligatoria.</small>
+              <small *ngIf="mostrarErrorProveedor('descripcion', 'minlength')">Debe tener al menos 10
+                caracteres.</small>
+              <small *ngIf="mostrarErrorProveedor('descripcion', 'pattern')">
+                La descripción debe contener solo letras, números, puntos, guiones, espacios y tildes.
+              </small>
+
             </div>
             <button type="button" class="btn btn-primary" (click)="registrarProveedor()"
               [disabled]="!formRegistrarProveedor.valid">Registrar Proveedor</button>
