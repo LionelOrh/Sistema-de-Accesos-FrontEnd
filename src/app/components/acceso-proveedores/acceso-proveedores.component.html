@@ -141,7 +141,11 @@
         </div>
         <div class="modal-body">
           <input type="text" class="form-control" placeholder="Buscar por Razón Social" [(ngModel)]="filterRazonSocial"
-            (input)="consultarProveedores()">
+            (input)="consultarProveedores()"
+            (input)="validarBusquedaRazonSocial()">
+            <small *ngIf="errorRazonSocial">
+              La búsqueda contiene caracteres no permitidos. Solo se permiten letras, números, espacios, guiones y puntos.
+            </small>
           <table class="table">
             <thead>
               <tr>

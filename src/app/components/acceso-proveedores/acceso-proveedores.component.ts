@@ -33,6 +33,7 @@ export class AccesoProveedorComponent {
 
   longitudMaximaDocumento: number = 8;
 
+  errorRazonSocial: boolean = false;
   @ViewChild('barcode', { static: false }) barcodeElement!: ElementRef;
 
   constructor(
@@ -115,6 +116,19 @@ export class AccesoProveedorComponent {
         this.validarRazonSocialEnBackend(razonSocial);
       }
     });
+
+    
+  }
+
+  validarBusquedaRazonSocial(): void {
+    const pattern = /^[a-zA-ZÀ-ÿ0-9\s\-.]*$/; // Solo permite letras, números, espacios, guiones y puntos
+    this.errorRazonSocial = !pattern.test(this.filterRazonSocial);
+  
+    if (!this.errorRazonSocial) {
+      this.consultarProveedores(); // Llama al método para buscar proveedores si no hay errores
+    } else {
+      this.proveedores = []; // Limpia los resultados si hay error
+    }
   }
 
   // Validador para el número de documento
@@ -299,6 +313,7 @@ export class AccesoProveedorComponent {
     this.showBuscarModal = false;
     this.filterRazonSocial = ''; // Limpiar el filtro de búsqueda
     this.proveedores = []; // Limpiar la lista de resultados
+    this.errorRazonSocial = false;
   }
 
   openRegistrarModal() {
