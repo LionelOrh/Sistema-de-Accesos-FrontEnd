@@ -22,7 +22,7 @@ export class InvitadoService {
   }
   // Método para validar si un número de documento existe
   validarNumeroDocumento(numDoc: string): Observable<{ existe: boolean }> {
-    return this.http.get<{ existe: boolean }>(`${baseUrlUtil}/validar-numDoc`, {
+    return this.http.get<{ existe: boolean }>(`${baseUrlUtil}/validar-numDocUsuario`, {
       params: { numDoc },
     });
   }
