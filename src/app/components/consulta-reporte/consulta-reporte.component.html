@@ -34,22 +34,23 @@
             Solo se permiten letras y números.
           </mat-error>
         </mat-form-field>
-
         <mat-form-field class="col-md-4">
           <mat-label>Fecha (Desde)</mat-label>
-          <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde" [max]="maxDate"
-            (keypress)="allowNumbersOnly($event)">
+          <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde" [max]="maxDate" readonly>
           <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
+          <mat-error *ngIf="varFechaAccesoDesde">
+            La fecha "Desde" no puede ser mayor que la fecha "Hasta".
+          </mat-error>
         </mat-form-field>
-
+        
         <mat-form-field class="col-md-4">
           <mat-label>Fecha (Hasta)</mat-label>
-          <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta" [max]="maxDate"
-            (keypress)="allowNumbersOnly($event)">
+          <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta" [max]="maxDate" readonly>
           <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
           <mat-datepicker #picker2></mat-datepicker>
         </mat-form-field>
+        
 
       </div>
 
@@ -129,27 +130,29 @@
       <div class="row justify-content-center">
         <mat-form-field class="col-md-4">
           <mat-label>Nro Documento</mat-label>
-          <input matInput [(ngModel)]="varNumDocRe" pattern="^[0-9]*$" (keypress)="allowOnlyNumbers($event)">
-          <mat-error *ngIf="varNumDocRe && !varNumDocRe.match('^[0-9]*$')">
+          <input matInput [(ngModel)]="varNumDocRe" pattern="^[a-zA-Z0-9]*$" (keypress)="allowLettersAndNumbers($event)" >
+          <mat-error *ngIf="varNumDocRe && !varNumDocRe.match('^[a-zA-Z0-9]*$')">
             Solo se permiten números.
           </mat-error>
         </mat-form-field>
 
         <mat-form-field class="col-md-4">
           <mat-label>Fecha (Desde)</mat-label>
-          <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde" [max]="maxDate"
-            (keypress)="allowNumbersOnly($event)">
+          <input matInput [matDatepicker]="picker1" [(ngModel)]="varFechaAccesoDesde" [max]="maxDate" readonly>
           <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
+          <mat-error *ngIf="varFechaAccesoDesde">
+            La fecha "Desde" no puede ser mayor que la fecha "Hasta".
+          </mat-error>
         </mat-form-field>
-
+        
         <mat-form-field class="col-md-4">
           <mat-label>Fecha (Hasta)</mat-label>
-          <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta" [max]="maxDate"
-            (keypress)="allowNumbersOnly($event)">
+          <input matInput [matDatepicker]="picker2" [(ngModel)]="varFechaAccesoHasta" [max]="maxDate" readonly>
           <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
           <mat-datepicker #picker2></mat-datepicker>
         </mat-form-field>
+        
 
       </div>
 

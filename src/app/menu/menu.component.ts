@@ -44,7 +44,10 @@ export class MenuComponent implements OnInit {
     const now = new Date();
     this.horaActual = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     const hour = now.getHours();
-    if (hour < 12) {
+    
+    if (hour < 6) {
+      this.saludo = '¡Buenas madrugadas!';
+    } else if (hour < 12) {
       this.saludo = '¡Buenos días!';
     } else if (hour < 18) {
       this.saludo = '¡Buenas tardes!';
@@ -52,7 +55,7 @@ export class MenuComponent implements OnInit {
       this.saludo = '¡Buenas noches!';
     }
   }
-
+  
   get fechaActual(): string {
     const now = new Date();
     const options: Intl.DateTimeFormatOptions = {
