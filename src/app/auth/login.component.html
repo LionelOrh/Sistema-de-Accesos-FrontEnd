@@ -6,7 +6,6 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     </head>
-
     <body>
         <div class="login-wrapper">
             <div class="login-card">
@@ -54,11 +53,15 @@
                 </form>
             </div>
         </div>
-
+          
       <!-- Alerta flotante -->
 <div *ngIf="showAlert" class="alert-float">
     {{ alertMessage }}
 </div>
+<div *ngIf="showAlert" class="alert-float">
+    <p>{{ alertMessage }}</p>
+    <p *ngIf="failedAttempts >= 3">Tiempo restante: {{ formattedTime }}</p>
+  </div>
 
     </body>
 </ng-template>

@@ -239,7 +239,6 @@ body {
   cursor: pointer;
 }
 
-
 /* Modal */
 .modal {
   display: flex;
@@ -248,104 +247,137 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  /* Fondo oscuro */
-  z-index: 1000;
-  /* Asegura que el modal esté por encima de otros elementos */
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Fondo oscuro con más opacidad */
+  backdrop-filter: blur(5px); /* Efecto de desenfoque en el fondo */
+  z-index: 1000; /* Asegura que el modal esté por encima */
 }
 
 /* Contenido del modal */
 .modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
+  background: linear-gradient(135deg, #ffffff, #f8f9fa); /* Gradiente sutil */
+  padding: 30px;
+  border-radius: 20px;
   position: relative;
-  width: 80%;
-  height: 50%;
-  max-width: 600px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 550px;
+  max-height: 500px; /* Altura considerable */
+  overflow-y: auto; /* Permite desplazarse si el contenido excede la altura */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); /* Sombra elegante */
+  text-align: center;
+  box-sizing: border-box;
+  animation: fadeIn 0.5s ease-in-out; /* Animación de entrada */
+}
+
+
+/* Animación del modal */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Botón de cerrar */
 .close-btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 30px;
-  font-weight: bold;
-  color: #333;
+  top: 15px;
+  right: 15px;
+  font-size: 22px;
+  color: #666;
+  background: #e0e0e0;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .close-btn:hover {
-  color: red;
+  background-color: #ff4d4d;
+  color: #fff;
+  transform: scale(1.1);
 }
 
-/* Contenedor del escáner (ajustado para hacer la cámara más pequeña) */
+/* Contenedor del escáner */
 .scanner-container {
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   padding: 20px;
-  border: 2px dashed #2196F3;
-  /* Borde azul para destacar el escáner de códigos de barras */
-  border-radius: 10px;
-  background-color: #f0f4f8;
-  /* Fondo más suave */
-  margin-top: 20px;
-  height: 290px;
-  /* Reducir la altura del contenedor */
+  border: 3px dashed #00c853; /* Verde brillante */
+  border-radius: 20px;
+  background-color: #f1f8e9; /* Fondo verde claro */
   width: 100%;
-  /* Hacer el contenedor más pequeño en anchura */
   box-sizing: border-box;
-  position: relative;
-  overflow: hidden;
-  /* Evita que el escáner sobresalga del contenedor */
+  overflow: hidden; /* Evita desbordamientos */
+  text-align: center;
 }
 
-/* Caja del escáner (más pequeña para el código de barras) */
+/* Caja del escáner */
 .zxing-scanner {
-  width: 100%;
-  height: 100%;
-  max-width: 100px;
-  /* Reducir el tamaño máximo del escáner */
-  border: 2px solid #2196F3;
-  /* Borde azul del escáner */
-  border-radius: 5px;
-  /* Bordes redondeados para la caja del escáner */
-  background-color: #fff;
-  /* Fondo blanco para el área del escáner */
+  border: 4px solid #00c853; /* Verde brillante */
+  border-radius: 8px; /* Bordes suaves */
+  background: radial-gradient(circle, #e0f7fa, #ffffff); /* Efecto visual */
+  display: flex;
+  justify-content: center; /* Centra contenido interno horizontalmente */
+  align-items: center; /* Centra contenido interno verticalmente */
 }
 
-/* Indicador de escaneo (si deseas agregar un efecto visual al escanear) */
+
+/* Indicador de escaneo */
 .scanner-indicator {
   position: absolute;
-  top: 50%;
+  top: 0;
   left: 0;
   width: 100%;
-  height: 3px;
-  background-color: rgba(33, 150, 243, 0.8);
-  /* Línea azul que puede simular el escaneo */
-  animation: scanner-line 2s infinite;
-  /* Animación de escaneo */
+  height: 4px;
+  background: linear-gradient(90deg, rgba(0, 200, 83, 0.6), rgba(0, 200, 83, 0)); /* Línea verde con desvanecimiento */
+  animation: scanner-line 1.5s infinite ease-in-out; /* Animación continua */
 }
-
 
 /* Animación de la línea de escaneo */
 @keyframes scanner-line {
   0% {
     top: 0;
   }
-
   50% {
     top: 50%;
   }
-
   100% {
     top: 100%;
   }
 }
+
+/* Texto debajo del escáner */
+.scanner-text {
+  margin-top: 15px;
+  font-size: 18px;
+  color: #555;
+  font-weight: bold;
+}
+
+/* Efecto responsivo */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    padding: 20px;
+  }
+  .zxing-scanner {
+    width: 200px;
+    height: 200px;
+  }
+}
+
 
 /* Estilos para el botón flotante de WhatsApp */
 .whatsapp-btn {
