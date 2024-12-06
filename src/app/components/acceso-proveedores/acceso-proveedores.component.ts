@@ -49,21 +49,21 @@ export class AccesoProveedorComponent {
 
     // Configurar el formulario
     this.formRegistra = this.formBuilder.group({
+      
       validaRazonSocial: [{ value: '', disabled: true }],
       validaRuc: [{ value: '', disabled: true }],
       validaDes: [{ value: '', disabled: true }],
       validaNombre: ['', [Validators.required, Validators.minLength(3),
       Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
       this.validarEspacios(), this.validarTresLetrasRepetidas()]],
+
       validaApellido: ['', [Validators.required, Validators.minLength(3),
       Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
       this.validarEspacios(), this.validarTresLetrasRepetidas()]],
+     
       validaCargoRes: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
       this.validarEspacios(), this.validarTresLetrasRepetidas()]],
-      validaNumeroDocumento: [
-        '',
-        [Validators.required, this.validarTipoDocumentoAntesDeEscribir()],
-      ],
+      validaNumeroDocumento: ['', [Validators.required, this.validarTipoDocumentoAntesDeEscribir()]],
       validaTipoDocumento: [-1, [Validators.required, this.tipoDocumentoValidator()]],
     });
 
@@ -74,8 +74,8 @@ export class AccesoProveedorComponent {
     });
 
 
-    // Detectar cambios en el tipo de documento
-    this.formRegistra.get('validaTipoDocumento')?.valueChanges.subscribe((tipoDoc) => {
+     // Detectar cambios en el tipo de documento
+     this.formRegistra.get('validaTipoDocumento')?.valueChanges.subscribe((tipoDoc) => {
       const numeroDocumentoControl = this.formRegistra.get('validaNumeroDocumento');
       numeroDocumentoControl?.setValue(''); // Resetear el valor
       numeroDocumentoControl?.clearValidators(); // Limpiar validadores
@@ -96,6 +96,7 @@ export class AccesoProveedorComponent {
       }
       numeroDocumentoControl?.updateValueAndValidity();
     });
+
 
     // Llamada al método de validación en tiempo real
     this.formRegistra.get('validaNumeroDocumento')?.valueChanges.subscribe((numDoc) => {
@@ -130,54 +131,55 @@ export class AccesoProveedorComponent {
       this.proveedores = []; // Limpia los resultados si hay error
     }
   }
-
-  // Validador para el número de documento
   validarNumeroDocumento(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const tipoDoc = this.formRegistra?.get('validaTipoDocumento')?.value;
       const numero = control.value;
-
+  
       if (!numero) {
         return null; // Si no hay valor, no se valida
       }
-
+  
       // Validación para DNI
       if (tipoDoc === 1) { // DNI
         if (!/^[0-9]{8}$/.test(numero)) {
-          return { formatoInvalido: true }; // Debe tener 8 dígitos
+          return { formatoInvalido: 'Debe tener exactamente 8 números' }; // Mensaje claro
         }
         if (/^(\d)\1+$/.test(numero)) {
-          return { documentoInvalido: true }; // No debe ser "00000000" ni secuencias repetitivas
+          return { documentoInvalido: 'No debe ser una secuencia repetitiva de números' }; // Mensaje claro
         }
       }
-
+  
       // Validación para Pasaporte
       if (tipoDoc === 2) { // Pasaporte
-        if (!/^[a-zA-Z0-9]{9,12}$/.test(numero)) {
-          return { formatoInvalido: true }; // Longitud de 9 a 12 caracteres alfanuméricos
+        // Acepta entre 9 y 12 caracteres: letras o números, con una letra opcional al principio o al final
+        const pasaporteRegex = /^[a-zA-Z]?[0-9]{9,12}[a-zA-Z]?$/;
+        if (!pasaporteRegex.test(numero)) {
+          return { formatoInvalido: 'Debe tener entre 9 y 12 caracteres: números con una letra opcional al inicio o final' }; // Mensaje claro
         }
         if (/^([a-zA-Z0-9])\1+$/.test(numero)) {
-          return { documentoInvalido: true }; // No debe ser una secuencia repetitiva
+          return { documentoInvalido: 'No debe ser una secuencia repetitiva' }; // Mensaje claro
         }
       }
-
+  
       // Validación para Carnet de Extranjería
       if (tipoDoc === 3) { // Carnet de Extranjería
-        if (!/^[a-zA-Z0-9]{9}$/.test(numero)) {
-          return { formatoInvalido: true }; // Debe tener exactamente 9 caracteres alfanuméricos
+        // Exactamente 9 caracteres: números con una letra opcional al inicio o final
+        const carnetRegex = /^[a-zA-Z]?[0-9]{9}[a-zA-Z]?$/; 
+        if (!carnetRegex.test(numero)) {
+          return { formatoInvalido: 'Debe tener exactamente 9 caracteres: números con una letra opcional al inicio o final' }; // Mensaje claro
         }
         if (/^([a-zA-Z0-9])\1+$/.test(numero)) {
-          return { documentoInvalido: true }; // No debe ser una secuencia repetitiva
+          return { documentoInvalido: 'No debe ser una secuencia repetitiva' }; // Mensaje claro
         }
       }
-
-      // Validaciones adicionales para otros tipos de documentos
-      // Aquí puedes añadir más tipos según las reglas específicas
-
-      return null; // Sin errores
+  
+      return null; // Si todas las validaciones pasan
     };
   }
-
+  
+  
+  
   // Validación adicional en tiempo real
   validarSecuenciaRepetida(): void {
     const control = this.formRegistra.get('validaNumeroDocumento');
