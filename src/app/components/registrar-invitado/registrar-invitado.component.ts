@@ -162,26 +162,16 @@ export class RegistrarExternoComponent {
     };
   }
 
-  
-  
-  // Métodos adicionales de validación
-  validarEspacios(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value && /\s/.test(control.value)) {
-        return { espacioNoPermitido: true };
-      }
-      return null;
-    };
+  // Actualizar validación del número de documento
+  actualizarValidacionDocumento(pattern: string): void {
+    this.formRegistra.get('validaNumeroDocumento')?.setValidators([ 
+      Validators.required, 
+      Validators.pattern(pattern), 
+      this.validarTipoDocumentoAntesDeEscribir(),
+    ]);
+    this.formRegistra.get('validaNumeroDocumento')?.updateValueAndValidity();
   }
-
-  validarTresLetrasRepetidas(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value && /([a-zA-Z])\1\1/.test(control.value)) {
-        return { tresLetrasRepetidas: true };
-      }
-      return null;
-    };
-  }
+  
 
 // Mostrar errores dinámicos
 mostrarError(campo: string, error: string): boolean {

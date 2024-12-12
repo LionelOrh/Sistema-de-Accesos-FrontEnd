@@ -46,13 +46,17 @@ export class ConsultaReporteComponent implements OnInit {
   displayedColumns = ["login", "nombres", "apellidos", "numDoc", "fecha", "hora", "estado"];
   displayedColumnsRepresentante = ["nombre", "apellido", "cargo", "numDocs", "proveedor", "fechas", "horas", "estados"];
 
-  // Interno y externo
+  // Función para deshabilitar los botones de exportación si no hay datos
+  isExportDisabled(): boolean {
+    return !this.dataSource?.data?.length && !this.dataSourceRepresentante?.data?.length;
+  }
+
   // Variables
   varLoginOrNumDoc: string = "";
   varNumDocRe: string = "";
-  varFechaAccesoDesde: Date = new Date(2024, 0, 1);
+  varFechaAccesoDesde: Date = new Date(2024, 7, 1);
   varFechaAccesoHasta: Date = new Date();
-  varFechaAccesoDesdeR: Date = new Date(2024, 0, 1);
+  varFechaAccesoDesdeR: Date = new Date(2024, 7, 1);
   varFechaAccesoHastaR: Date = new Date();
 
   //Validación en los campos de Login/NroDoc y NroDoc
@@ -94,7 +98,7 @@ export class ConsultaReporteComponent implements OnInit {
     return true;
   }
 
- 
+
   async filtrar() {
     if (!this.validarFechas()) return;
 
@@ -205,6 +209,18 @@ export class ConsultaReporteComponent implements OnInit {
   }
 
   exportarExcel() {
+       // Verifica el valor de loginOrNumDoc antes de hacer la solicitud
+       console.log('loginOrNumDoc:', this.varLoginOrNumDoc);
+
+    if (this.isExportDisabled()) {
+      Swal.fire({
+        title: 'No hay datos para exportar',
+        text: 'Debe filtrar y obtener resultados antes de exportar.',
+        icon: 'warning',
+        showConfirmButton: true
+      });
+      return;
+    }
     console.log(">>> Exportar Excel");
     console.log(">>> varLogin: " + this.varLoginOrNumDoc);
     console.log(">>> varFechaDesde: " + this.formatDate(this.varFechaAccesoDesde));
@@ -231,6 +247,15 @@ export class ConsultaReporteComponent implements OnInit {
   }
 
   exportarExcelRepresentante() {
+    if (this.isExportDisabled()) {
+      Swal.fire({
+        title: 'No hay datos para exportar',
+        text: 'Debe filtrar y obtener resultados antes de exportar.',
+        icon: 'warning',
+        showConfirmButton: true
+      });
+      return;
+    }
     console.log(">>> Exportar Excel Representante");
     console.log(">>> varNumDocRe: " + this.varNumDocRe);
 

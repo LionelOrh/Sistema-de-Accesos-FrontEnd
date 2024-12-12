@@ -101,16 +101,19 @@
                 </div>
             </div>
 
-            <!-- Campo Motivo -->
-            <div class="form-group">
-                <label for="motivo">Motivo</label>
-                <textarea formControlName="validaMotivo" id="motivo" class="form-control" rows="3" placeholder="Motivo" maxlength="100"></textarea>
-                <small>
-                    <div *ngIf="mostrarError('validaMotivo', 'required')">El motivo es obligatorio.</div>
-                    <div *ngIf="mostrarError('validaMotivo', 'pattern')">Ingrese como mínimo 15 caracteres.</div>
-                    <div *ngIf="mostrarError('validaMotivo', 'minlength')">Debe tener al menos 15 caracteres.</div>
-                </small>
-            </div>
+
+      <!-- Campo Motivo -->
+<div class="form-group">
+    <label for="motivo">Motivo</label>
+    <textarea formControlName="validaMotivo" id="motivo" class="form-control" rows="3" placeholder="Motivo" maxlength="100"></textarea>
+    <small>
+      <div *ngIf="mostrarError('validaMotivo', 'required')">El motivo es obligatorio.</div>
+      <div *ngIf="mostrarError('validaMotivo', 'minlength')">Debe tener al menos 15 caracteres.</div>
+      <div *ngIf="mostrarError('validaMotivo', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
+    </small>
+  </div>
+  
+>>>>>>> origin/master
 
             <!-- Botón de Registro -->
             <div class="text-center">
