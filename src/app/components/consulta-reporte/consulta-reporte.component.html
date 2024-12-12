@@ -71,22 +71,22 @@
 
           <ng-container matColumnDef="login">
             <mat-header-cell *matHeaderCellDef>Código</mat-header-cell>
-            <mat-cell *matCellDef="let aux">{{ aux.usuario?.login || 'Código no registrado' }}</mat-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.codigoIE || 'Código no registrado' }}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="nombres">
             <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
-            <mat-cell *matCellDef="let aux">{{ aux.usuario?.nombres || 'Nombre no registrado' }}</mat-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.nombresIE || 'Nombre no registrado' }}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="apellidos">
             <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
-            <mat-cell *matCellDef="let aux">{{ aux.usuario?.apellidos || 'Apellido no registrado' }}</mat-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.apellidosIE || 'Apellido no registrado' }}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="numDoc">
             <mat-header-cell *matHeaderCellDef>Nro Documento</mat-header-cell>
-            <mat-cell *matCellDef="let aux">{{ aux.usuario?.numDoc || 'Nro Documento no registrado' }}</mat-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.numDocIE || 'Nro Documento no registrado' }}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="fecha">
@@ -173,27 +173,27 @@
 
           <ng-container matColumnDef="nombre">
             <mat-header-cell *matHeaderCellDef>Nombres</mat-header-cell>
-            <mat-cell *matCellDef="let aux">{{ aux.representante?.nombres || 'Nombre no registrado' }}</mat-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.nombresRepresentante || 'Nombre no registrado' }}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="apellido">
             <mat-header-cell *matHeaderCellDef>Apellidos</mat-header-cell>
-            <mat-cell *matCellDef="let aux">{{ aux.representante?.apellidos || 'Apellido no registrado' }}</mat-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.apellidosRepresentante || 'Apellido no registrado' }}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="cargo">
             <mat-header-cell *matHeaderCellDef>Cargo</mat-header-cell>
-            <mat-cell *matCellDef="let aux">{{ aux.representante?.cargo || 'Cargo no registrado' }}</mat-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.cargoRepresentante || 'Cargo no registrado' }}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="numDocs">
             <mat-header-cell *matHeaderCellDef>Nro Documento</mat-header-cell>
-            <mat-cell *matCellDef="let aux">{{ aux.representante?.numDoc || 'Nro Documento no registrado' }}</mat-cell>
+            <mat-cell *matCellDef="let aux">{{ aux.numDocRepresentante || 'Nro Documento no registrado' }}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="proveedor">
             <mat-header-cell *matHeaderCellDef>Proveedor</mat-header-cell>
-            <mat-cell *matCellDef="let aux">{{ aux.representante.proveedor?.razonSocial || 'Proveedor no registrado'
+            <mat-cell *matCellDef="let aux">{{ aux.razonSocialProveedor || 'Proveedor no registrado'
               }}</mat-cell>
           </ng-container>
 
