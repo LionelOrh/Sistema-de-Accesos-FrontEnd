@@ -162,33 +162,14 @@ export class RegistrarExternoComponent {
     };
   }
 
-  
-  
-  // Métodos adicionales de validación
-  validarEspacios(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value && /\s/.test(control.value)) {
-        return { espacioNoPermitido: true };
-      }
-      return null;
-    };
-  }
-
-  validarTresLetrasRepetidas(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const valor = control.value;
-      if (!valor) return null;
-  
-      // Expresión regular para detectar tres caracteres consecutivos repetidos (letras o números)
-      const regex = /([a-zA-Z0-9])\1\1/;
-  
-      // Si se encuentra una secuencia de tres caracteres repetidos consecutivos, se devuelve el error
-      if (regex.test(valor)) {
-        return { tresLetrasRepetidas: true };
-      }
-  
-      return null; // Si no hay secuencias repetidas, la validación pasa
-    };
+  // Actualizar validación del número de documento
+  actualizarValidacionDocumento(pattern: string): void {
+    this.formRegistra.get('validaNumeroDocumento')?.setValidators([ 
+      Validators.required, 
+      Validators.pattern(pattern), 
+      this.validarTipoDocumentoAntesDeEscribir(),
+    ]);
+    this.formRegistra.get('validaNumeroDocumento')?.updateValueAndValidity();
   }
   
 
