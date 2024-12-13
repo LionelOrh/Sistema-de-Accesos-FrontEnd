@@ -228,6 +228,16 @@ if (tipoDoc === 3) {
   
       return null; // Si no hay secuencias repetidas, la validación pasa
     };
+
+  // Actualizar validación del número de documento
+  actualizarValidacionDocumento(pattern: string): void {
+    this.formRegistra.get('validaNumeroDocumento')?.setValidators([ 
+      Validators.required, 
+      Validators.pattern(pattern), 
+      this.validarTipoDocumentoAntesDeEscribir(),
+    ]);
+    this.formRegistra.get('validaNumeroDocumento')?.updateValueAndValidity();
+
   }
   
 
