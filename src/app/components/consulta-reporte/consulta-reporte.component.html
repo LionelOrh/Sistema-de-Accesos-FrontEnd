@@ -29,7 +29,7 @@
         <mat-form-field class="col-md-4">
           <mat-label>Código o Nro Documento</mat-label>
           <input matInput [(ngModel)]="varLoginOrNumDoc" pattern="^[a-zA-Z0-9]*$"
-            (keypress)="allowLettersAndNumbers($event)">
+            (keypress)="allowLettersAndNumbers($event)"  maxlength="12">
           <mat-error *ngIf="varLoginOrNumDoc && !varLoginOrNumDoc.match('^[a-zA-Z0-9]*$')">
             Solo se permiten letras y números.
           </mat-error>
@@ -131,7 +131,7 @@
         <mat-form-field class="col-md-4">
           <mat-label>Nro Documento</mat-label>
           <input matInput [(ngModel)]="varNumDocRe" pattern="^[a-zA-Z0-9]*$" (keypress)="allowLettersAndNumbers($event)" >
-          <mat-error *ngIf="varNumDocRe && !varNumDocRe.match('^[a-zA-Z0-9]*$')">
+          <mat-error *ngIf="varNumDocRe && !varNumDocRe.match('^[a-zA-Z0-9]*$')"  maxlength="12">
             Solo se permiten números.
           </mat-error>
         </mat-form-field>

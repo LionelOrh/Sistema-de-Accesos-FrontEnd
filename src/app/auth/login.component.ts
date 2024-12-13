@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
   alertMessage = '';
   failedAttempts: number = 0;  // Contador de intentos fallidos
   blockTime: number = 0;       // Tiempo en que el usuario podrá reintentar el login
-  lockTime: number = 5;        // Tiempo de bloqueo en minutos
+  lockTime: number = 1;        // Tiempo de bloqueo en minutos
   remainingTime: number = 0;   // Tiempo restante para reintentar
   timerInterval: any;          // Referencia al setInterval para actualizar el tiempo restante
   formattedTime = ''; // Tiempo formateado en mm:ss

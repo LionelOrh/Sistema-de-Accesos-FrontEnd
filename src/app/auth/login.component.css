@@ -175,3 +175,36 @@ h2 {
         right: 0;
     }
 }
+
+/* Estilo para cambiar la imagen del logo cuando el campo de contraseña está activo */
+.eye-effect {
+    background-image: url('/assets/img/eye-closed.png'); /* Imagen de un ojo tapado */
+    background-size: cover;
+    background-position: center;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+/* Asegúrate de que la imagen del logo se vea correctamente */
+.login-wrapper .logo-circle img {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+}
+
+/* Efecto del botón del ojo */
+.btn-toggle-password {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-toggle-password i {
+    font-size: 1.2em;
+    color: #555;
+}
+
+input[type="password"]:focus + .input-group-append .btn-toggle-password {
+    color: #007bff; /* Cambiar el color del ícono cuando el campo tiene el foco */
+}
