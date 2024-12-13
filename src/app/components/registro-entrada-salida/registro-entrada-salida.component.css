@@ -379,10 +379,11 @@ body {
 
 
 /* Estilos para el botón flotante de WhatsApp */
+/* Estilos para el botón flotante de WhatsApp */
 .whatsapp-btn {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: 90px;     /* Distancia desde la parte inferior */
+  right: 30px;      /* Distancia desde la derecha */
   background-color: #25d366;
   border-radius: 50%;
   padding: 15px;
@@ -390,6 +391,7 @@ body {
   display: inline-block;
   text-decoration: none;
   transition: background-color 0.3s ease;
+  z-index: 1000;    /* Valor de z-index más alto para que esté encima del chatbot */
 }
 
 .whatsapp-btn i {

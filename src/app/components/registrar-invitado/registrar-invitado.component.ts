@@ -162,6 +162,38 @@ export class RegistrarExternoComponent {
     };
   }
 
+// Validación para no permitir espacios consecutivos ni al inicio o final
+validarEspacios(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (!control.value) return null; // Si no hay valor, no validamos
+
+    const value = control.value.trim(); // Elimina espacios al inicio y al final
+    if (/ {2,}/.test(value)) { // Si hay espacios consecutivos
+      return { espaciosConsecutivos: 'No se permiten espacios consecutivos' };
+    }
+    if (value !== control.value) { // Si el valor tiene espacios al inicio o al final
+      return { espaciosInnecesarios: 'No debe empezar ni terminar con espacios' };
+    }
+
+    return null;
+  };
+}
+
+// Validación para no permitir tres letras consecutivas repetidas (como 'aaa', 'bbb')
+validarTresLetrasRepetidas(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (!control.value) return null; // Si no hay valor, no validamos
+
+    const value = control.value.toLowerCase();
+    if (/([a-z])\1\1/.test(value)) { // Si hay tres letras repetidas
+      return { letrasRepetidas: 'No se permiten tres letras repetidas' };
+    }
+
+    return null;
+  };
+}
+
+  
   // Actualizar validación del número de documento
   actualizarValidacionDocumento(pattern: string): void {
     this.formRegistra.get('validaNumeroDocumento')?.setValidators([ 
