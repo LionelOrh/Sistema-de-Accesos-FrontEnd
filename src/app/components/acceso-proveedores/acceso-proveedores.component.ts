@@ -53,13 +53,21 @@ export class AccesoProveedorComponent {
       validaRazonSocial: [{ value: '', disabled: true }],
       validaRuc: [{ value: '', disabled: true }],
       validaDes: [{ value: '', disabled: true }],
-      validaNombre: ['', [Validators.required, Validators.minLength(3),
-      Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
-      this.validarEspacios(), this.validarTresLetrasRepetidas()]],
-
-      validaApellido: ['', [Validators.required, Validators.minLength(3),
-      Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
-      this.validarEspacios(), this.validarTresLetrasRepetidas()]],
+      validaNombre: ['', [
+        Validators.required, 
+        Validators.minLength(3), 
+        Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}(?:\\s[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,})*$'), 
+        this.validarEspacios(), 
+        this.validarTresLetrasRepetidas()
+      ]],
+      
+      validaApellido: ['', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}(?:\\s[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,})*$'),
+        this.validarEspacios(),
+        this.validarTresLetrasRepetidas()
+      ]],
      
       validaCargoRes: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
       this.validarEspacios(), this.validarTresLetrasRepetidas()]],
@@ -150,28 +158,31 @@ export class AccesoProveedorComponent {
         }
       }
   
-      // Validación para Pasaporte
-      if (tipoDoc === 2) { // Pasaporte
-        // Acepta entre 9 y 12 caracteres: letras o números, con una letra opcional al principio o al final
-        const pasaporteRegex = /^[a-zA-Z]?[0-9]{9,12}[a-zA-Z]?$/;
-        if (!pasaporteRegex.test(numero)) {
-          return { formatoInvalido: 'Debe tener entre 9 y 12 caracteres: números con una letra opcional al inicio o final' }; // Mensaje claro
-        }
-        if (/^([a-zA-Z0-9])\1+$/.test(numero)) {
-          return { documentoInvalido: 'No debe ser una secuencia repetitiva' }; // Mensaje claro
-        }
+      if (tipoDoc === 2) { 
+        const pasaporteRegex = /^(?=[A-Z0-9]{9,12}$)(?=(.[A-Z]){1,3})[A-Z0-9]$/;
+        const letraCount = (numero.match(/[A-Z]/g) || []).length;
+        if (!pasaporteRegex.test(numero)) {return { formatoInvalido: 'Debe tener entre 9 y 12 caracteres, con al menos 1 letra mayúscula y como máximo 3 letras, y el resto números' };}
+        if (letraCount > 3) {return { formatoInvalido: 'No debe contener más de 3 letras mayúsculas' };}
+        if (/([A-Z0-9])\1{2,}/.test(numero)) {return { documentoInvalido: 'No debe contener secuencias repetidas de caracteres' };}
+        if (!/[A-Z]/.test(numero)) { return { formatoInvalido: 'Debe contener al menos una letra mayúscula' }; }
+        if (/^[0-9]+$/.test(numero)) {return { formatoInvalido: 'No debe contener solo números repetidos' };}
+        if (/([A-Z]{4,})/.test(numero)) {return { formatoInvalido: 'No debe contener más de 3 letras seguidas' };}
+        if (!/[A-Z]/.test(numero)) { return { formatoInvalido: 'Debe contener al menos una letra mayúscula' };}
       }
-  
-      // Validación para Carnet de Extranjería
-      if (tipoDoc === 3) { // Carnet de Extranjería
-        // Exactamente 9 caracteres: números con una letra opcional al inicio o final
-        const carnetRegex = /^[a-zA-Z]?[0-9]{9}[a-zA-Z]?$/; 
-        if (!carnetRegex.test(numero)) {
-          return { formatoInvalido: 'Debe tener exactamente 9 caracteres: números con una letra opcional al inicio o final' }; // Mensaje claro
-        }
-        if (/^([a-zA-Z0-9])\1+$/.test(numero)) {
-          return { documentoInvalido: 'No debe ser una secuencia repetitiva' }; // Mensaje claro
-        }
+      
+      
+      
+      if (tipoDoc === 3) { 
+        const carnetRegex = /^(?=[A-Z0-9]{9,12}$)(?=(.[A-Z]){1,3})[A-Z0-9]$/;
+        const letraCount = (numero.match(/[A-Z]/g) || []).length;
+      
+        if (!carnetRegex.test(numero)) {return { formatoInvalido: 'Debe tener entre 9 y 12 caracteres, con al menos 1 letra mayúscula y como máximo 3 letras, y el resto números' };}
+        if (letraCount > 3) {return { formatoInvalido: 'No debe contener más de 3 letras mayúsculas' };}
+        if (/([A-Z0-9])\1{2,}/.test(numero)) { return { documentoInvalido: 'No debe contener secuencias repetidas de caracteres' }; }
+        if (!/[A-Z]/.test(numero)) { return { formatoInvalido: 'Debe contener al menos una letra mayúscula' };}
+        if (/^[0-9]+$/.test(numero)) {return { formatoInvalido: 'No debe contener solo números repetidos' }; }
+        if (/([A-Z]{4,})/.test(numero)) { return { formatoInvalido: 'No debe contener más de 3 letras seguidas' }; }
+        if (!/[A-Z]/.test(numero)) {return { formatoInvalido: 'Debe contener al menos una letra mayúscula' }; }
       }
   
       return null; // Si todas las validaciones pasan

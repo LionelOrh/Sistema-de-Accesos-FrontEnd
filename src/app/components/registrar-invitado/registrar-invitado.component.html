@@ -16,31 +16,31 @@
        
         <div class="form-container">
             <div class="row">
-                <!-- Campo Nombres -->
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="nombres">Nombres</label>
-                        <input formControlName="validaNombre" class="form-control" placeholder="Nombres" maxlength="20">
-                        <small>
-                            <div *ngIf="mostrarError('validaNombre', 'required')">El nombre es obligatorio.</div>
-                            <div *ngIf="mostrarError('validaNombre', 'pattern')">Ingrese nombres válidos.</div>
-                            <div *ngIf="mostrarError('validaNombre', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
-                        </small>
+                      <!-- Campo Nombres -->
+                      <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="nombres">Nombres</label>
+                            <input formControlName="validaNombre" class="form-control" placeholder="Nombres" maxlength="20">
+                            <small>
+                                <div *ngIf="mostrarError('validaNombre', 'required')">El nombre es obligatorio.</div>
+                                <div *ngIf="mostrarError('validaNombre', 'pattern')">Ingrese nombres válidos.</div>
+                                <div *ngIf="mostrarError('validaNombre', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
+                            </small>
+                        </div>
                     </div>
-                </div>
-
-                <!-- Campo Apellidos -->
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="apellidos">Apellidos</label>
-                        <input formControlName="validaApellido" class="form-control" placeholder="Apellidos" maxlength="20">
-                        <small>
-                            <div *ngIf="mostrarError('validaApellido', 'required')">El apellido es obligatorio.</div>
-                            <div *ngIf="mostrarError('validaApellido', 'pattern')">Ingrese apellidos válidos.</div>
-                            <div *ngIf="mostrarError('validaApellido', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
-                        </small>
+    
+                    <!-- Campo Apellidos -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="apellidos">Apellidos</label>
+                            <input formControlName="validaApellido" class="form-control" placeholder="Apellidos" maxlength="20">
+                            <small>
+                                <div *ngIf="mostrarError('validaApellido', 'required')">El apellido es obligatorio.</div>
+                                <div *ngIf="mostrarError('validaApellido', 'pattern')">Ingrese apellidos validos</div>
+                                <div *ngIf="mostrarError('validaApellido', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
+                            </small>
+                        </div>
                     </div>
-                </div>
 
                 <!-- Campo Celular -->
                 <div class="col-md-4">
@@ -83,7 +83,6 @@
                             <div *ngIf="mostrarError('validaNumeroDocumento', 'numDocExiste')">El número ya está registrado.</div>
                             <div *ngIf="mostrarError('validaNumeroDocumento', 'formatoInvalido')">Formato inválido.</div>
                             <div *ngIf="mostrarError('validaNumeroDocumento', 'documentoInvalido')">Secuencia repetitiva no permitida.</div>
-                        
                         </small>
                     </div>
                 </div>
@@ -102,18 +101,20 @@
                 </div>
             </div>
 
-            <!-- Campo Motivo -->
+
       <!-- Campo Motivo -->
 <div class="form-group">
     <label for="motivo">Motivo</label>
     <textarea formControlName="validaMotivo" id="motivo" class="form-control" rows="3" placeholder="Motivo" maxlength="100"></textarea>
     <small>
-      <div *ngIf="mostrarError('validaMotivo', 'required')">El motivo es obligatorio.</div>
-      <div *ngIf="mostrarError('validaMotivo', 'minlength')">Debe tener al menos 15 caracteres.</div>
-      <div *ngIf="mostrarError('validaMotivo', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
-    </small>
+        <div *ngIf="mostrarError('validaMotivo', 'required')">El motivo es obligatorio.</div>
+        <div *ngIf="mostrarError('validaMotivo', 'minlength')">Debe tener al menos 15 caracteres.</div>
+        <div *ngIf="mostrarError('validaMotivo', 'noSoloEspacios')">No se pueden ingresar solo espacios.</div>
+        <div *ngIf="mostrarError('validaMotivo', 'tresLetrasRepetidas')">No se permiten caracteres consecutivos repetidos.</div>
+      </small>
   </div>
   
+
 
             <!-- Botón de Registro -->
             <div class="text-center">

@@ -36,29 +36,57 @@ export class RegistrarExternoComponent {
 
     // Inicialización del formulario
     this.formRegistra = this.formBuilder.group({
-      validaNombre: ['', [Validators.required, Validators.minLength(3),
-        Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
-        this.validarEspacios(), this.validarTresLetrasRepetidas()]],
-      validaApellido: ['', [Validators.required, Validators.minLength(3),
-        Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
-        this.validarEspacios(), this.validarTresLetrasRepetidas()]],
-      validaCelular: ['', [Validators.required, Validators.pattern('^9[0-9]{8}$')]],
-      validaTipoDocumento: [-1, [Validators.required, this.tipoDocumentoValidator()]],
-      validaNumeroDocumento: ['', [Validators.required, this.validarTipoDocumentoAntesDeEscribir()]],
+      validaNombre: ['', [
+        Validators.required, 
+        Validators.minLength(3), 
+        Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}(?:\\s[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,})*$'), 
+        this.validarEspacios(), 
+        this.validarTresLetrasRepetidas()
+      ]],
+      
+      validaApellido: ['', [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}(?:\\s[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,})*$'),
+        this.validarEspacios(),
+        this.validarTresLetrasRepetidas()
+      ]],
+      
+      validaCelular: ['', [
+        Validators.required, 
+        Validators.pattern('^9[0-9]{8}$')
+      ]],
+      validaTipoDocumento: [-1, [
+        Validators.required, 
+        this.tipoDocumentoValidator()
+      ]],
+
+      validaNumeroDocumento: ['', [
+        Validators.required, 
+        this.validarTipoDocumentoAntesDeEscribir()]],
+
       validaCorreo: ['', [
         Validators.required,
-        Validators.pattern('^[a-zA-Z0-9_-]+@[a-zA-Z]+\\.[a-zA-Z]{3,}$'), // Validación actualizada
+        Validators.pattern('^[a-zA-Z0-9_-]+@[a-zA-Z]+\\.[a-zA-Z]{3,}$'), 
         this.validarEspacios()
       ]],
-      validaMotivo: ['', [Validators.required, Validators.minLength(15),
-        Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s.,]*$'), this.validarTresLetrasRepetidas()]],
+
+      validaMotivo: ['', [
+        Validators.required, 
+        Validators.minLength(15),
+        Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s.,]*$'),
+        this.validarTresLetrasRepetidas(),
+        this.noSoloEspacios()
+      ]],
+      
     });
 
-    // Detectar cambios en el tipo de documento
+
+    
     this.formRegistra.get('validaTipoDocumento')?.valueChanges.subscribe((tipoDoc) => {
       const numeroDocumentoControl = this.formRegistra.get('validaNumeroDocumento');
-      numeroDocumentoControl?.setValue(''); // Resetear el valor
-      numeroDocumentoControl?.clearValidators(); // Limpiar validadores
+      numeroDocumentoControl?.setValue(''); 
+      numeroDocumentoControl?.clearValidators();
 
       switch (tipoDoc) {
         case 1: // DNI
@@ -100,40 +128,51 @@ export class RegistrarExternoComponent {
           return { documentoInvalido: 'No debe ser una secuencia repetitiva de números' }; // Mensaje claro
         }
       }
-  
-      // Validación para Pasaporte
-      if (tipoDoc === 2) { // Pasaporte
-        // Acepta entre 9 y 12 caracteres: letras o números, con una letra opcional al principio o al final
-        const pasaporteRegex = /^[a-zA-Z]?[0-9]{9,12}[a-zA-Z]?$/;
-        if (!pasaporteRegex.test(numero)) {
-          return { formatoInvalido: 'Debe tener entre 9 y 12 caracteres: números con una letra opcional al inicio o final' }; // Mensaje claro
-        }
-        if (/^([a-zA-Z0-9])\1+$/.test(numero)) {
-          return { documentoInvalido: 'No debe ser una secuencia repetitiva' }; // Mensaje claro
-        }
-      }
-  
-      // Validación para Carnet de Extranjería
-      if (tipoDoc === 3) { // Carnet de Extranjería
-        // Exactamente 9 caracteres: números con una letra opcional al inicio o final
-        const carnetRegex = /^[a-zA-Z]?[0-9]{9}[a-zA-Z]?$/; 
-        if (!carnetRegex.test(numero)) {
-          return { formatoInvalido: 'Debe tener exactamente 9 caracteres: números con una letra opcional al inicio o final' }; // Mensaje claro
-        }
-        if (/^([a-zA-Z0-9])\1+$/.test(numero)) {
-          return { documentoInvalido: 'No debe ser una secuencia repetitiva' }; // Mensaje claro
-        }
-      }
-  
+
+
+if (tipoDoc === 2) { 
+  const pasaporteRegex = /^(?=[A-Z0-9]{9,12}$)(?=(.[A-Z]){1,3})[A-Z0-9]$/;
+  const letraCount = (numero.match(/[A-Z]/g) || []).length;
+  if (!pasaporteRegex.test(numero)) {return { formatoInvalido: 'Debe tener entre 9 y 12 caracteres, con al menos 1 letra mayúscula y como máximo 3 letras, y el resto números' };}
+  if (letraCount > 3) {return { formatoInvalido: 'No debe contener más de 3 letras mayúsculas' };}
+  if (/([A-Z0-9])\1{2,}/.test(numero)) {return { documentoInvalido: 'No debe contener secuencias repetidas de caracteres' };}
+  if (!/[A-Z]/.test(numero)) { return { formatoInvalido: 'Debe contener al menos una letra mayúscula' }; }
+  if (/^[0-9]+$/.test(numero)) {return { formatoInvalido: 'No debe contener solo números repetidos' };}
+  if (/([A-Z]{4,})/.test(numero)) {return { formatoInvalido: 'No debe contener más de 3 letras seguidas' };}
+  if (!/[A-Z]/.test(numero)) { return { formatoInvalido: 'Debe contener al menos una letra mayúscula' };}
+}
+
+
+
+if (tipoDoc === 3) { 
+  const carnetRegex = /^(?=[A-Z0-9]{9,12}$)(?=(.[A-Z]){1,3})[A-Z0-9]$/;
+  const letraCount = (numero.match(/[A-Z]/g) || []).length;
+
+  if (!carnetRegex.test(numero)) {return { formatoInvalido: 'Debe tener entre 9 y 12 caracteres, con al menos 1 letra mayúscula y como máximo 3 letras, y el resto números' };}
+  if (letraCount > 3) {return { formatoInvalido: 'No debe contener más de 3 letras mayúsculas' };}
+  if (/([A-Z0-9])\1{2,}/.test(numero)) { return { documentoInvalido: 'No debe contener secuencias repetidas de caracteres' }; }
+  if (!/[A-Z]/.test(numero)) { return { formatoInvalido: 'Debe contener al menos una letra mayúscula' };}
+  if (/^[0-9]+$/.test(numero)) {return { formatoInvalido: 'No debe contener solo números repetidos' }; }
+  if (/([A-Z]{4,})/.test(numero)) { return { formatoInvalido: 'No debe contener más de 3 letras seguidas' }; }
+  if (!/[A-Z]/.test(numero)) {return { formatoInvalido: 'Debe contener al menos una letra mayúscula' }; }
+}
+
       return null; // Si todas las validaciones pasan
     };
   }
+  noSoloEspacios(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (control.value) {
+        const trimmedValue = control.value.trim();  // Elimina espacios al principio y al final
+        if (control.value !== trimmedValue) {
+          return { 'noSoloEspacios': 'No se pueden ingresar solo espacios al final' };
+        }
+      }
+      return null;
+    };
+  }
   
-  
-  
-
-  // Validación adicional en tiempo real
-  validarSecuenciaRepetida(): void {
+    validarSecuenciaRepetida(): void {
     const control = this.formRegistra.get('validaNumeroDocumento');
     if (!control) return;
 
@@ -163,16 +202,16 @@ export class RegistrarExternoComponent {
   }
 
   
-  
-  // Métodos adicionales de validación
   validarEspacios(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value && /\s/.test(control.value)) {
-        return { espacioNoPermitido: true };
+      if (control.value && /\s{2,}/.test(control.value.trim())) {
+        return { espacioNoPermitido: 'No se pueden ingresar espacios consecutivos.' };
       }
       return null;
     };
   }
+  
+  
 
   validarTresLetrasRepetidas(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -190,6 +229,8 @@ export class RegistrarExternoComponent {
       return null; // Si no hay secuencias repetidas, la validación pasa
     };
   }
+  
+
   
 
 // Mostrar errores dinámicos
@@ -239,6 +280,12 @@ registra() {
     Swal.fire('Validación', 'Complete todos los campos correctamente.', 'warning');
   }
 }
+
+
+
+
+
+
 
 // Método para resetear el formulario
 resetearFormulario() {

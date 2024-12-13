@@ -181,7 +181,7 @@
           <form [formGroup]="formRegistrarProveedor">
             <div class="form-group">
               <label for="ruc">RUC</label>
-              <input type="text" id="ruc" formControlName="ruc" class="form-control" placeholder="Ingrese el RUC">
+              <input type="text" id="ruc" formControlName="ruc" class="form-control" placeholder="Ingrese el RUC"  maxlength="11">
               <small *ngIf="mostrarErrorProveedor('ruc', 'pattern')">Formato Inválido, Debe tener exactamente 11 dígitos
                 numéricos.</small>
               <small *ngIf="mostrarErrorProveedor('ruc', 'required')">El ruc es obligatorio.</small>
