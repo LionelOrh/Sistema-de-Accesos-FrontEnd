@@ -77,11 +77,7 @@ export class RegistrarExternoComponent {
           numeroDocumentoControl.setValidators([Validators.required, this.validarNumeroDocumento()]);
           break;
         case 3: // Carnet de Extranjería
-          this.longitudMaximaDocumento = 9;
-          numeroDocumentoControl.setValidators([Validators.required, this.validarNumeroDocumento()]);
-          break;
-        default:
-          this.longitudMaximaDocumento = 9; // Valor por defecto
+          this.longitudMaximaDocumento = 12;
           numeroDocumentoControl.setValidators([Validators.required, this.validarNumeroDocumento()]);
           break;
       }
