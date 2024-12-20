@@ -3,3 +3,12 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; 
 } 
+
+.mat-mdc-raised-button.mat-mdc-button-base {
+    background-color: #f5f5f5 !important; /* Fondo blanco-grisáceo */
+    color: #1976d2 !important; /* Color del texto azul */
+    border-radius: 50px !important; /* Bordes redondeados */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15) !important;
+    text-transform: none !important;
+  }
+  

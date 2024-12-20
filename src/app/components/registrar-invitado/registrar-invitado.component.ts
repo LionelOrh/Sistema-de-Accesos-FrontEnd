@@ -9,10 +9,12 @@ import { InvitadoService } from '../../services/invitado.service';
 import { TokenService } from '../../security/token.service';
 import { Usuario } from '../../models/usuario.model';
 import Swal from 'sweetalert2';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   standalone: true,
-  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule],
+  imports: [AppMaterialModule, FormsModule, CommonModule, MenuComponent, ReactiveFormsModule, MatButtonModule, MatIconModule],
   selector: 'app-registrar-externo',
   templateUrl: './registrar-invitado.component.html',
   styleUrls: ['./registrar-invitado.component.css']
@@ -20,136 +22,311 @@ import Swal from 'sweetalert2';
 export class RegistrarExternoComponent {
   lstTipoDoc: TipoDocumento[] = [];
   formRegistra: FormGroup;
-  objUsuario: Usuario = {};
+  objUsuario = { idUsuario: 0 };
   longitudMaximaDocumento: number = 8; // Longitud inicial para DNI
+
+  botonBuscarHabilitado: boolean = true;
+  botonLimpiarHabilitado: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
-    private utilService: UtilService,
     private invitadoService: InvitadoService,
-    private tokenService: TokenService
+    private utilService: UtilService,
   ) {
-    // Cargar la lista de tipos de documento
+    // Cargar lista de tipos de documento
     this.utilService.listaTipoDocumento().subscribe(
       tipos => this.lstTipoDoc = tipos
     );
 
-    // Inicialización del formulario
+    // Inicializar formulario
     this.formRegistra = this.formBuilder.group({
-      validaNombre: ['', [Validators.required, Validators.minLength(3),
-        Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
-        this.validarEspacios(), this.validarTresLetrasRepetidas()]],
-      validaApellido: ['', [Validators.required, Validators.minLength(3),
-        Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
-        this.validarEspacios(), this.validarTresLetrasRepetidas()]],
-      validaCelular: ['', [Validators.required, Validators.pattern('^9[0-9]{8}$')]],
+      validaNombre: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ ]+$')]],
+      validaApellido: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ ]+$')]],
+      validaCelular: [{ value: '', disabled: true }, [Validators.required, Validators.pattern('^9[0-9]{8}$')]],
       validaTipoDocumento: [-1, [Validators.required, this.tipoDocumentoValidator()]],
       validaNumeroDocumento: ['', [Validators.required, this.validarTipoDocumentoAntesDeEscribir()]],
-      validaCorreo: ['', [
+      validaCorreo: [{ value: '', disabled: true }, [
         Validators.required,
         Validators.pattern('^[a-zA-Z0-9_-]+@[a-zA-Z]+\\.[a-zA-Z]{3,}$'), // Validación actualizada
         this.validarEspacios()
       ]],
-      validaMotivo: ['', [Validators.required, Validators.minLength(15),
-        Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s.,]*$'), this.validarTresLetrasRepetidas()]],
-    });
+      validaMotivo: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(15), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s.,]*$')]],
+    }, { validators: this.validarFormularioCompleto });
 
-    // Detectar cambios en el tipo de documento
+    // Forzar que el formulario sea inválido inicialmente
+    this.formRegistra.updateValueAndValidity();
+
     this.formRegistra.get('validaTipoDocumento')?.valueChanges.subscribe((tipoDoc) => {
       const numeroDocumentoControl = this.formRegistra.get('validaNumeroDocumento');
-      numeroDocumentoControl?.setValue(''); // Resetear el valor
-      numeroDocumentoControl?.clearValidators(); // Limpiar validadores
+      if (!numeroDocumentoControl) return;
 
+      const numeroActual = numeroDocumentoControl.value; // Preservar el valor actual
+
+      // Actualizar validadores basados en el tipo de documento seleccionado
+      numeroDocumentoControl.clearValidators();
       switch (tipoDoc) {
         case 1: // DNI
           this.longitudMaximaDocumento = 8;
-          numeroDocumentoControl?.setValidators([Validators.required, this.validarNumeroDocumento()]);
+          numeroDocumentoControl.setValidators([Validators.required, this.validarNumeroDocumento()]);
           break;
         case 2: // Pasaporte
           this.longitudMaximaDocumento = 12;
-          numeroDocumentoControl?.setValidators([Validators.required, this.validarNumeroDocumento()]);
+          numeroDocumentoControl.setValidators([Validators.required, this.validarNumeroDocumento()]);
           break;
         case 3: // Carnet de Extranjería
           this.longitudMaximaDocumento = 9;
-          numeroDocumentoControl?.setValidators([Validators.required, this.validarNumeroDocumento()]);
+          numeroDocumentoControl.setValidators([Validators.required, this.validarNumeroDocumento()]);
+          break;
+        default:
+          this.longitudMaximaDocumento = 8; // Valor por defecto
+          numeroDocumentoControl.setValidators([Validators.required, this.validarNumeroDocumento()]);
           break;
       }
-      numeroDocumentoControl?.updateValueAndValidity();
+
+      // Validar si el valor actual sigue siendo válido con el nuevo tipo
+      numeroDocumentoControl.updateValueAndValidity();
+      if (numeroDocumentoControl.invalid) {
+        // Si no es válido, limpiar el valor
+        numeroDocumentoControl.setValue('');
+      } else {
+        // Si es válido, mantener el valor actual
+        numeroDocumentoControl.setValue(numeroActual);
+      }
     });
-
-   
-
-    this.objUsuario.idUsuario = this.tokenService.getUserId();
   }
 
-  validarNumeroDocumento(): ValidatorFn {
+  validarFormularioCompleto: ValidatorFn = (form: AbstractControl): ValidationErrors | null => {
+    const nombres = form.get('validaNombre');
+    const apellidos = form.get('validaApellido');
+    const celular = form.get('validaCelular');
+    const correo = form.get('validaCorreo');
+    const motivo = form.get('validaMotivo');
+
+    // Verificar que los campos deshabilitados también tengan valores
+    const camposIncompletos = [nombres, apellidos, celular, correo, motivo].some(
+      (control) => !control?.value || control.invalid
+    );
+
+    return camposIncompletos ? { formularioIncompleto: true } : null;
+  };
+
+  validarEspacios(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
-      const tipoDoc = this.formRegistra?.get('validaTipoDocumento')?.value;
-      const numero = control.value;
-  
-      if (!numero) {
-        return null; // Si no hay valor, no se valida
+      if (!control.value) return null; // Si no hay valor, no validamos
+
+      const value = control.value.trim(); // Elimina espacios al inicio y al final
+      if (/ {2,}/.test(value)) { // Si hay espacios consecutivos
+        return { espaciosConsecutivos: 'No se permiten espacios consecutivos' };
       }
-  
-      // Validación para DNI
-      if (tipoDoc === 1) { // DNI
-        if (!/^[0-9]{8}$/.test(numero)) {
-          return { formatoInvalido: 'Debe tener exactamente 8 números' }; // Mensaje claro
-        }
-        if (/^(\d)\1+$/.test(numero)) {
-          return { documentoInvalido: 'No debe ser una secuencia repetitiva de números' }; // Mensaje claro
-        }
+      if (value !== control.value) { // Si el valor tiene espacios al inicio o al final
+        return { espaciosInnecesarios: 'No debe empezar ni terminar con espacios' };
       }
-  
-      // Validación para Pasaporte
-      if (tipoDoc === 2) { // Pasaporte
-        // Acepta entre 9 y 12 caracteres: letras o números, con una letra opcional al principio o al final
-        const pasaporteRegex = /^[a-zA-Z]?[0-9]{9,12}[a-zA-Z]?$/;
-        if (!pasaporteRegex.test(numero)) {
-          return { formatoInvalido: 'Debe tener entre 9 y 12 caracteres: números con una letra opcional al inicio o final' }; // Mensaje claro
-        }
-        if (/^([a-zA-Z0-9])\1+$/.test(numero)) {
-          return { documentoInvalido: 'No debe ser una secuencia repetitiva' }; // Mensaje claro
-        }
-      }
-  
-      // Validación para Carnet de Extranjería
-      if (tipoDoc === 3) { // Carnet de Extranjería
-        // Exactamente 9 caracteres: números con una letra opcional al inicio o final
-        const carnetRegex = /^[a-zA-Z]?[0-9]{9}[a-zA-Z]?$/; 
-        if (!carnetRegex.test(numero)) {
-          return { formatoInvalido: 'Debe tener exactamente 9 caracteres: números con una letra opcional al inicio o final' }; // Mensaje claro
-        }
-        if (/^([a-zA-Z0-9])\1+$/.test(numero)) {
-          return { documentoInvalido: 'No debe ser una secuencia repetitiva' }; // Mensaje claro
-        }
-      }
-  
-      return null; // Si todas las validaciones pasan
+
+      return null;
     };
   }
-  
-  
-  
 
-  // Validación adicional en tiempo real
-  validarSecuenciaRepetida(): void {
-    const control = this.formRegistra.get('validaNumeroDocumento');
-    if (!control) return;
+  buscar() {
+    const tipoDocControl = this.formRegistra.get('validaTipoDocumento');
+    const numDocControl = this.formRegistra.get('validaNumeroDocumento');
 
-    const tipoDoc = this.formRegistra.get('validaTipoDocumento')?.value;
-    const numero = control.value;
+    // Marcar los controles como tocados para activar mensajes de error
+    tipoDocControl?.markAsTouched();
+    tipoDocControl?.updateValueAndValidity();
+    numDocControl?.markAsTouched();
+    numDocControl?.updateValueAndValidity();
 
-    if (tipoDoc && numero && /^(\w)\1+$/.test(numero)) {
-      control.setErrors({ documentoInvalido: true });
-    } else {
-      const errors = control.errors;
-      if (errors) {
-        delete errors['documentoInvalido'];
-        control.setErrors(Object.keys(errors).length ? errors : null);
-      }
-    }
+    const tipoDoc = tipoDocControl?.value;
+    const numDoc = numDocControl?.value;
+
+    // Validar ambos campos y mostrar un mensaje combinado si faltan ambos
+  if (tipoDoc === -1 && !numDoc) {
+    Swal.fire('Error', 'Debe seleccionar un tipo de documento y completar el número de documento.', 'warning');
+    return;
   }
+
+  // Validar individualmente y mostrar mensajes separados si aplica
+  if (tipoDoc === -1) {
+    Swal.fire('Error', 'Debe seleccionar un tipo de documento.', 'warning');
+    return;
+  }
+
+  if (!numDoc) {
+    Swal.fire('Error', 'Debe ingresar un número de documento válido', 'warning');
+    return;
+  }
+
+    Swal.fire({
+      title: 'Buscando...',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading(),
+    });
+
+    this.invitadoService.buscarUsuario(numDoc).subscribe(
+      (response) => {
+        Swal.close();
+
+        // Llenar los campos con los datos encontrados
+        this.formRegistra.patchValue({
+          validaNombre: response.nombres,
+          validaApellido: response.apellidos,
+          validaCelular: response.celular,
+          validaCorreo: response.correo,
+          validaTipoDocumento: response.idTipoDoc,
+        });
+
+        this.objUsuario.idUsuario = response.idUsuario;
+
+
+
+        // Configurar el estado de los campos
+        this.formRegistra.get('validaTipoDocumento')?.disable(); // Habilitar tipo de documento
+        this.formRegistra.get('validaNumeroDocumento')?.disable(); // Habilitar número de documento
+
+        // Deshabilitar los datos personales encontrados
+        this.formRegistra.get('validaNombre')?.disable();
+        this.formRegistra.get('validaApellido')?.disable();
+        this.formRegistra.get('validaCelular')?.disable();
+        this.formRegistra.get('validaCorreo')?.disable();
+
+        // Motivo siempre habilitado
+        this.formRegistra.get('validaMotivo')?.enable();
+
+        this.botonBuscarHabilitado = false;
+        this.botonLimpiarHabilitado = true;
+
+        // Forzar revalidación del formulario
+        this.formRegistra.updateValueAndValidity();
+      },
+      () => {
+        Swal.close();
+        Swal.fire({
+          title: 'Usuario no encontrado',
+          text: 'Puede registrar uno nuevo.',
+          icon: 'info',
+          confirmButtonText: 'Registrar',
+        });
+
+        // Mantener Tipo de Documento y Número de Documento con sus valores actuales
+        const tipoDocumentoActual = this.formRegistra.value.validaTipoDocumento;
+        const numeroDocumentoActual = this.formRegistra.value.validaNumeroDocumento;
+
+        // Limpiar los campos de datos personales y motivo
+        this.formRegistra.patchValue({
+          validaNombre: '',
+          validaApellido: '',
+          validaCelular: '',
+          validaCorreo: '',
+          validaMotivo: '',
+        });
+
+        this.formRegistra.get('validaNombre')?.enable();
+        this.formRegistra.get('validaApellido')?.enable();
+        this.formRegistra.get('validaCelular')?.enable();
+        this.formRegistra.get('validaCorreo')?.enable();
+        this.formRegistra.get('validaMotivo')?.enable();
+
+        this.formRegistra.patchValue({
+          validaTipoDocumento: tipoDocumentoActual,
+          validaNumeroDocumento: numeroDocumentoActual,
+        });
+        this.formRegistra.get('validaTipoDocumento')?.disable(); // Mantener tipo de documento deshabilitado
+        this.formRegistra.get('validaNumeroDocumento')?.disable(); // Mantener número de documento deshabilitado
+
+        this.objUsuario.idUsuario = 0;
+        // Forzar revalidación del formulario
+        this.formRegistra.updateValueAndValidity();
+        this.botonBuscarHabilitado = false;
+        this.botonLimpiarHabilitado = true;
+      }
+    );
+  }
+
+
+
+
+  registra() {
+    if (this.formRegistra.invalid) {
+      Swal.fire('Error', 'Complete todos los campos correctamente.', 'warning');
+      return;
+    }
+
+    const data = this.objUsuario.idUsuario
+      ? { usuario: { idUsuario: this.objUsuario.idUsuario }, motivo: this.formRegistra.value.validaMotivo }
+      : {
+        usuario: {
+          nombres: this.formRegistra.value.validaNombre,
+          apellidos: this.formRegistra.value.validaApellido,
+          celular: this.formRegistra.value.validaCelular,
+          correo: this.formRegistra.value.validaCorreo,
+          numDoc: this.formRegistra.get('validaNumeroDocumento')?.value, // Asegúrate de tomar el valor correctamente
+          tipodocumento: { idTipoDoc: this.formRegistra.get('validaTipoDocumento')?.value } // Asegúrate de tomar el valor correctamente
+        },
+        motivo: this.formRegistra.value.validaMotivo
+      };
+
+    Swal.fire({
+      title: 'Procesando...',
+      text: '',
+      icon: 'info',
+      showConfirmButton: false, // No muestra el botón "OK"
+      allowOutsideClick: false, // Impide que se cierre al hacer clic fuera
+    });
+    this.invitadoService.registrarUsuario(data).subscribe(
+      () => {
+        Swal.fire('Éxito', 'Registro exitoso.', 'success');
+        this.limpiarFormulario()
+      },
+      (error) => {
+        Swal.fire('Error', 'Ocurrió un error en el servidor.', 'error');
+      }
+    );
+    console.log('Datos enviados:', data);
+  }
+
+  tipoDocumentoValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      return control.value === -1 ? { tipoDocumentoRequerido: true } : null;
+    };
+  }
+
+  limpiarFormulario() {
+    this.formRegistra.reset();
+    this.formRegistra.patchValue({
+      validaTipoDocumento: -1,
+      validaNumeroDocumento: '',
+    });
+    this.objUsuario.idUsuario = 0;
+
+    // Deshabilitar todos los campos excepto Tipo y Número de Documento
+    this.formRegistra.get('validaTipoDocumento')?.enable();
+    this.formRegistra.get('validaNumeroDocumento')?.enable();
+    this.formRegistra.get('validaNombre')?.disable();
+    this.formRegistra.get('validaApellido')?.disable();
+    this.formRegistra.get('validaCelular')?.disable();
+    this.formRegistra.get('validaCorreo')?.disable();
+    this.formRegistra.get('validaMotivo')?.disable();
+
+    // Reasignar validadores para validaNumeroDocumento
+    const numeroDocumentoControl = this.formRegistra.get('validaNumeroDocumento');
+    numeroDocumentoControl?.clearValidators();
+    numeroDocumentoControl?.setValidators([
+      Validators.required,
+      this.validarTipoDocumentoAntesDeEscribir(),
+    ]);
+
+    // Actualizar validadores
+    numeroDocumentoControl?.updateValueAndValidity();
+
+    // Restablecer estado de los botones
+    this.botonBuscarHabilitado = true;
+    this.botonLimpiarHabilitado = false;
+
+    // Forzar revalidación del formulario
+    this.formRegistra.updateValueAndValidity();
+  }
+
+
 
   // Validar si se intenta llenar el número de documento sin seleccionar un tipo
   validarTipoDocumentoAntesDeEscribir(): ValidatorFn {
@@ -162,110 +339,71 @@ export class RegistrarExternoComponent {
     };
   }
 
-// Validación para no permitir espacios consecutivos ni al inicio o final
-validarEspacios(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    if (!control.value) return null; // Si no hay valor, no validamos
+  validarNumeroDocumento(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const tipoDoc = this.formRegistra?.get('validaTipoDocumento')?.value;
+      const numero = control.value;
 
-    const value = control.value.trim(); // Elimina espacios al inicio y al final
-    if (/ {2,}/.test(value)) { // Si hay espacios consecutivos
-      return { espaciosConsecutivos: 'No se permiten espacios consecutivos' };
-    }
-    if (value !== control.value) { // Si el valor tiene espacios al inicio o al final
-      return { espaciosInnecesarios: 'No debe empezar ni terminar con espacios' };
-    }
+      if (!numero) {
+        return null; // Si no hay valor, no se valida
+      }
 
-    return null;
-  };
-}
+      // Validación para DNI
+      if (tipoDoc === 1) { // DNI
+        if (!/^[0-9]{8}$/.test(numero)) {
+          return { formatoInvalido: 'Debe tener exactamente 8 números' }; // Mensaje claro
+        }
+        if (/^(\d)\1+$/.test(numero)) {
+          return { documentoInvalido: 'No debe ser una secuencia repetitiva de números' }; // Mensaje claro
+        }
+      }
 
-// Validación para no permitir tres letras consecutivas repetidas (como 'aaa', 'bbb')
-validarTresLetrasRepetidas(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    if (!control.value) return null; // Si no hay valor, no validamos
+      // Validación para Pasaporte
+      if (tipoDoc === 2) { // Pasaporte
+        // Acepta entre 9 y 12 caracteres: letras o números, con una letra opcional al principio o al final
+        const pasaporteRegex = /^[a-zA-Z]?[0-9]{9,12}[a-zA-Z]?$/;
+        if (!pasaporteRegex.test(numero)) {
+          return { formatoInvalido: 'Debe tener entre 9 y 12 caracteres: números con una letra opcional al inicio o final' }; // Mensaje claro
+        }
+        if (/^([a-zA-Z0-9])\1+$/.test(numero)) {
+          return { documentoInvalido: 'No debe ser una secuencia repetitiva' }; // Mensaje claro
+        }
+      }
 
-    const value = control.value.toLowerCase();
-    if (/([a-z])\1\1/.test(value)) { // Si hay tres letras repetidas
-      return { letrasRepetidas: 'No se permiten tres letras repetidas' };
-    }
+      // Validación para Carnet de Extranjería
+      if (tipoDoc === 3) { // Carnet de Extranjería
+        // Exactamente 9 caracteres: números con una letra opcional al inicio o final
+        const carnetRegex = /^[a-zA-Z]?[0-9]{9}[a-zA-Z]?$/;
+        if (!carnetRegex.test(numero)) {
+          return { formatoInvalido: 'Debe tener exactamente 9 caracteres: números con una letra opcional al inicio o final' }; // Mensaje claro
+        }
+        if (/^([a-zA-Z0-9])\1+$/.test(numero)) {
+          return { documentoInvalido: 'No debe ser una secuencia repetitiva' }; // Mensaje claro
+        }
+      }
 
-    return null;
-  };
-}
+      return null; // Si todas las validaciones pasan
+    };
+  }
 
-  
-  // Actualizar validación del número de documento
+  validarTresLetrasRepetidas(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      return value && /([a-zA-Z])\1{2}/.test(value) ? { tresLetrasRepetidas: true } : null;
+    };
+  }
+
+  mostrarError(campo: string, error: string): boolean {
+    const control = this.formRegistra.get(campo);
+    return !!control?.hasError(error) && (control?.touched || control?.dirty);
+  }
+
   actualizarValidacionDocumento(pattern: string): void {
-    this.formRegistra.get('validaNumeroDocumento')?.setValidators([ 
-      Validators.required, 
-      Validators.pattern(pattern), 
+    this.formRegistra.get('validaNumeroDocumento')?.setValidators([
+      Validators.required,
+      Validators.pattern(pattern),
       this.validarTipoDocumentoAntesDeEscribir(),
     ]);
-    this.formRegistra.get('validaNumeroDocumento')?.updateValueAndValidity();
-  }
-  
-
-// Mostrar errores dinámicos
-mostrarError(campo: string, error: string): boolean {
-  const control = this.formRegistra.get(campo);
-  return !!control?.hasError(error) && (control?.touched || control?.dirty);
-}
-
-// Método para registrar
-registra() {
-  if (this.formRegistra.valid) {
-    Swal.fire({
-      title: 'Procesando...',
-      text: 'Por favor espere',
-      icon: 'info',
-      allowOutsideClick: false,
-      showConfirmButton: false,
-      didOpen: () => Swal.showLoading()
-    });
-
-    
-
-    const payload = {
-      nombres: this.formRegistra.value.validaNombre,
-      apellidos: this.formRegistra.value.validaApellido,
-      celular: this.formRegistra.value.validaCelular,
-      correo: this.formRegistra.value.validaCorreo,
-      numDoc: this.formRegistra.value.validaNumeroDocumento,
-      tipodocumento: {
-        idTipoDoc: parseInt(this.formRegistra.value.validaTipoDocumento)
-      },
-      motivo: this.formRegistra.value.validaMotivo,
-      idUsuarioRegVisita: this.objUsuario.idUsuario
-    };
-
-    this.invitadoService.registrar(payload).subscribe(
-      () => {
-        Swal.fire('Éxito', 'El invitado ha sido registrado correctamente.', 'success');
-        this.resetearFormulario();
-      },
-      (error) => {
-        Swal.fire('Error', 'Ha ocurrido un error durante el registro.', 'error');
-        console.error('Error:', error);
-      }
-    );
-  } else {
-    Swal.fire('Validación', 'Complete todos los campos correctamente.', 'warning');
   }
 }
 
-// Método para resetear el formulario
-resetearFormulario() {
-  this.formRegistra.reset();
-  this.formRegistra.patchValue({ validaTipoDocumento: -1 });
-}
-
-    
-  tipoDocumentoValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      if (control.value === -1) {
-        return { tipoDocumentoRequerido: true };
-      }
-      return null;
-    };
-  }
-}

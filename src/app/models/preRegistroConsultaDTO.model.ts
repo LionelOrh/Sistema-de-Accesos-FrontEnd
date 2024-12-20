@@ -9,4 +9,5 @@ export class preRegistroConsultaDTO {
   tipo?: string;            // "usuario" o "representante"
   motivo?: string;
   motivoVisita?: string;
+  matriculado?: boolean; // Nuevo campo
 }
