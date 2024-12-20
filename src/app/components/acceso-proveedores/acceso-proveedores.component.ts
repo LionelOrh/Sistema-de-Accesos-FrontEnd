@@ -49,7 +49,7 @@ export class AccesoProveedorComponent {
 
     // Configurar el formulario
     this.formRegistra = this.formBuilder.group({
-      
+
       validaRazonSocial: [{ value: '', disabled: true }],
       validaRuc: [{ value: '', disabled: true }],
       validaDes: [{ value: '', disabled: true }],
@@ -60,7 +60,7 @@ export class AccesoProveedorComponent {
       validaApellido: ['', [Validators.required, Validators.minLength(3),
       Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
       this.validarEspacios(), this.validarTresLetrasRepetidas()]],
-     
+
       validaCargoRes: ['', [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ]{3,}[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s]*$'),
       this.validarEspacios(), this.validarTresLetrasRepetidas()]],
       validaNumeroDocumento: ['', [Validators.required, this.validarTipoDocumentoAntesDeEscribir()]],
@@ -68,14 +68,14 @@ export class AccesoProveedorComponent {
     });
 
     this.formRegistrarProveedor = this.formBuilder.group({
-      ruc: ['', [Validators.required, Validators.pattern(/^[0-9]{11}$/)]],
-      razonSocial: ['', [Validators.required, Validators.pattern('^[a-zA-ZÀ-ÿ0-9\\s\\-\\.]{3,100}$')]],
-      descripcion: ['', [Validators.required, Validators.pattern('^[a-zA-ZÀ-ÿ0-9\\s\\-\\.]{3,500}$'),Validators.minLength(10)]],
+      ruc: ['', [Validators.required, Validators.pattern(/^[0-9]{11}$/), this.cuatroTresLetrasRepetidas()]],
+      razonSocial: ['', [Validators.required, Validators.pattern('^[a-zA-ZÀ-ÿ0-9\\s\\-\\.]{3,100}$'), this.validarEspacios(), this.validarTresLetrasRepetidas()]],
+      descripcion: ['', [Validators.required, Validators.pattern('^[a-zA-ZÀ-ÿ0-9\\s\\-\\.]{3,500}$'), Validators.minLength(10), this.validarEspacios(), this.validarTresLetrasRepetidas()]],
     });
 
 
-     // Detectar cambios en el tipo de documento
-     this.formRegistra.get('validaTipoDocumento')?.valueChanges.subscribe((tipoDoc) => {
+    // Detectar cambios en el tipo de documento
+    this.formRegistra.get('validaTipoDocumento')?.valueChanges.subscribe((tipoDoc) => {
       const numeroDocumentoControl = this.formRegistra.get('validaNumeroDocumento');
       numeroDocumentoControl?.setValue(''); // Resetear el valor
       numeroDocumentoControl?.clearValidators(); // Limpiar validadores
@@ -90,7 +90,7 @@ export class AccesoProveedorComponent {
           numeroDocumentoControl?.setValidators([Validators.required, this.validarNumeroDocumento()]);
           break;
         case 3: // Carnet de Extranjería
-          this.longitudMaximaDocumento = 9;
+          this.longitudMaximaDocumento = 12;
           numeroDocumentoControl?.setValidators([Validators.required, this.validarNumeroDocumento()]);
           break;
       }
@@ -118,13 +118,13 @@ export class AccesoProveedorComponent {
       }
     });
 
-    
+
   }
 
   validarBusquedaRazonSocial(): void {
     const pattern = /^[a-zA-ZÀ-ÿ0-9\s\-.]*$/; // Solo permite letras, números, espacios, guiones y puntos
     this.errorRazonSocial = !pattern.test(this.filterRazonSocial);
-  
+
     if (!this.errorRazonSocial) {
       this.consultarProveedores(); // Llama al método para buscar proveedores si no hay errores
     } else {
@@ -135,51 +135,70 @@ export class AccesoProveedorComponent {
     return (control: AbstractControl): ValidationErrors | null => {
       const tipoDoc = this.formRegistra?.get('validaTipoDocumento')?.value;
       const numero = control.value;
-  
+
       if (!numero) {
         return null; // Si no hay valor, no se valida
       }
-  
+
       // Validación para DNI
       if (tipoDoc === 1) { // DNI
         if (!/^[0-9]{8}$/.test(numero)) {
-          return { formatoInvalido: 'Debe tener exactamente 8 números' }; // Mensaje claro
+          return { formatoInvalido: 'Debe tener exactamente 8 números' };
         }
-        if (/^(\d)\1+$/.test(numero)) {
-          return { documentoInvalido: 'No debe ser una secuencia repetitiva de números' }; // Mensaje claro
+        if (/(\d)\1{3,}/.test(numero)) {
+          return { documentoInvalido: 'No debe tener más de 4 números consecutivos iguales' };
+        }
+        if (this.esCadenaAscendenteODescendente(numero)) {
+          return { documentoInvalido: 'No debe ser una secuencia ascendente o descendente' };
         }
       }
-  
+
       // Validación para Pasaporte
-      if (tipoDoc === 2) { // Pasaporte
-        // Acepta entre 9 y 12 caracteres: letras o números, con una letra opcional al principio o al final
-        const pasaporteRegex = /^[a-zA-Z]?[0-9]{9,12}[a-zA-Z]?$/;
-        if (!pasaporteRegex.test(numero)) {
-          return { formatoInvalido: 'Debe tener entre 9 y 12 caracteres: números con una letra opcional al inicio o final' }; // Mensaje claro
+      if (tipoDoc === 2 || tipoDoc === 3) { // Pasaporte o Carnet de Extranjería
+        // 9 a 12 caracteres, con al menos 1 y máximo 3 letras mayúsculas
+        const regexBase = /^[A-Z0-9]{9,12}$/;
+        const regexLetras = /[A-Z]/g;
+
+        if (!regexBase.test(numero)) {
+          return { formatoInvalido: 'Debe tener entre 9 y 12 caracteres, solo números y letras mayúsculas' };
         }
-        if (/^([a-zA-Z0-9])\1+$/.test(numero)) {
-          return { documentoInvalido: 'No debe ser una secuencia repetitiva' }; // Mensaje claro
+        const letras = (numero.match(regexLetras) || []).length;
+        if (letras < 1 || letras > 3) {
+          return { formatoInvalido: 'Debe contener al menos 1 letra mayúscula y como máximo 3' };
         }
-      }
-  
-      // Validación para Carnet de Extranjería
-      if (tipoDoc === 3) { // Carnet de Extranjería
-        // Exactamente 9 caracteres: números con una letra opcional al inicio o final
-        const carnetRegex = /^[a-zA-Z]?[0-9]{9}[a-zA-Z]?$/; 
-        if (!carnetRegex.test(numero)) {
-          return { formatoInvalido: 'Debe tener exactamente 9 caracteres: números con una letra opcional al inicio o final' }; // Mensaje claro
+        if (/^([A-Z0-9])\1{3,}$/.test(numero)) { 
+          return { documentoInvalido: 'No debe tener más de 4 caracteres consecutivos iguales' };
         }
-        if (/^([a-zA-Z0-9])\1+$/.test(numero)) {
-          return { documentoInvalido: 'No debe ser una secuencia repetitiva' }; // Mensaje claro
+        if (this.esCadenaAscendenteODescendente(numero)) {
+          return { documentoInvalido: 'No debe ser una secuencia ascendente o descendente' };
         }
       }
-  
+
       return null; // Si todas las validaciones pasan
     };
   }
-  
-  
-  
+
+  // Función para verificar si una cadena es ascendente o descendente
+  esCadenaAscendenteODescendente(cadena: string): boolean {
+    const numeros = cadena.split('').map(c => parseInt(c, 10)).filter(n => !isNaN(n));
+    let ascendente = true;
+    let descendente = true;
+
+    for (let i = 1; i < numeros.length; i++) {
+      if (numeros[i] !== numeros[i - 1] + 1) {
+        ascendente = false;
+      }
+      if (numeros[i] !== numeros[i - 1] - 1) {
+        descendente = false;
+      }
+    }
+
+    return ascendente || descendente;
+  }
+
+
+
+
   // Validación adicional en tiempo real
   validarSecuenciaRepetida(): void {
     const control = this.formRegistra.get('validaNumeroDocumento');
@@ -237,6 +256,15 @@ export class AccesoProveedorComponent {
       const value = control.value;
       const regex = /(.)\1\1/; // Expresión regular para encontrar tres caracteres repetidos
       return value && regex.test(value) ? { tresLetrasRepetidas: true } : null;
+    };
+  }
+
+  // Validador personalizado para evitar 3 letras repetidas
+  cuatroTresLetrasRepetidas(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      const regex = /(.)\1\1\1/; // Expresión regular para encontrar cuatro caracteres repetidos
+      return value && regex.test(value) ? { cuatroTresLetrasRepetidas: true } : null;
     };
   }
 
