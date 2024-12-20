@@ -40,8 +40,10 @@ export class RegistrarExternoComponent {
 
     // Inicializar formulario
     this.formRegistra = this.formBuilder.group({
-      validaNombre: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ ]+$')]],
-      validaApellido: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ ]+$')]],
+      validaNombre: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ ]+$'), this.validarEspacios(),
+      this.validarTresLetrasRepetidas()]],
+      validaApellido: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(3), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ ]+$'), this.validarEspacios(),
+      this.validarTresLetrasRepetidas()]],
       validaCelular: [{ value: '', disabled: true }, [Validators.required, Validators.pattern('^9[0-9]{8}$')]],
       validaTipoDocumento: [-1, [Validators.required, this.tipoDocumentoValidator()]],
       validaNumeroDocumento: ['', [Validators.required, this.validarTipoDocumentoAntesDeEscribir()]],
@@ -50,7 +52,8 @@ export class RegistrarExternoComponent {
         Validators.pattern('^[a-zA-Z0-9_-]+@[a-zA-Z]+\\.[a-zA-Z]{3,}$'), // Validación actualizada
         this.validarEspacios()
       ]],
-      validaMotivo: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(15), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s.,]*$')]],
+      validaMotivo: [{ value: '', disabled: true }, [Validators.required, Validators.minLength(15), Validators.pattern('^[a-zA-ZÑñáéíóúÁÉÍÓÚ\\s.,]*$'), this.validarEspacios(),
+      this.validarTresLetrasRepetidas()]],
     }, { validators: this.validarFormularioCompleto });
 
     // Forzar que el formulario sea inválido inicialmente
@@ -78,7 +81,7 @@ export class RegistrarExternoComponent {
           numeroDocumentoControl.setValidators([Validators.required, this.validarNumeroDocumento()]);
           break;
         default:
-          this.longitudMaximaDocumento = 8; // Valor por defecto
+          this.longitudMaximaDocumento = 9; // Valor por defecto
           numeroDocumentoControl.setValidators([Validators.required, this.validarNumeroDocumento()]);
           break;
       }
@@ -140,21 +143,21 @@ export class RegistrarExternoComponent {
     const numDoc = numDocControl?.value;
 
     // Validar ambos campos y mostrar un mensaje combinado si faltan ambos
-  if (tipoDoc === -1 && !numDoc) {
-    Swal.fire('Error', 'Debe seleccionar un tipo de documento y completar el número de documento.', 'warning');
-    return;
-  }
+    if (tipoDoc === -1 && !numDoc) {
+      Swal.fire('Error', 'Debe seleccionar un tipo de documento y completar el número de documento.', 'warning');
+      return;
+    }
 
-  // Validar individualmente y mostrar mensajes separados si aplica
-  if (tipoDoc === -1) {
-    Swal.fire('Error', 'Debe seleccionar un tipo de documento.', 'warning');
-    return;
-  }
+    // Validar individualmente y mostrar mensajes separados si aplica
+    if (tipoDoc === -1) {
+      Swal.fire('Error', 'Debe seleccionar un tipo de documento.', 'warning');
+      return;
+    }
 
-  if (!numDoc) {
-    Swal.fire('Error', 'Debe ingresar un número de documento válido', 'warning');
-    return;
-  }
+    if (!numDoc) {
+      Swal.fire('Error', 'Debe ingresar un número de documento válido', 'warning');
+      return;
+    }
 
     Swal.fire({
       title: 'Buscando...',
@@ -373,7 +376,7 @@ export class RegistrarExternoComponent {
       // Validación para Carnet de Extranjería
       if (tipoDoc === 3) { // Carnet de Extranjería
         // Exactamente 9 caracteres: números con una letra opcional al inicio o final
-        const carnetRegex = /^[a-zA-Z]?[0-9]{9}[a-zA-Z]?$/;
+        const carnetRegex = /^[a-zA-Z][0-9]{8}$|^[0-9]{8}[a-zA-Z]$/; // Ajuste aquí
         if (!carnetRegex.test(numero)) {
           return { formatoInvalido: 'Debe tener exactamente 9 caracteres: números con una letra opcional al inicio o final' }; // Mensaje claro
         }
@@ -397,6 +400,22 @@ export class RegistrarExternoComponent {
     const control = this.formRegistra.get(campo);
     return !!control?.hasError(error) && (control?.touched || control?.dirty);
   }
+
+  obtenerMensajeError(campo: string): string | null {
+    const control = this.formRegistra.get(campo);
+    if (!control || !control.errors) return null;
+
+    // Busca el primer error y retorna su mensaje
+    const errores = control.errors;
+    for (const key in errores) {
+      if (errores.hasOwnProperty(key)) {
+        return errores[key]; // Devuelve el mensaje asociado al error
+      }
+    }
+
+    return null;
+  }
+
 
   actualizarValidacionDocumento(pattern: string): void {
     this.formRegistra.get('validaNumeroDocumento')?.setValidators([

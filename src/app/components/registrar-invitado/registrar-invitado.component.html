@@ -14,7 +14,8 @@
                         <mat-select formControlName="validaTipoDocumento" placeholder="Seleccione un tipo de documento"
                             class="form-control">
                             <mat-option [value]="-1" disabled>Seleccione un tipo de documento</mat-option>
-                            <mat-option *ngFor="let x of lstTipoDoc" [value]="x.idTipoDoc">{{ x.descripcion }}</mat-option>
+                            <mat-option *ngFor="let x of lstTipoDoc" [value]="x.idTipoDoc">{{ x.descripcion
+                                }}</mat-option>
                         </mat-select>
                         <small *ngIf="mostrarError('validaTipoDocumento', 'tipoDocumentoRequerido')">
                             Seleccione un tipo de documento válido.
@@ -36,12 +37,11 @@
                             <div *ngIf="mostrarError('validaNumeroDocumento', 'tipoDocumentoNoSeleccionado')">
                                 Seleccione un tipo de documento antes de ingresar el número.
                             </div>
-                            <div *ngIf="mostrarError('validaNumeroDocumento', 'numDocExiste')">
-                                El número ya está registrado.
+                            <div *ngIf="mostrarError('validaNumeroDocumento', 'formatoInvalido')">
+                                {{ obtenerMensajeError('validaNumeroDocumento') }}
                             </div>
-                            <div *ngIf="mostrarError('validaNumeroDocumento', 'formatoInvalido')">Formato inválido.</div>
                             <div *ngIf="mostrarError('validaNumeroDocumento', 'documentoInvalido')">
-                                Secuencia repetitiva no permitida.
+                                {{ obtenerMensajeError('validaNumeroDocumento') }}
                             </div>
                         </small>
                     </div>
@@ -63,14 +63,20 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="nombres">Nombres</label>
-                            <input formControlName="validaNombre" class="form-control" placeholder="Nombres" maxlength="20"
-                                [disabled]="!!objUsuario.idUsuario">
+                            <input formControlName="validaNombre" class="form-control" placeholder="Nombres"
+                                maxlength="20" [disabled]="!!objUsuario.idUsuario">
                             <small>
                                 <div *ngIf="mostrarError('validaNombre', 'required')">El nombre es obligatorio.</div>
                                 <div *ngIf="mostrarError('validaNombre', 'pattern')">Ingrese nombres válidos.</div>
                                 <div *ngIf="mostrarError('validaNombre', 'minlength')">Ingrese más de 3 letras</div>
                                 <div *ngIf="mostrarError('validaNombre', 'tresLetrasRepetidas')">
-                                    No se permiten caracteres consecutivos repetidos.
+                                    No se permiten caracteres repetidos.
+                                </div>
+                                <div *ngIf="mostrarError('validaNombre', 'espaciosConsecutivos')">
+                                    No se permiten espacios consecutivos.
+                                </div>
+                                <div *ngIf="mostrarError('validaNombre', 'espaciosInnecesarios')">
+                                    No se permiten espacios innecesarios.
                                 </div>
                             </small>
                         </div>
@@ -81,12 +87,20 @@
                             <input formControlName="validaApellido" class="form-control" placeholder="Apellidos"
                                 maxlength="20" [disabled]="!!objUsuario.idUsuario">
                             <small>
-                                <div *ngIf="mostrarError('validaApellido', 'required')">El apellido es obligatorio.</div>
+                                <div *ngIf="mostrarError('validaApellido', 'required')">El apellido es obligatorio.
+                                </div>
                                 <div *ngIf="mostrarError('validaApellido', 'pattern')">Ingrese apellidos válidos.</div>
                                 <div *ngIf="mostrarError('validaApellido', 'minlength')">Ingrese más de 3 letras</div>
                                 <div *ngIf="mostrarError('validaApellido', 'tresLetrasRepetidas')">
-                                    No se permiten caracteres consecutivos repetidos.
+                                    No se permiten caracteres repetidos.
                                 </div>
+                                <div *ngIf="mostrarError('validaApellido', 'espaciosConsecutivos')">
+                                    No se permiten espacios consecutivos.
+                                </div>
+                                <div *ngIf="mostrarError('validaApellido', 'espaciosInnecesarios')">
+                                    No se permiten espacios innecesarios.
+                                </div>
+
                             </small>
                         </div>
                     </div>
@@ -99,6 +113,9 @@
                                 <div *ngIf="mostrarError('validaCelular', 'required')">El celular es obligatorio.</div>
                                 <div *ngIf="mostrarError('validaCelular', 'pattern')">
                                     Debe iniciar con 9 y tener 9 dígitos.
+                                </div>
+                                <div *ngIf="mostrarError('validaCelular', 'espaciosInnecesarios')">
+                                    No se permiten espacios innecesarios.
                                 </div>
                             </small>
                         </div>
@@ -127,6 +144,15 @@
                                 <div *ngIf="mostrarError('validaMotivo', 'required')">El motivo es obligatorio.</div>
                                 <div *ngIf="mostrarError('validaMotivo', 'minlength')">
                                     Debe tener al menos 15 caracteres.
+                                </div>
+                                <div *ngIf="mostrarError('validaMotivo', 'tresLetrasRepetidas')">
+                                    No se permiten caracteres repetidos.
+                                </div>
+                                <div *ngIf="mostrarError('validaMotivo', 'espaciosConsecutivos')">
+                                    No se permiten espacios consecutivos.
+                                </div>
+                                <div *ngIf="mostrarError('validaMotivo', 'espaciosInnecesarios')">
+                                    No se permiten espacios innecesarios.
                                 </div>
                             </small>
                         </div>
